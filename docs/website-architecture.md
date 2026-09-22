@@ -78,6 +78,8 @@ Use **Vercel Git integration as the primary deployment**:
 - run the static build for production after the content checks pass;
 - attach a custom domain when the first public release is ready.
 
+The current production deployment is [kaggle-bible.vercel.app](https://kaggle-bible.vercel.app/). Use this URL for previewing the published site while the project remains on Vercel’s default domain; update this reference if a custom domain becomes canonical.
+
 Astro’s deployment guide says static Astro sites deploy to Vercel without an adapter; the Vercel Git flow creates previews for branches and production deployments from the production branch. [Astro on Vercel](https://docs.astro.build/en/guides/deploy/vercel/)
 
 The application should remain static at first. Do not add `@astrojs/vercel`, server functions, a database, or runtime secrets until a real requirement appears. This makes Vercel replaceable and keeps the site deployable to other static hosts.

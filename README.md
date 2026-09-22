@@ -20,6 +20,8 @@ The core unit is an actionable lesson with traceable evidence: what worked, unde
 
 The public site uses Astro + Starlight and deploys as a static build on Vercel. With Node 22.12+ and pnpm 9:
 
+Live site: [kaggle-bible.vercel.app](https://kaggle-bible.vercel.app/)
+
 ```bash
 pnpm install
 pnpm check
