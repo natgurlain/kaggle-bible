@@ -38,8 +38,8 @@ main
 2. Create each `ticket/<issue>-<short-slug>` branch from the latest `epic/evidence-pilot`.
 3. Keep a ticket branch within its issue's acceptance criteria. Open a pull request with the ticket branch as the head and `epic/evidence-pilot` as the base. Link the issue with `Refs #<issue>` and state the checks or preview needed for review.
 4. Run the checks required by the ticket. For visible site changes, include a preview link and review the affected page at desktop and narrow widths.
-5. Request an independent review using **GPT-6 Luna** with reasoning effort **Max**. The reviewer examines the exact PR head against the ticket, checks regressions and evidence integrity, and returns `APPROVE` or `REQUEST_CHANGES` with actionable findings. Record the model, reasoning effort, and reviewed commit in the PR. Any new commit invalidates that review; rerun it on the new head.
-6. Merge the ticket PR into `epic/evidence-pilot` only after the Luna Max review has no unresolved blocking findings and required checks pass. Update the epic checklist. Keep issue references as `Refs` on these PRs; close the child issues in the final PR to `main` so their status reflects the delivered default-branch state.
+5. Request an independent review using **GPT-6 Luna** (`gpt-6-luna`) with reasoning effort **Max**. The reviewer examines the exact PR head against the ticket, checks regressions and evidence integrity, and returns `APPROVE` or `REQUEST_CHANGES` with actionable findings. Record the model, reasoning effort, and reviewed commit in the PR. Any new commit invalidates that review; rerun it on the new head.
+6. Merge the ticket PR into `epic/evidence-pilot` only after GPT-6 Luna at Max reasoning explicitly returns `APPROVE` for the exact current head, required checks pass, and no blocking finding remains unresolved. Record a disposition for any non-blocking review notes. A `REQUEST_CHANGES`, missing verdict, stale review, or failed check is not merge approval. Update the epic checklist. Keep issue references as `Refs` on these PRs; close the child issues in the final PR to `main` so their status reflects the delivered default-branch state.
 
 The Luna review is a Codex review step; it is not a GitHub account assignment. A maintainer checks the review result and performs the merge. Content publication also follows the named editorial review gate in [editorial-workflow.md](editorial-workflow.md).
 
@@ -49,8 +49,8 @@ When every ticket is complete, open one pull request from `epic/evidence-pilot` 
 
 - Summarize the complete outcome and list all child issues with `Closes #<issue>` references.
 - Run the full content checks and production build on the final epic head. Review the Vercel preview and confirm the catalog-to-guide and practice-to-evidence paths.
-- Have GPT-6 Luna at Max reasoning review the exact final diff, including integration effects across tickets. Rerun the review if the epic branch changes afterward.
-- Merge the epic PR only after required checks pass and no blocking review findings remain. Then verify the production deployment corresponds to the merged `main` commit and close the epic.
+- Have GPT-6 Luna (`gpt-6-luna`) at Max reasoning review the exact final diff, including integration effects across tickets. Record the reviewed SHA and verdict. Rerun the review if the epic branch changes afterward.
+- Merge the epic PR only after GPT-6 Luna at Max reasoning explicitly returns `APPROVE` for the exact current head, required checks pass, and no blocking finding remains unresolved. Record a disposition for any non-blocking review notes. A `REQUEST_CHANGES`, missing verdict, stale review, or failed check is not merge approval. Then verify the production deployment corresponds to the merged `main` commit and close the epic.
 
 Do not merge ticket branches directly to `main` or put unrelated tickets on the epic branch. If scope changes, update the epic and affected acceptance criteria before implementing the extra work.
 
@@ -60,6 +60,6 @@ Each reviewed PR should make these items easy to find:
 
 - Ticket and epic links, scope completed, and any scope deliberately left for later.
 - Commands/checks and their results; for UI changes, a preview and pages reviewed.
-- GPT-6 Luna model, Max reasoning effort, reviewed commit SHA, verdict, and remaining findings.
+- GPT-6 Luna (`gpt-6-luna`) model, Max reasoning effort, reviewed commit SHA, explicit verdict, and disposition of every finding.
 - Editorial reviewer and date for content intended for publication.
 - Any known limitation, unknown evidence, or follow-up issue.
