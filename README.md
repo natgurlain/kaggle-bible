@@ -13,8 +13,9 @@ The core unit is an actionable lesson with traceable evidence: what worked, unde
 - [Competition inventory](docs/competition-inventory.md)
 - [Completeness levels](docs/coverage-levels.md)
 - [Beginner-to-advanced learning path](docs/learning-path.md)
+- [Website architecture and hosting decision](docs/website-architecture.md)
 - [Reusable content templates](templates/README.md)
 
-Status: inventory and editorial planning. The normalized competition inventory is generated from a dated Meta Kaggle snapshot; application implementation and automated publication validation are subsequent steps.
+Status: inventory, editorial planning, and website architecture. The normalized competition inventory is generated from a dated Meta Kaggle snapshot; the Astro/Starlight application scaffold is the next implementation step.
 
 The inventory starts every competition at Level 1 (Catalog). Guides move to Level 2 (Evidence map) and Level 3 (Full guide) only when they meet the requirements in [coverage levels](docs/coverage-levels.md). Broad coverage will grow through an explicit research queue, with incomplete entries clearly labeled.

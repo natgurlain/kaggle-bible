@@ -78,13 +78,13 @@ Use the [content contract](content-model.md) to connect practices to exact claim
 
 ## Technical architecture
 
-Recommend **Astro static output, Markdown prose with YAML frontmatter, YAML solution/source records, and Pagefind search**. Keep content in Git and generate pages, comparison tables, backlinks, a small catalog JSON, and search indexes at build time. Astro documents structured collections with schema validation and static page generation. [Astro content collections](https://docs.astro.build/en/guides/content-collections/)
+Recommend **Astro + Starlight for the documentation website, Markdown/MDX prose with YAML frontmatter, YAML solution/source records, and Pagefind search**. Keep content in Git and generate pages, comparison tables, backlinks, a small catalog JSON, and search indexes at build time. Starlight supplies the documentation navigation and authoring layer; custom Astro routes handle the competition catalog and evidence components. See the [website architecture and hosting decision](website-architecture.md). Astro documents structured collections with schema validation and static page generation. [Astro content collections](https://docs.astro.build/en/guides/content-collections/)
 
 Pagefind indexes the built site and supports metadata filters; use it for full-text search and categorical facets. Use a small generated catalog for solution-level resource matching, then intersect matching competition IDs with search results. This joins resource constraints explicitly rather than relying on independent page-level tags. Prototype this integration before adding range controls. [Pagefind setup](https://pagefind.app/docs/), [filter configuration](https://pagefind.app/docs/filtering/)
 
 Keep authoring to plain Markdown initially. Use centrally controlled layouts and structured fields for repeated elements. Avoid requiring contributors to write executable MDX. Use schema validation at build time plus a separate cross-record validator for references and conditional publication rules; schema shape checks alone cannot verify evidence or citation quality.
 
-Proposed implementation layout (not created in this planning phase):
+Proposed implementation layout (the application scaffold is the next phase):
 
 ```text
 content/
@@ -96,7 +96,9 @@ content/
   taxonomy.yaml
 src/
   content.config.ts
+  content/docs/
   layouts/
+  components/
   pages/
 scripts/
   validate-content.*
