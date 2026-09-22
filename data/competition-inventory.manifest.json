@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "source": {
+    "dataset_ref": "kaggle/meta-kaggle",
+    "file": "Competitions.csv",
+    "url": "https://www.kaggle.com/datasets/kaggle/meta-kaggle",
+    "version": "2322",
+    "updated_at": "2026-09-22T07:59:00.503Z"
+  },
+  "inventory": {
+    "generated_from": "data/competition-inventory.csv",
+    "snapshot_date": "2026-09-22",
+    "row_count": 12296,
+    "sha256": "9c090b3b53b92f1b37e814b46676c9a1ee776f1ab1a8ca575bb991d46a4a4eea"
+  }
+}

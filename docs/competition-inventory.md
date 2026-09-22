@@ -1,6 +1,6 @@
 # Competition inventory
 
-The repository tracks the full public competition set represented by the official [Meta Kaggle](https://www.kaggle.com/datasets/kaggle/meta-kaggle) snapshot used to generate [data/competition-inventory.csv](../data/competition-inventory.csv). The snapshot is version `2322`, updated `2026-09-22`, and was generated from `Competitions.csv` on that date. The sparse editorial overlay is [data/competition-editorial.csv](../data/competition-editorial.csv); it marks the competitions queued for the learning path and preserves review progress across inventory refreshes.
+The repository tracks the full public competition set represented by the official [Meta Kaggle](https://www.kaggle.com/datasets/kaggle/meta-kaggle) snapshot used to generate [data/competition-inventory.csv](../data/competition-inventory.csv). The snapshot is version `2322`, updated `2026-09-22`, and was generated from `Competitions.csv` on that date. The [manifest](../data/competition-inventory.manifest.json) records the row count and output checksum. The sparse editorial overlay is [data/competition-editorial.csv](../data/competition-editorial.csv); it marks the competitions queued for the learning path and preserves review progress across inventory refreshes.
 
 “All competitions” means all distinct competition records present in that named official snapshot. Kaggle says Meta Kaggle is a filtered and transformed public activity dataset rather than a complete database dump. Therefore this is a reproducible historical inventory with a defined boundary, not a claim that it includes every private, deleted, or otherwise omitted platform record. The live [Kaggle competitions page](https://www.kaggle.com/competitions?group=all) remains the source for current discovery.
 
@@ -21,6 +21,9 @@ python3 scripts/build_competition_inventory.py \
   --source /path/to/Competitions.csv \
   --snapshot-date 2026-09-22 \
   --editorial-overlay data/competition-editorial.csv \
+  --source-version 2322 \
+  --source-updated-at 2026-09-22T07:59:00.503Z \
+  --manifest data/competition-inventory.manifest.json \
   --output data/competition-inventory.csv
 ```
 

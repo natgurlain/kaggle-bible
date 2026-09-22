@@ -11,6 +11,8 @@ from __future__ import annotations
 import argparse
 import csv
 import datetime as dt
+import hashlib
+import json
 import pathlib
 import sys
 from typing import Iterator
@@ -232,12 +234,44 @@ def write_inventory(output: pathlib.Path, rows: list[dict[str, str]]) -> None:
         writer.writerows(rows)
 
 
+def write_manifest(
+    manifest: pathlib.Path,
+    output: pathlib.Path,
+    rows: list[dict[str, str]],
+    snapshot_date: dt.date,
+    source_version: str,
+    source_updated_at: str,
+) -> None:
+    digest = hashlib.sha256(output.read_bytes()).hexdigest()
+    payload = {
+        "schema_version": 1,
+        "source": {
+            "dataset_ref": "kaggle/meta-kaggle",
+            "file": "Competitions.csv",
+            "url": "https://www.kaggle.com/datasets/kaggle/meta-kaggle",
+            "version": source_version or None,
+            "updated_at": source_updated_at or None,
+        },
+        "inventory": {
+            "generated_from": str(output),
+            "snapshot_date": snapshot_date.isoformat(),
+            "row_count": len(rows),
+            "sha256": digest,
+        },
+    }
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    manifest.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=pathlib.Path, required=True, help="Meta Kaggle Competitions.csv")
     parser.add_argument("--output", type=pathlib.Path, required=True, help="Normalized inventory CSV")
     parser.add_argument("--snapshot-date", type=dt.date.fromisoformat, required=True)
     parser.add_argument("--editorial-overlay", type=pathlib.Path, help="Sparse editorial state CSV")
+    parser.add_argument("--source-version", default="", help="Meta Kaggle dataset version")
+    parser.add_argument("--source-updated-at", default="", help="Source dataset update timestamp")
+    parser.add_argument("--manifest", type=pathlib.Path, help="Optional JSON provenance manifest")
     return parser.parse_args()
 
 
@@ -253,6 +287,15 @@ def main() -> int:
     if unknown_ids:
         raise ValueError(f"Editorial overlay refers to unknown competition IDs: {unknown_ids[:5]}")
     write_inventory(args.output, rows)
+    if args.manifest:
+        write_manifest(
+            args.manifest,
+            args.output,
+            rows,
+            args.snapshot_date,
+            args.source_version,
+            args.source_updated_at,
+        )
     print(f"Wrote {len(rows):,} competitions to {args.output}")
     return 0
 
