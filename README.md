@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/favicon.svg" alt="Kaggle Bible mark" width="88" />
+<img src="https://www.kaggle.com/static/images/logos/kaggle-logo-transparent.svg" alt="Kaggle logo" width="176" />
 
 # Kaggle Bible
 
