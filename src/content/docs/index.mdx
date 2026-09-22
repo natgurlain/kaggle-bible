@@ -1,0 +1,41 @@
+---
+title: Kaggle Bible
+description: Evidence-backed lessons from Kaggle competitions, organized for the next experiment.
+template: splash
+hero:
+  tagline: Learn from what Kaggle competitors actually tried.
+  actions:
+    - text: Start learning
+      link: /start/
+      icon: right-arrow
+    - text: Browse competitions
+      link: /competitions/
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+Kaggle Bible is a practical, searchable knowledge base for turning past competition evidence into better decisions in a new competition.
+
+<CardGrid stagger>
+	<Card title="Find the next competition" icon="open-book">
+		Filter the full catalog by task, metric, dates, and editorial completeness. Every row links back to the official Kaggle competition.
+	</Card>
+	<Card title="Study the decisions" icon="document">
+		Compare validation, features, models, ensembles, compute, and failure modes instead of collecting disconnected leaderboard tricks.
+	</Card>
+	<Card title="Build a repeatable loop" icon="rocket">
+		Use the beginner-to-advanced path and evidence labels to decide what to try next, then contribute what you learn.
+	</Card>
+</CardGrid>
+
+## What “complete” means
+
+Every competition starts as a **Level 1 catalog record**. It becomes a **Level 2 evidence map** when the problem, metric, validation ideas, and sourced solution findings are mapped. A **Level 3 full guide** adds a reviewed comparison of approaches, reproducibility details, transferable lessons, and documented limitations.
+
+The site keeps source-reported results, reproduced results, and editorial interpretation visibly separate. Missing details stay marked as unknown.
+
+## Start with a path
+
+The [beginner-to-advanced path](/path/) suggests competitions that teach one new decision at a time. The [best practices](/practices/) section connects general advice to evidence from specific competitions, including when a technique does not transfer.

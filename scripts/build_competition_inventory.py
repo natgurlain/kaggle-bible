@@ -64,6 +64,28 @@ OUTPUT_FIELDS = [
     "notes",
 ]
 
+CATALOG_FIELDS = [
+    "id",
+    "slug",
+    "title",
+    "subtitle",
+    "competition_url",
+    "category",
+    "enabled_at",
+    "deadline_at",
+    "record_state",
+    "metric_abbreviation",
+    "metric_name",
+    "metric_direction",
+    "completeness_level",
+    "completeness_label",
+    "editorial_status",
+    "priority",
+    "work_order",
+    "learning_path_stage",
+    "guide_slug",
+]
+
 EDITORIAL_FIELDS = [
     "completeness_level",
     "editorial_status",
@@ -234,6 +256,12 @@ def write_inventory(output: pathlib.Path, rows: list[dict[str, str]]) -> None:
         writer.writerows(rows)
 
 
+def write_catalog_json(output: pathlib.Path, rows: list[dict[str, str]]) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    catalog_rows = [{field: row[field] for field in CATALOG_FIELDS} for row in rows]
+    output.write_text(json.dumps(catalog_rows, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+
+
 def write_manifest(
     manifest: pathlib.Path,
     output: pathlib.Path,
@@ -272,6 +300,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-version", default="", help="Meta Kaggle dataset version")
     parser.add_argument("--source-updated-at", default="", help="Source dataset update timestamp")
     parser.add_argument("--manifest", type=pathlib.Path, help="Optional JSON provenance manifest")
+    parser.add_argument("--catalog-json-output", type=pathlib.Path, help="Optional compact JSON asset for the website")
     return parser.parse_args()
 
 
@@ -287,6 +316,8 @@ def main() -> int:
     if unknown_ids:
         raise ValueError(f"Editorial overlay refers to unknown competition IDs: {unknown_ids[:5]}")
     write_inventory(args.output, rows)
+    if args.catalog_json_output:
+        write_catalog_json(args.catalog_json_output, rows)
     if args.manifest:
         write_manifest(
             args.manifest,

@@ -1,0 +1,239 @@
+---
+const catalogAsset = '/data/competition-catalog.json';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Competition catalog · Kaggle Bible</title>
+		<meta
+			name="description"
+			content="Browse the Kaggle Bible competition catalog by task, metric, status, and guide completeness."
+		/>
+	</head>
+	<body>
+		<main class="catalog-shell">
+			<header class="catalog-header">
+				<a class="back-link" href="/">← Kaggle Bible</a>
+				<p class="eyebrow">Browse the archive</p>
+				<h1>Competition catalog</h1>
+				<p class="lede">
+					Find a competition to study, practice on, or add to the editorial queue. The catalog includes
+					all competitions in the dated Meta Kaggle snapshot; a row marked catalog has not yet received a
+					Kaggle Bible guide.
+				</p>
+			</header>
+
+			<section class="controls" aria-labelledby="filter-heading">
+				<h2 id="filter-heading">Filter the catalog</h2>
+				<div class="control-grid">
+					<label>
+						<span>Search</span>
+						<input id="query" type="search" placeholder="Title, slug, or metric" autocomplete="off" />
+					</label>
+					<label>
+						<span>Category</span>
+						<select id="category">
+							<option value="">All categories</option>
+						</select>
+					</label>
+					<label>
+						<span>Competition state</span>
+						<select id="state">
+							<option value="">All states</option>
+							<option value="active">Active</option>
+							<option value="upcoming">Upcoming</option>
+							<option value="closed">Closed</option>
+							<option value="undated">Undated</option>
+						</select>
+					</label>
+					<label>
+						<span>Completeness</span>
+						<select id="level">
+							<option value="">All levels</option>
+							<option value="1">Level 1 · Catalog</option>
+							<option value="2">Level 2 · Evidence map</option>
+							<option value="3">Level 3 · Full guide</option>
+						</select>
+					</label>
+				</div>
+				<p id="summary" class="summary" role="status">Loading catalog…</p>
+			</section>
+
+			<section aria-labelledby="results-heading">
+				<h2 id="results-heading" class="visually-hidden">Competition results</h2>
+				<div id="results" class="results" aria-live="polite"></div>
+			</section>
+		</main>
+
+		<script define:vars={{ catalogAsset }}>
+			const query = document.querySelector('#query');
+			const category = document.querySelector('#category');
+			const state = document.querySelector('#state');
+			const level = document.querySelector('#level');
+			const summary = document.querySelector('#summary');
+			const results = document.querySelector('#results');
+			let competitions = [];
+
+			const escapeHtml = (value) =>
+				String(value ?? '').replace(/[&<>"']/g, (character) => ({
+					'&': '&amp;',
+					'<': '&lt;',
+					'>': '&gt;',
+					'"': '&quot;',
+					"'": '&#039;',
+				}[character]));
+
+			const stateLabel = (value) => ({
+				active: 'Active',
+				upcoming: 'Upcoming',
+				closed: 'Closed',
+				undated: 'Undated',
+			}[value] ?? value ?? 'Unknown');
+
+			const dateLabel = (value) => {
+				if (!value) return '—';
+				const date = new Date(value);
+				return Number.isNaN(date.getTime())
+					? value.slice(0, 10)
+					: new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(date);
+			};
+
+			const updateUrl = () => {
+				const params = new URLSearchParams();
+				if (query.value.trim()) params.set('q', query.value.trim());
+				if (category.value) params.set('category', category.value);
+				if (state.value) params.set('state', state.value);
+				if (level.value) params.set('level', level.value);
+				const next = params.toString();
+				window.history.replaceState({}, '', next ? `?${next}` : window.location.pathname);
+			};
+
+			const render = () => {
+				const needle = query.value.trim().toLowerCase();
+				const filtered = competitions.filter((competition) => {
+					const searchable = [
+						competition.title,
+						competition.slug,
+						competition.subtitle,
+						competition.metric_abbreviation,
+						competition.metric_name,
+					].join(' ').toLowerCase();
+					return (!needle || searchable.includes(needle))
+						&& (!category.value || competition.category === category.value)
+						&& (!state.value || competition.record_state === state.value)
+						&& (!level.value || competition.completeness_level === level.value);
+				});
+
+				const visible = filtered.slice(0, 100);
+				summary.textContent = filtered.length > visible.length
+					? `Showing ${visible.length.toLocaleString()} of ${filtered.length.toLocaleString()} matches.`
+					: `${filtered.length.toLocaleString()} ${filtered.length === 1 ? 'competition' : 'competitions'} match.`;
+
+				if (!visible.length) {
+					results.innerHTML = '<p class="empty">No competitions match these filters. Try a broader search.</p>';
+					updateUrl();
+					return;
+				}
+
+				results.innerHTML = visible.map((competition) => {
+					const guide = competition.guide_slug
+						? `<a class="guide-link" href="/competitions/${encodeURIComponent(competition.guide_slug)}/">Read guide</a>`
+						: '<span class="pending">Guide pending</span>';
+					const metric = competition.metric_abbreviation || competition.metric_name || 'Metric not recorded';
+					return `<article class="card">
+						<div class="card-topline">
+							<span class="pill">Level ${escapeHtml(competition.completeness_level)} · ${escapeHtml(competition.completeness_label)}</span>
+							<span class="state state-${escapeHtml(competition.record_state)}">${escapeHtml(stateLabel(competition.record_state))}</span>
+						</div>
+						<h3>${escapeHtml(competition.title || competition.slug)}</h3>
+						<p class="slug">${escapeHtml(competition.slug)}</p>
+						<p>${escapeHtml(competition.subtitle || 'No subtitle recorded in the source snapshot.')}</p>
+						<dl>
+							<div><dt>Category</dt><dd>${escapeHtml(competition.category || 'Uncategorized')}</dd></div>
+							<div><dt>Metric</dt><dd>${escapeHtml(metric)}</dd></div>
+							<div><dt>Deadline</dt><dd>${escapeHtml(dateLabel(competition.deadline_at))}</dd></div>
+						</dl>
+						<div class="card-links">
+							<a href="${escapeHtml(competition.competition_url)}" target="_blank" rel="noreferrer">Open on Kaggle ↗</a>
+							${guide}
+						</div>
+					</article>`;
+				}).join('');
+				updateUrl();
+			};
+
+			const params = new URLSearchParams(window.location.search);
+			query.value = params.get('q') ?? '';
+			state.value = params.get('state') ?? '';
+			level.value = params.get('level') ?? '';
+			[query, state, level].forEach((control) => control.addEventListener('input', render));
+			category.addEventListener('change', render);
+
+			fetch(catalogAsset)
+				.then((response) => {
+					if (!response.ok) throw new Error(`Catalog request failed (${response.status})`);
+					return response.json();
+				})
+				.then((data) => {
+					competitions = data;
+					const categories = [...new Set(competitions.map((competition) => competition.category).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+					category.insertAdjacentHTML('beforeend', categories.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join(''));
+					category.value = params.get('category') ?? '';
+					render();
+				})
+				.catch((error) => {
+					summary.textContent = 'The catalog could not be loaded.';
+					results.innerHTML = `<p class="empty">${escapeHtml(error.message)} Please try again later or report it on GitHub.</p>`;
+				});
+		</script>
+	</body>
+</html>
+
+<style>
+	:root {
+		font-family: system-ui, sans-serif;
+		color: #1c1b22;
+		background: #f7f7f8;
+	}
+	* { box-sizing: border-box; }
+	body { margin: 0; }
+	.catalog-shell { max-width: 1180px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
+	.catalog-header { max-width: 760px; padding: 1rem 0 2.5rem; }
+	.back-link, a { color: #5b21b6; }
+	.back-link { font-weight: 650; text-decoration: none; }
+	.eyebrow { margin: 3rem 0 .5rem; color: #6b21a8; font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+	h1 { margin: 0; font-size: clamp(2.5rem, 6vw, 4.75rem); letter-spacing: -.055em; line-height: .98; }
+	h2 { margin: 0; font-size: 1.35rem; }
+	.lede { color: #55525f; font-size: 1.1rem; line-height: 1.65; }
+	.controls { margin-bottom: 2rem; padding: 1.25rem; border: 1px solid #e4e0ea; border-radius: 1rem; background: white; box-shadow: 0 10px 30px #2d174d0d; }
+	.control-grid { display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+	label span { display: block; margin-bottom: .4rem; color: #625e6b; font-size: .82rem; font-weight: 700; }
+	input, select { width: 100%; min-height: 2.65rem; padding: .6rem .7rem; border: 1px solid #cfc9d8; border-radius: .55rem; background: white; color: inherit; font: inherit; }
+	input:focus, select:focus { outline: 3px solid #c4b5fd; outline-offset: 1px; }
+	.summary { margin: 1rem 0 0; color: #625e6b; font-size: .9rem; }
+	.results { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 1rem; }
+	.card { display: flex; min-height: 295px; flex-direction: column; padding: 1.15rem; border: 1px solid #e4e0ea; border-radius: 1rem; background: white; }
+	.card-topline, .card-links { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+	.card-topline { color: #625e6b; font-size: .78rem; }
+	.pill, .state { border-radius: 999px; padding: .25rem .55rem; font-weight: 700; }
+	.pill { background: #f0eafa; color: #5b21b6; }
+	.state { background: #f1f0f3; }
+	.state-active { background: #dcfce7; color: #166534; }
+	.state-upcoming { background: #fef3c7; color: #92400e; }
+	.card h3 { margin: 1.1rem 0 .15rem; font-size: 1.15rem; line-height: 1.25; }
+	.card p { color: #625e6b; line-height: 1.45; }
+	.card .slug { margin: 0; color: #8b8495; font-family: ui-monospace, monospace; font-size: .78rem; }
+	dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: .65rem; margin: auto 0 1rem; }
+	dt { color: #8b8495; font-size: .72rem; }
+	dd { margin: .2rem 0 0; overflow: hidden; font-size: .82rem; text-overflow: ellipsis; white-space: nowrap; }
+	.card-links { justify-content: flex-start; font-size: .86rem; font-weight: 700; }
+	.guide-link { margin-left: auto; }
+	.pending { color: #8b8495; font-size: .82rem; font-weight: 600; }
+	.empty { padding: 2rem; border: 1px dashed #cfc9d8; border-radius: 1rem; color: #625e6b; text-align: center; }
+	.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; clip-path: inset(50%); }
+	@media (max-width: 800px) { .control-grid { grid-template-columns: 1fr 1fr; } }
+	@media (max-width: 520px) { .catalog-shell { padding-inline: .9rem; } .control-grid { grid-template-columns: 1fr; } dl { gap: .35rem; } }
+</style>

@@ -24,10 +24,11 @@ python3 scripts/build_competition_inventory.py \
   --source-version 2322 \
   --source-updated-at 2026-09-22T07:59:00.503Z \
   --manifest data/competition-inventory.manifest.json \
-  --output data/competition-inventory.csv
+  --output data/competition-inventory.csv \
+  --catalog-json-output public/data/competition-catalog.json
 ```
 
-The generator uses Python’s standard library, handles embedded newlines and NUL bytes in the source export, rejects duplicate IDs/slugs, sorts by enabled date and ID, and initializes every row to Level 1. The overlay is sparse: rows absent from it stay at Level 1 / `unstarted`; rows in it carry the explicit editorial state into the generated CSV. Unknown IDs, invalid levels, duplicate overlay rows, and invalid work orders fail the build.
+The generator uses Python’s standard library, handles embedded newlines and NUL bytes in the source export, rejects duplicate IDs/slugs, sorts by enabled date and ID, and initializes every row to Level 1. The optional JSON output contains only the fields needed by the public catalog. The overlay is sparse: rows absent from it stay at Level 1 / `unstarted`; rows in it carry the explicit editorial state into the generated CSV and JSON. Unknown IDs, invalid levels, duplicate overlay rows, and invalid work orders fail the build.
 
 ## Fields
 

@@ -8,7 +8,7 @@ Build an English-language, public reference site with competition guides connect
 
 Assume one maintaining editor, occasional contributors, a small infrastructure budget, and Git-based review. Begin with closed competitions that have accessible primary sources. Reproduction is valuable but optional for inclusion: clearly attributed author reports can be useful without rerunning a costly solution. Unknown compute and unsuccessful experiments must remain unknown when not documented.
 
-Repository inspection found no project files, application, dependencies, or local instruction files. This proposal introduces the documentation foundation; it does not commit the project to a hosting provider or implement the site.
+The repository now contains the product proposal, content contracts, complete competition inventory, editorial overlay, and the initial Astro/Starlight website shell. The website is intentionally being built around the content system rather than replacing it.
 
 ## Users and the decisions they need to make
 

@@ -16,6 +16,18 @@ The core unit is an actionable lesson with traceable evidence: what worked, unde
 - [Website architecture and hosting decision](docs/website-architecture.md)
 - [Reusable content templates](templates/README.md)
 
-Status: inventory, editorial planning, and website architecture. The normalized competition inventory is generated from a dated Meta Kaggle snapshot; the Astro/Starlight application scaffold is the next implementation step.
+## Website
+
+The public site uses Astro + Starlight and deploys as a static build on Vercel. With Node 22.12+ and pnpm 9:
+
+```bash
+pnpm install
+pnpm check
+pnpm build
+```
+
+To deploy, import the GitHub repository into Vercel and keep `main` as the production branch. The checked-in Vercel configuration builds with `pnpm build` and serves `dist/`; pushes to branches create previews and pushes to `main` update production.
+
+Status: the Astro/Starlight website shell and searchable catalog are scaffolded for Vercel. The normalized competition inventory and the static catalog asset are generated from a dated Meta Kaggle snapshot; content coverage is the next implementation step.
 
 The inventory starts every competition at Level 1 (Catalog). Guides move to Level 2 (Evidence map) and Level 3 (Full guide) only when they meet the requirements in [coverage levels](docs/coverage-levels.md). Broad coverage will grow through an explicit research queue, with incomplete entries clearly labeled.
