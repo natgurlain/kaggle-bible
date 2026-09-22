@@ -1,0 +1,36 @@
+schema_version: 1
+id: reproduction-REPLACE
+solution_id: solution-REPLACE
+claim_ids: [] # IDs local to this solution; narrow to the statements tested.
+status: planned
+scope: "REPLACE: exact component/result being tested, including exclusions"
+code:
+  url: null
+  revision: null
+  local_changes: null
+data:
+  source_url: null
+  version_or_fingerprint: null
+  split_definition: null
+  access_requirements: null
+environment:
+  dependency_lock_or_image: null
+  operating_system: null
+  hardware: null
+  seeds: []
+command: null
+expected:
+  metric_id: null
+  split: null
+  value: null
+  tolerance: null
+  tolerance_rationale: null
+observed:
+  value: null
+  fold_results: []
+  wall_hours: null
+  peak_memory_gb: null
+artifacts: [] # Durable log/config/result links; use checksums where applicable.
+executed_by: null
+executed_at: null
+limitations: []

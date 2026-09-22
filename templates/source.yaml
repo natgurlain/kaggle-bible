@@ -1,0 +1,14 @@
+schema_version: 1
+id: source-REPLACE
+title: REPLACE
+url: "https://example.com/REPLACE"
+kind: author-writeup
+authors: []
+published_at: null
+accessed_at: null
+revision: null # Commit SHA, document version, or last-update identifier when available.
+locator_notes: null
+access_status: unchecked
+content_reviewed: false
+license: null # Unknown is not permission to reuse content/code.
+notes: "REPLACE: provenance, access limitations, or relationship to other sources"

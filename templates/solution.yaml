@@ -1,0 +1,62 @@
+schema_version: 1
+id: solution-REPLACE
+status: draft
+title: "REPLACE: team solution"
+summary: "REPLACE: central idea and limits of documentation"
+reviewed_by: null
+reviewed_at: null
+competition_id: competition-REPLACE
+team: REPLACE
+authors: []
+source_ids:
+  - source-REPLACE
+rank:
+  value: null
+  basis: unknown
+  source_id: null
+scores: []
+# Add scores only when supported:
+# - metric_id: REPLACE
+#   value: 0.0 # Replace with the actual reported value, never a placeholder zero.
+#   split: private-lb
+#   configuration: "Exact model/ensemble being scored"
+#   fold_summary: null
+#   claim_id: score-01
+validation:
+  strategy: null
+  details: null
+  source_ids: []
+techniques: []
+resources:
+  - id: run-01
+    scope: full-pipeline
+    hardware_class: unknown
+    accelerator_model: null
+    accelerator_count: null
+    vram_gb_per_device: null
+    ram_gb: null
+    wall_hours: null
+    accelerator_hours: null
+    basis: unknown
+    claim_id: null
+reproducibility:
+  code_url: null
+  code_revision: null
+  status: not-assessed
+  reproduction_ids: []
+  notes: "No reproduction assessed. Replace after inspection."
+claims:
+  - id: finding-01
+    statement: "REPLACE: one specific finding, retaining evaluation conditions"
+    kind: source-reported
+    evidence:
+      - source_id: source-REPLACE
+        locator: "REPLACE: heading/table or pinned file and lines"
+        support_summary: "REPLACE: original paraphrase of the supporting evidence"
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: "REPLACE: data/split/configuration; say whether gain was isolated"
+    limitations: "REPLACE: unreported details and limits of comparison"
+unsuccessful_attempts: []
+# Optional item shape: {description: "...", claim_id: "failure-01", conditions: "..."}
+transfer_limits: []
