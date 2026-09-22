@@ -53,7 +53,27 @@ OUTPUT_FIELDS = [
     "completeness_level",
     "completeness_label",
     "editorial_status",
+    "priority",
+    "work_order",
+    "learning_path_stage",
+    "guide_slug",
+    "reviewed_by",
+    "reviewed_at",
+    "notes",
 ]
+
+EDITORIAL_FIELDS = [
+    "completeness_level",
+    "editorial_status",
+    "priority",
+    "work_order",
+    "learning_path_stage",
+    "guide_slug",
+    "reviewed_by",
+    "reviewed_at",
+    "notes",
+]
+EDITORIAL_STATUSES = {"unstarted", "queued", "in-progress", "blocked", "in-review", "published"}
 
 
 def source_lines(path: pathlib.Path) -> Iterator[str]:
@@ -128,10 +148,55 @@ def build_row(row: dict[str, str], snapshot_date: dt.date) -> dict[str, str]:
         "completeness_level": "1",
         "completeness_label": LEVEL_LABELS["1"],
         "editorial_status": "unstarted",
+        "priority": "",
+        "work_order": "",
+        "learning_path_stage": "",
+        "guide_slug": "",
+        "reviewed_by": "",
+        "reviewed_at": "",
+        "notes": "",
     }
 
 
-def read_rows(source: pathlib.Path, snapshot_date: dt.date) -> list[dict[str, str]]:
+def read_editorial_overlay(path: pathlib.Path | None) -> dict[str, dict[str, str]]:
+    if path is None:
+        return {}
+    if not path.is_file():
+        raise ValueError(f"Editorial overlay does not exist: {path}")
+
+    with path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        required = {"id", *EDITORIAL_FIELDS}
+        missing = required.difference(reader.fieldnames or [])
+        if missing:
+            raise ValueError(f"Editorial overlay is missing columns: {sorted(missing)}")
+        overlay: dict[str, dict[str, str]] = {}
+        for row in reader:
+            competition_id = (row.get("id") or "").strip()
+            if not competition_id:
+                raise ValueError("Every editorial overlay row needs an id")
+            if competition_id in overlay:
+                raise ValueError(f"Duplicate editorial overlay Id: {competition_id}")
+            level = (row.get("completeness_level") or "").strip()
+            status = (row.get("editorial_status") or "").strip()
+            if level not in LEVEL_LABELS:
+                raise ValueError(f"Invalid completeness level for {competition_id}: {level!r}")
+            if status not in EDITORIAL_STATUSES:
+                raise ValueError(f"Invalid editorial status for {competition_id}: {status!r}")
+            work_order = (row.get("work_order") or "").strip()
+            if work_order and not work_order.isdigit():
+                raise ValueError(f"Invalid work order for {competition_id}: {work_order!r}")
+            overlay[competition_id] = {
+                field: (row.get(field) or "").strip() for field in EDITORIAL_FIELDS
+            }
+        return overlay
+
+
+def read_rows(
+    source: pathlib.Path,
+    snapshot_date: dt.date,
+    editorial_overlay: dict[str, dict[str, str]],
+) -> list[dict[str, str]]:
     csv.field_size_limit(CSV_FIELD_LIMIT)
     rows: list[dict[str, str]] = []
     seen_ids: set[str] = set()
@@ -148,6 +213,9 @@ def read_rows(source: pathlib.Path, snapshot_date: dt.date) -> list[dict[str, st
             raise ValueError(f"Duplicate competition Id: {row['id']}")
         if row["slug"] in seen_slugs:
             raise ValueError(f"Duplicate competition Slug: {row['slug']}")
+        if row["id"] in editorial_overlay:
+            row.update(editorial_overlay[row["id"]])
+            row["completeness_label"] = LEVEL_LABELS[row["completeness_level"]]
         seen_ids.add(row["id"])
         seen_slugs.add(row["slug"])
         rows.append(row)
@@ -159,7 +227,7 @@ def read_rows(source: pathlib.Path, snapshot_date: dt.date) -> list[dict[str, st
 def write_inventory(output: pathlib.Path, rows: list[dict[str, str]]) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=OUTPUT_FIELDS)
+        writer = csv.DictWriter(handle, fieldnames=OUTPUT_FIELDS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
@@ -169,6 +237,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source", type=pathlib.Path, required=True, help="Meta Kaggle Competitions.csv")
     parser.add_argument("--output", type=pathlib.Path, required=True, help="Normalized inventory CSV")
     parser.add_argument("--snapshot-date", type=dt.date.fromisoformat, required=True)
+    parser.add_argument("--editorial-overlay", type=pathlib.Path, help="Sparse editorial state CSV")
     return parser.parse_args()
 
 
@@ -177,7 +246,12 @@ def main() -> int:
     if not args.source.is_file():
         print(f"Source does not exist: {args.source}", file=sys.stderr)
         return 2
-    rows = read_rows(args.source, args.snapshot_date)
+    editorial_overlay = read_editorial_overlay(args.editorial_overlay)
+    rows = read_rows(args.source, args.snapshot_date, editorial_overlay)
+    inventory_ids = {row["id"] for row in rows}
+    unknown_ids = sorted(set(editorial_overlay).difference(inventory_ids))
+    if unknown_ids:
+        raise ValueError(f"Editorial overlay refers to unknown competition IDs: {unknown_ids[:5]}")
     write_inventory(args.output, rows)
     print(f"Wrote {len(rows):,} competitions to {args.output}")
     return 0

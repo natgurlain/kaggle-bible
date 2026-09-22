@@ -17,3 +17,5 @@ Start with sources, then solutions, then competition synthesis and linked practi
 Competition/practice files combine YAML frontmatter with Markdown; the other templates are YAML records. Body markers such as `[claim:lesson-01]` refer to local claims in frontmatter. These markers will become evidence links in the future site; for now they are explicit authoring references. Source locators belong in each claim's evidence, not only in the source registry.
 
 Before publication, follow the [editorial workflow](../docs/editorial-workflow.md). These templates have no automatic publication effect.
+
+Competition-level progress is maintained in `data/competition-editorial.csv`. Add or update one sparse row there when a competition is queued, reviewed, blocked, or published; regenerate the inventory with the overlay so progress survives a new Meta Kaggle snapshot.

@@ -1,6 +1,6 @@
 # Competition inventory
 
-The repository tracks the full public competition set represented by the official [Meta Kaggle](https://www.kaggle.com/datasets/kaggle/meta-kaggle) snapshot used to generate [data/competition-inventory.csv](../data/competition-inventory.csv). The snapshot is version `2322`, updated `2026-09-22`, and was generated from `Competitions.csv` on that date.
+The repository tracks the full public competition set represented by the official [Meta Kaggle](https://www.kaggle.com/datasets/kaggle/meta-kaggle) snapshot used to generate [data/competition-inventory.csv](../data/competition-inventory.csv). The snapshot is version `2322`, updated `2026-09-22`, and was generated from `Competitions.csv` on that date. The sparse editorial overlay is [data/competition-editorial.csv](../data/competition-editorial.csv); it marks the competitions queued for the learning path and preserves review progress across inventory refreshes.
 
 “All competitions” means all distinct competition records present in that named official snapshot. Kaggle says Meta Kaggle is a filtered and transformed public activity dataset rather than a complete database dump. Therefore this is a reproducible historical inventory with a defined boundary, not a claim that it includes every private, deleted, or otherwise omitted platform record. The live [Kaggle competitions page](https://www.kaggle.com/competitions?group=all) remains the source for current discovery.
 
@@ -20,13 +20,14 @@ Download the official `Competitions.csv` from the Meta Kaggle version recorded a
 python3 scripts/build_competition_inventory.py \
   --source /path/to/Competitions.csv \
   --snapshot-date 2026-09-22 \
+  --editorial-overlay data/competition-editorial.csv \
   --output data/competition-inventory.csv
 ```
 
-The generator uses Python’s standard library, handles embedded newlines and NUL bytes in the source export, rejects duplicate IDs/slugs, sorts by enabled date and ID, and initializes every row to Level 1. It does not overwrite editorial levels: future regeneration must preserve reviewed work through a separate editorial overlay or a deliberate migration. The current first import is therefore a baseline snapshot; before the application is implemented, split machine inventory from editorial state into separate files or add a merge step.
+The generator uses Python’s standard library, handles embedded newlines and NUL bytes in the source export, rejects duplicate IDs/slugs, sorts by enabled date and ID, and initializes every row to Level 1. The overlay is sparse: rows absent from it stay at Level 1 / `unstarted`; rows in it carry the explicit editorial state into the generated CSV. Unknown IDs, invalid levels, duplicate overlay rows, and invalid work orders fail the build.
 
 ## Fields
 
-`id` and `slug` identify the Kaggle record. `record_state` is derived from enabled/deadline dates at the snapshot date. `metric_direction` is derived from Kaggle’s evaluation metadata. Counts and reward fields are source metadata and may be blank or platform-specific. `completeness_level`, `completeness_label`, and `editorial_status` are Kaggle Bible fields.
+`id` and `slug` identify the Kaggle record. `record_state` is derived from enabled/deadline dates at the snapshot date. `metric_direction` is derived from Kaggle’s evaluation metadata. Counts and reward fields are source metadata and may be blank or platform-specific. `completeness_level`, `completeness_label`, `editorial_status`, `priority`, `work_order`, `learning_path_stage`, `guide_slug`, reviewer fields, and `notes` are Kaggle Bible fields. `work_order` is an editorial sequence, not a ranking of competitions.
 
 The CSV is intentionally useful for sorting and filtering, but it is not evidence for a solution claim. Competition pages, official rules, write-ups, code, and reproduced artifacts must be registered as sources before editorial claims are published.
