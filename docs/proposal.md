@@ -121,6 +121,10 @@ A documentation theme is a reasonable shortcut if implementation capacity is ver
 
 Target six reviewed competition guides across tabular, forecasting, NLP, and vision; at least twelve documented solution records; eight practice guides; and the short starting path. The shortlist is provisional until source eligibility checks pass. Keep a separate discovery queue so the ambition of broad coverage does not turn into thousands of thin published pages.
 
+The complete competition inventory is maintained separately from editorial guides. Every imported competition begins at Level 1 (Catalog), which records identity and basic source metadata without claiming that the page or solutions were reviewed. Level 2 (Evidence map) adds a human-checked official source and documented solution evidence. Level 3 (Full guide) adds comparative, reviewed guidance for a next experiment. See [the exact completeness definitions](coverage-levels.md) and the [inventory boundary](competition-inventory.md). This lets us work through competitions one by one while keeping the full backlog visible.
+
+The reader-facing learning path is [beginner to advanced](learning-path.md). It recommends small, interpretable competitions before relational tabular, time-aware, composite-metric, and resource-intensive problems, and assigns completion gates based on skills rather than leaderboard position.
+
 | Phase | Deliverable | Completion gate |
 | --- | --- | --- |
 | 0: editorial pilot | Two competition drafts, four solution records, validation and compute practice drafts | Every substantive claim traceable; compare the templates against real sources; record missing fields and editing time |

@@ -20,9 +20,11 @@ Common published content fields: `schema_version`, `id`, `status`, `title`, `sum
 
 ## Competition
 
-Required fields: common content fields, `slug`, `kaggle_slug`, `competition_url`, `end_date` (nullable until verified), `coverage`, `modalities`, `tasks`, `dataset_characteristics`, `metrics`, `solution_ids`, `practice_ids`, `source_ids`, `claims`.
+Required fields: common content fields, `slug`, `kaggle_slug`, `competition_url`, `end_date` (nullable until verified), `coverage`, `modalities`, `tasks`, `dataset_characteristics`, `metrics`, `solution_ids`, `practice_ids`, `source_ids`, `claims`, `kaggle_bible_completeness_level`, `kaggle_bible_completeness_label`, `editorial_status`.
 
 `coverage` is `partial | reviewed`. A published partial guide is permitted after launch and displays its gaps prominently; initial MVP selection requires two reviewed solutions per guide. Catalog discovery candidates remain in the research queue, outside public content collections.
+
+`kaggle_bible_completeness_level` is `1 | 2 | 3` and follows [the completeness contract](coverage-levels.md): Catalog, Evidence map, or Full guide. `kaggle_bible_completeness_label` is the corresponding machine-readable label. `editorial_status` is `unstarted | queued | in-progress | blocked | in-review | published`. Completeness is cumulative evidence depth, not a quality score or rank. Inventory rows use the same concept in CSV columns named `completeness_level` and `completeness_label`.
 
 Each metric has `id`, `name`, `direction` (`minimize | maximize`), `aggregation`, and `source_id`. Explain weighting and special evaluation behavior in prose. Multiple metrics are permitted; identify the official ranking metric in prose. Metric scores are only comparable within a compatible competition/evaluation setting.
 

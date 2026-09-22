@@ -10,8 +10,11 @@ The core unit is an actionable lesson with traceable evidence: what worked, unde
 - [Content model and validation contract](docs/content-model.md)
 - [Editorial and contribution workflow](docs/editorial-workflow.md)
 - [Research notes and initial competition shortlist](docs/research.md)
+- [Competition inventory](docs/competition-inventory.md)
+- [Completeness levels](docs/coverage-levels.md)
+- [Beginner-to-advanced learning path](docs/learning-path.md)
 - [Reusable content templates](templates/README.md)
 
-Status: planning and content templates only. There is no application, installed toolchain, automated validator, or published competition guide yet. The proposed stack is Astro, Markdown/YAML, and Pagefind; implementation is a subsequent step.
+Status: inventory and editorial planning. The normalized competition inventory is generated from a dated Meta Kaggle snapshot; application implementation and automated publication validation are subsequent steps.
 
-The initial release targets six carefully reviewed competition guides and eight practical guides. Broad coverage will grow through an explicit research queue, with incomplete entries clearly labeled.
+The inventory starts every competition at Level 1 (Catalog). Guides move to Level 2 (Evidence map) and Level 3 (Full guide) only when they meet the requirements in [coverage levels](docs/coverage-levels.md). Broad coverage will grow through an explicit research queue, with incomplete entries clearly labeled.
