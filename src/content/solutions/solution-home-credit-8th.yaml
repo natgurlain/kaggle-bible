@@ -1,0 +1,86 @@
+schema_version: 1
+id: solution-home-credit-8th
+status: draft
+title: Eighth-place Home Credit solution
+summary: A team approach combining relational aggregation, diverse LightGBM models, and rank-based blending.
+reviewed_by: null
+reviewed_at: null
+competition_id: competition-home-credit-default-risk
+team: 七上八下
+authors:
+  - Xuan Cao
+  - senkin13
+  - Jin Wang
+  - 30CrMnSiA
+  - Yuanhao
+  - piupiu
+  - plantsgo
+source_ids:
+  - source-home-credit-8th
+  - source-home-credit-leaderboard
+rank:
+  value: 8
+  basis: official-final-private
+  source_id: source-home-credit-leaderboard
+scores:
+  - metric_id: auc
+    value: 0.80376
+    split: private-lb
+    configuration: Final official leaderboard entry for team 七上八下
+    fold_summary: null
+    claim_id: final-result-01
+validation:
+  strategy: stratified-kfold
+  details: The authors report stratified 10-fold CV; exact fold assignments and seeds are not specified in the write-up.
+  source_ids:
+    - source-home-credit-8th
+techniques:
+  - groupby-aggregation
+  - gradient-boosting
+  - out-of-fold
+  - blending
+  - stratified-cross-validation
+resources:
+  - id: final-pipeline
+    scope: full-pipeline
+    hardware_class: unknown
+    accelerator_model: null
+    accelerator_count: null
+    vram_gb_per_device: null
+    ram_gb: null
+    wall_hours: null
+    accelerator_hours: null
+    basis: unknown
+    claim_id: null
+reproducibility:
+  code_url: null
+  code_revision: null
+  status: not-assessed
+  reproduction_ids: []
+  notes: No code reproduction has been attempted for this record.
+claims:
+  - id: validation-01
+    statement: The team reports stratified 10-fold cross-validation and describes the local-CV/public-leaderboard gap as small for its selected approach.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-8th
+        locator: Summary; My solo approach
+        support_summary: The author names stratified 10-fold CV and reports a small CV-to-public-LB gap for the described approach.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This is a participant report for this competition and team's selected approach.
+    limitations: Exact folds, seeds, and a full final-ensemble local score are not independently reproduced here.
+  - id: final-result-01
+    statement: The official final leaderboard lists team 七上八下 at rank 8 with private AUC 0.80376.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-leaderboard
+        locator: Final standings; team 七上八下
+        support_summary: Kaggle's completed leaderboard identifies the named team at rank 8 and displays score 0.80376.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This score is the team's final private leaderboard entry for the official AUC metric.
+    limitations: This does not reproduce the team pipeline or validate any component's causal contribution.
+unsuccessful_attempts: []
+transfer_limits:
+  - A single competition report does not establish that the same folds or aggregation features transfer to a different task.

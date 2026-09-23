@@ -1,0 +1,15 @@
+schema_version: 1
+id: source-home-credit-leaderboard
+title: Home Credit Default Risk final leaderboard
+url: https://www.kaggle.com/competitions/home-credit-default-risk/leaderboard
+kind: official-competition
+authors:
+  - Kaggle
+published_at: null
+accessed_at: '2026-09-23'
+revision: null
+locator_notes: Final standings entry for team 七上八下; rank 8 and private score 0.80376.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Official final standings page; leaderboard context and private-test proportion are recorded in the research audit.
