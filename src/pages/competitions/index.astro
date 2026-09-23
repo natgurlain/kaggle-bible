@@ -1,7 +1,3 @@
----
-const catalogAsset = '/data/competition-catalog.json';
----
-
 <!doctype html>
 <html lang="en">
 	<head>
@@ -68,7 +64,8 @@ const catalogAsset = '/data/competition-catalog.json';
 			</section>
 		</main>
 
-		<script define:vars={{ catalogAsset }}>
+		<script>
+			import { getCatalogCardPresentation, readCatalogFilters, serializeCatalogFilters } from '../../content/catalog-policy.js';
 			const query = document.querySelector('#query');
 			const category = document.querySelector('#category');
 			const state = document.querySelector('#state');
@@ -102,29 +99,31 @@ const catalogAsset = '/data/competition-catalog.json';
 			};
 
 			const updateUrl = () => {
-				const params = new URLSearchParams();
-				if (query.value.trim()) params.set('q', query.value.trim());
-				if (category.value) params.set('category', category.value);
-				if (state.value) params.set('state', state.value);
-				if (level.value) params.set('level', level.value);
-				const next = params.toString();
+				const next = serializeCatalogFilters({
+					query: query.value,
+					category: category.value,
+					state: state.value,
+					level: level.value,
+				});
 				window.history.replaceState({}, '', next ? `?${next}` : window.location.pathname);
 			};
 
 			const render = () => {
 				const needle = query.value.trim().toLowerCase();
 				const filtered = competitions.filter((competition) => {
+					const presentation = getCatalogCardPresentation(competition);
 					const searchable = [
 						competition.title,
 						competition.slug,
 						competition.subtitle,
+						competition.summary,
 						competition.metric_abbreviation,
 						competition.metric_name,
 					].join(' ').toLowerCase();
 					return (!needle || searchable.includes(needle))
 						&& (!category.value || competition.category === category.value)
 						&& (!state.value || competition.record_state === state.value)
-						&& (!level.value || competition.completeness_level === level.value);
+						&& (!level.value || presentation.completenessLevel === level.value);
 				});
 
 				const visible = filtered.slice(0, 100);
@@ -139,13 +138,14 @@ const catalogAsset = '/data/competition-catalog.json';
 				}
 
 				results.innerHTML = visible.map((competition) => {
-					const guide = competition.guide_slug
-						? `<a class="guide-link" href="/competitions/${encodeURIComponent(competition.guide_slug)}/">Read guide</a>`
+					const presentation = getCatalogCardPresentation(competition);
+					const guide = presentation.guideHref
+						? `<a class="guide-link" href="${escapeHtml(presentation.guideHref)}">Read guide</a>`
 						: '<span class="pending">Guide pending</span>';
 					const metric = competition.metric_abbreviation || competition.metric_name || 'Metric not recorded';
 					return `<article class="card">
 						<div class="card-topline">
-							<span class="pill">Level ${escapeHtml(competition.completeness_level)} · ${escapeHtml(competition.completeness_label)}</span>
+							<span class="pill">Level ${escapeHtml(presentation.completenessLevel)} · ${escapeHtml(presentation.completenessLabel)}</span>
 							<span class="state state-${escapeHtml(competition.record_state)}">${escapeHtml(stateLabel(competition.record_state))}</span>
 						</div>
 						<h3>${escapeHtml(competition.title || competition.slug)}</h3>
@@ -165,14 +165,15 @@ const catalogAsset = '/data/competition-catalog.json';
 				updateUrl();
 			};
 
-			const params = new URLSearchParams(window.location.search);
-			query.value = params.get('q') ?? '';
-			state.value = params.get('state') ?? '';
-			level.value = params.get('level') ?? '';
+			const filters = readCatalogFilters(window.location.search);
+			query.value = filters.query;
+			category.value = filters.category;
+			state.value = filters.state;
+			level.value = filters.level;
 			[query, state, level].forEach((control) => control.addEventListener('input', render));
 			category.addEventListener('change', render);
 
-			fetch(catalogAsset)
+			fetch('/data/competition-catalog.json')
 				.then((response) => {
 					if (!response.ok) throw new Error(`Catalog request failed (${response.status})`);
 					return response.json();
@@ -181,7 +182,7 @@ const catalogAsset = '/data/competition-catalog.json';
 					competitions = data;
 					const categories = [...new Set(competitions.map((competition) => competition.category).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 					category.insertAdjacentHTML('beforeend', categories.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join(''));
-					category.value = params.get('category') ?? '';
+					category.value = filters.category;
 					render();
 				})
 				.catch((error) => {
