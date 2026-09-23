@@ -181,7 +181,7 @@ test('claim marker validation ignores code and already-linked markers', async ()
 				'```md',
 				'[claim:fenced-code]',
 				'```',
-			].join('\\n'),
+			].join(String.fromCharCode(10)),
 		}],
 		practices: [],
 	});
