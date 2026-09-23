@@ -414,14 +414,14 @@ test('built public output rejects short draft titles, claims, and fenced code te
 			'---',
 			'',
 			'```text',
-			'AdaBoost',
+			'XGBoost',
 			'```',
 		].join('\n'));
 		await writeFile(path.join(dist, 'index.html'), [
 			'<meta name="description" content="Secret summary">',
 			'<h1>CatBoost</h1>',
 			'<p>LightGBM</p>',
-			'<pre><code>AdaBoost</code></pre>',
+			'<pre><code>XGBoost</code></pre>',
 		].join('\n'));
 		await writeCatalog(dist);
 		process.env.CHECK_BUILT_CONTENT = '1';
@@ -435,7 +435,7 @@ test('built public output rejects short draft titles, claims, and fenced code te
 		await writeFile(path.join(dist, 'index.html'), [
 			'<meta name="description" content="Secret summary was included in this public snippet">',
 			'<p>LightGBM was used to select the model.</p>',
-			'<pre><code>Diagnostics: AdaBoost was selected.</code></pre>',
+			'<pre><code>Diagnostics: XGBoost was selected.</code></pre>',
 		].join('\n'));
 		const embeddedResult = await checkContent(root, { report: false });
 		assert.ok(embeddedResult.errors.some((error) => error.includes('non-published summary appears')));

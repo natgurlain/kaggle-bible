@@ -346,7 +346,8 @@ function nonPublishedTextCandidates(entry, catalogText) {
 	const add = (label, value, allowCatalogCopy = false) => {
 		const normalized = normalizeLeakText(value);
 		if (!normalized) return;
-		if (normalized.length < 8) return;
+		const wordCount = normalized.split(' ').length;
+		if ((wordCount === 1 && normalized.length < 3) || (wordCount > 1 && normalized.length < 8)) return;
 		if (allowCatalogCopy && entry.collection === 'competitions' && catalogText.has(normalized)) return;
 		candidates.push({ label, text: normalized });
 	};
