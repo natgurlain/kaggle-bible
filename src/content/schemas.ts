@@ -203,7 +203,7 @@ export const reproductionSchema = z.object({
 		wall_hours: nonNegativeNumber.nullable(),
 		peak_memory_gb: nonNegativeNumber.nullable(),
 	}),
-	artifacts: z.array(z.string()),
+	artifacts: z.array(z.string().trim().min(1)),
 	executed_by: z.string().nullable(),
 	executed_at: dateString.nullable(),
 	limitations: z.array(z.string()),

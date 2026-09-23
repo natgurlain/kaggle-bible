@@ -84,6 +84,27 @@ function addClaimReferenceError(errors, entry, field, value, allById) {
 	}
 }
 
+function reproducedClaimMatches(entry, claim, reproduction, allById) {
+	const reproductionSolutionId = referenceId(reproduction.data.solution_id);
+	const supportedClaims = entry.collection === 'solutions'
+		? [{ ownerId: entry.data.id, claimId: claim.id }]
+		: (claim.supports_claim_refs ?? []).map((reference) => {
+			if (typeof reference !== 'string' || !reference.trim()) return null;
+			const separator = reference.indexOf('#');
+			return {
+				ownerId: separator < 0 ? entry.data.id : reference.slice(0, separator),
+				claimId: separator < 0 ? reference : reference.slice(separator + 1),
+			};
+		}).filter(Boolean);
+
+	return supportedClaims.some(({ ownerId, claimId }) => {
+		const owner = allById.get(ownerId);
+		return owner?.collection === 'solutions'
+			&& ownerId === reproductionSolutionId
+			&& (reproduction.data.claim_ids ?? []).includes(claimId);
+	});
+}
+
 function validateClaims(errors, entry, collections, allById) {
 	const claims = entry.data.claims ?? [];
 	for (const [index, claim] of claims.entries()) {
@@ -111,9 +132,16 @@ function validateClaims(errors, entry, collections, allById) {
 		for (const id of claim.reproduction_ids ?? []) {
 			addReferenceError(errors, entry, `${field}.reproduction_ids`, 'reproductions', id, collections);
 			const reproduction = collections.reproductions.get(referenceId(id));
-			if (claim.kind === 'reproduced' && reproduction
-				&& (reproduction.data.status !== 'completed' || !reproduction.data.artifacts?.length)) {
-				errors.push(`${entry.file} (${entry.data.id}): ${field} needs a completed reproduction with artifacts`);
+			if (claim.kind === 'reproduced' && reproduction) {
+				const artifacts = reproduction.data.artifacts ?? [];
+				if (reproduction.data.status !== 'completed'
+					|| artifacts.length === 0
+					|| artifacts.some((artifact) => typeof artifact !== 'string' || !artifact.trim())) {
+					errors.push(`${entry.file} (${entry.data.id}): ${field} needs a completed reproduction with non-empty artifact references`);
+				}
+				if (!reproducedClaimMatches(entry, claim, reproduction, allById)) {
+					errors.push(`${entry.file} (${entry.data.id}): ${field} reproduction "${referenceId(id)}" must match the supporting solution and claim IDs`);
+				}
 			}
 		}
 		for (const claimRef of claim.supports_claim_refs ?? []) {
@@ -158,7 +186,11 @@ function validateDirectReferences(errors, entries, collections, allById) {
 		}
 		for (const id of data.reproducibility?.reproduction_ids ?? []) addReferenceError(errors, entry, 'reproducibility.reproduction_ids', 'reproductions', id, collections);
 		for (const item of data.resources ?? []) {
-			if (item.claim_id) addClaimReferenceError(errors, entry, `resources.${item.id}.claim_id`, item.claim_id, allById);
+			if (item.basis !== 'unknown' && (typeof item.claim_id !== 'string' || !item.claim_id.trim())) {
+				errors.push(`${entry.file} (${data.id}): resources.${item.id}.claim_id is required when resource basis is known`);
+			} else if (item.claim_id) {
+				addClaimReferenceError(errors, entry, `resources.${item.id}.claim_id`, item.claim_id, allById);
+			}
 		}
 		for (const item of data.scores ?? []) {
 			addClaimReferenceError(errors, entry, `scores.${item.id ?? item.metric_id}.claim_id`, item.claim_id, allById);
@@ -259,37 +291,88 @@ function validatePublicationStates(errors, entries, collections, allById) {
 	}
 }
 
+function normalizeLeakText(value) {
+	return String(value ?? '')
+		.replace(/\[claim:[^\]]+\]/gi, ' ')
+		.replace(/\[([^\]]+)\]\([^)]+\)/g, ' $1 ')
+		.replace(/<[^>]*>/g, ' ')
+		.replace(/&(?:#x?[0-9a-f]+|[a-z]+);/gi, ' ')
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, ' ')
+		.trim()
+		.replace(/\s+/g, ' ');
+}
+
+function nonPublishedTextCandidates(entry, catalogText) {
+	const candidates = [];
+	const add = (label, value, minimumWords, minimumLength, allowCatalogCopy = false) => {
+		const normalized = normalizeLeakText(value);
+		if (!normalized) return;
+		const words = normalized.split(' ');
+		if (words.length < minimumWords || normalized.length < minimumLength) return;
+		if (allowCatalogCopy && entry.collection === 'competitions' && catalogText.has(normalized)) return;
+		candidates.push({ label, text: normalized });
+	};
+
+	add('title', entry.data.title, 3, 16, true);
+	add('summary', entry.data.summary, 6, 40, true);
+	for (const claim of entry.data.claims ?? []) add(`claim ${claim.id}`, claim.statement, 8, 48);
+	const body = (entry.body ?? '')
+		.replace(/```[\s\S]*?```/g, ' ')
+		.replace(/^\s{0,3}#{1,6}\s+/gm, '')
+		.replace(/^\s{0,3}>\s?/gm, '')
+		.replace(/^\s*[-*+]\s+/gm, '')
+		.replace(/\[claim:[^\]]+\]/gi, ' ');
+	for (const [index, paragraph] of body.split(/\n\s*\n/).entries()) {
+		add(`body paragraph ${index + 1}`, paragraph, 10, 80);
+	}
+	return [...new Map(candidates.map((candidate) => [candidate.text, candidate])).values()];
+}
+
 async function validateBuildOutput(root, entries, collections, allEntries, errors) {
 	const dist = path.join(root, 'dist');
 	try {
 		await access(dist, constants.R_OK);
 	} catch {
+		errors.push('dist: build output is missing; run pnpm build before CHECK_BUILT_CONTENT=1');
+		return;
+	}
+
+	const catalogPath = path.join(dist, 'data', 'competition-catalog.json');
+	let catalog;
+	try {
+		catalog = JSON.parse(await readFile(catalogPath, 'utf8'));
+		if (!Array.isArray(catalog)) throw new Error('expected a JSON array');
+	} catch (error) {
+		errors.push(`dist/data/competition-catalog.json: required catalog asset is missing or invalid (${error.message})`);
 		return;
 	}
 
 	const outputFiles = (await walk(dist)).filter((file) => /\.(?:html|js|mjs|json|xml|txt|css|svg)$/i.test(file));
 	const output = (await Promise.all(outputFiles.map((file) => readFile(file, 'utf8')))).join('\n');
+	const normalizedOutput = normalizeLeakText(output);
 	const leakedIds = new Set([...output.matchAll(/\b(?:competition|solution|source|practice|reproduction)-[a-z0-9-]+\b/g)].map(([id]) => id));
+	const catalogText = new Set(catalog.flatMap((row) => [row.title, row.subtitle]).map(normalizeLeakText).filter(Boolean));
 	for (const entry of allEntries) {
 		if (['draft', 'in-review'].includes(entry.data.status) && leakedIds.has(entry.data.id)) {
 			errors.push(`${entry.file} (${entry.data.id}): non-published record ID appears in the built public output`);
 		}
-	}
-
-	const catalogPath = path.join(dist, 'data', 'competition-catalog.json');
-	const policyContext = { sources: collections.sources, solutions: collections.solutions };
-	try {
-		const catalog = JSON.parse(await readFile(catalogPath, 'utf8'));
-		const competitions = new Map(entries.competitions.map((entry) => [entry.data.slug, entry]));
-		for (const row of catalog) {
-			if (!row.guide_slug) continue;
-			const guide = competitions.get(row.guide_slug);
-			if (!guide || !isPubliclyPublishable(guide, policyContext)) {
-				errors.push(`dist/data/competition-catalog.json: guide_slug "${row.guide_slug}" does not point to a published, reviewed guide`);
+		if (!['draft', 'in-review'].includes(entry.data.status)) continue;
+		for (const candidate of nonPublishedTextCandidates(entry, catalogText)) {
+			if (normalizedOutput.includes(candidate.text)) {
+				errors.push(`${entry.file} (${entry.data.id}): non-published ${candidate.label} appears in the built public output`);
 			}
 		}
-	} catch (error) {
-		if (error.code !== 'ENOENT') errors.push(`dist/data/competition-catalog.json: ${error.message}`);
+	}
+
+	const policyContext = { sources: collections.sources, solutions: collections.solutions };
+	const competitions = new Map(entries.competitions.map((entry) => [entry.data.slug, entry]));
+	for (const row of catalog) {
+		if (!row.guide_slug) continue;
+		const guide = competitions.get(row.guide_slug);
+		if (!guide || !isPubliclyPublishable(guide, policyContext)) {
+			errors.push(`dist/data/competition-catalog.json: guide_slug "${row.guide_slug}" does not point to a published, reviewed guide`);
+		}
 	}
 
 	for (const entry of entries.competitions) {
