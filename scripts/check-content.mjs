@@ -3,7 +3,11 @@ import { constants } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
+import { satteri } from '@astrojs/markdown-satteri';
+import { createClaimMarkerCollector } from '../src/markdown/claim-reference-links.js';
 import {
+	filterPublicContent,
+	filterPublicGuides,
 	isPubliclyPublishable,
 	validateLevel2Readiness,
 	validateLevel3Readiness,
@@ -187,6 +191,23 @@ function validateClaims(errors, entry, collections, allById) {
 	}
 }
 
+export async function validateClaimMarkers(errors, entries) {
+	for (const collectionName of ['competitions', 'practices']) {
+		for (const entry of entries[collectionName]) {
+			const claims = new Set((entry.data.claims ?? []).map((claim) => claim.id));
+			const markers = [];
+			const markerCollector = createClaimMarkerCollector((text, id) => markers.push({ text, id }));
+			const renderer = await satteri({ mdastPlugins: [markerCollector] }).createRenderer({});
+			await renderer.render(entry.body, { frontmatter: entry.data });
+			for (const { text, id } of markers) {
+				if (!claims.has(id)) {
+					errors.push(`${entry.file} (${entry.data.id}): unresolved claim marker "${text}"`);
+				}
+			}
+		}
+	}
+}
+
 function validateDirectReferences(errors, entries, collections, allById) {
 	for (const entry of entries.competitions) {
 		const { data } = entry;
@@ -257,8 +278,41 @@ function validateDirectReferences(errors, entries, collections, allById) {
 	}
 }
 
+function claimTargetKey(reference, defaultOwnerId) {
+	if (typeof reference !== 'string' || !reference.trim()) return null;
+	const separator = reference.indexOf('#');
+	return separator < 0
+		? `${defaultOwnerId}#${reference}`
+		: `${reference.slice(0, separator)}#${reference.slice(separator + 1)}`;
+}
+
+function validateGuideClaimReferences(errors, entries, collections) {
+	for (const competition of entries.competitions) {
+		if (competition.data.kaggle_bible_completeness_level < 2) continue;
+		const renderedClaims = new Set();
+		const renderedRecords = [competition, ...(competition.data.solution_ids ?? [])
+			.map(referenceId)
+			.map((id) => collections.solutions.get(id))
+			.filter(Boolean)];
+		for (const record of renderedRecords) {
+			for (const claim of record.data.claims ?? []) renderedClaims.add(`${record.data.id}#${claim.id}`);
+		}
+
+		for (const record of renderedRecords) {
+			for (const [index, claim] of (record.data.claims ?? []).entries()) {
+				for (const reference of claim.supports_claim_refs ?? []) {
+					const key = claimTargetKey(reference, record.data.id);
+					if (key && !renderedClaims.has(key)) {
+						errors.push(`${record.file} (${record.data.id}): claims[${index}].supports_claim_refs target "${reference}" is not rendered in the ${competition.data.id} guide`);
+					}
+				}
+			}
+		}
+	}
+}
+
 function validatePublicationStates(errors, entries, collections, allById) {
-	const policyContext = { sources: collections.sources, solutions: collections.solutions };
+	const policyContext = { sources: collections.sources, solutions: collections.solutions, practices: collections.practices };
 	const sourcesFor = (entry) => (entry.data.source_ids ?? [])
 		.map(referenceId)
 		.map((id) => collections.sources.get(id))
@@ -460,7 +514,7 @@ function validateCatalogRows(catalog, errors) {
 	}
 }
 
-async function validateBuildOutput(root, entries, collections, allEntries, errors) {
+export async function validateBuildOutput(root, entries, collections, allEntries, errors) {
 	const dist = path.join(root, 'dist');
 	try {
 		await access(dist, constants.R_OK);
@@ -504,25 +558,51 @@ async function validateBuildOutput(root, entries, collections, allEntries, error
 		}
 	}
 
-	const policyContext = { sources: collections.sources, solutions: collections.solutions };
+	const policyContext = { sources: collections.sources, solutions: collections.solutions, practices: collections.practices };
 	const competitions = new Map(entries.competitions.map((entry) => [entry.data.slug, entry]));
+	const publicGuideIds = new Set(filterPublicGuides(entries.competitions, policyContext).map((entry) => entry.data.id));
+	const publicPractices = filterPublicContent(entries.practices, policyContext);
+	const publicPracticeIds = new Set(publicPractices.map((entry) => entry.data.id));
 	for (const row of catalog) {
 		if (!row.guide_slug) continue;
 		const guide = competitions.get(row.guide_slug);
-		if (!guide || !isPubliclyPublishable(guide, policyContext)) {
-			errors.push(`dist/data/competition-catalog.json: guide_slug "${row.guide_slug}" does not point to a published, reviewed guide`);
+		if (!guide || !publicGuideIds.has(guide.data.id)) {
+			errors.push(`dist/data/competition-catalog.json: guide_slug "${row.guide_slug}" does not point to a published, reviewed Level 2+ guide`);
+			continue;
+		}
+		const route = path.join(dist, 'competitions', guide.data.slug, 'index.html');
+		try {
+			await access(route, constants.R_OK);
+		} catch (error) {
+			if (error.code !== 'ENOENT') throw error;
+			errors.push(`dist/data/competition-catalog.json: guide_slug "${row.guide_slug}" has no generated page at ${path.relative(root, route)}`);
 		}
 	}
 
 	for (const entry of entries.competitions) {
-		if (isPubliclyPublishable(entry, policyContext)) continue;
+		if (publicGuideIds.has(entry.data.id)) continue;
 		for (const slug of [entry.data.slug, entry.data.kaggle_slug].filter(Boolean)) {
 			const route = path.join(dist, 'competitions', slug, 'index.html');
 			try {
 				await access(route, constants.R_OK);
-				errors.push(`${entry.file} (${entry.data.id}): non-published competition has a public guide route at ${path.relative(root, route)}`);
+				errors.push(`${entry.file} (${entry.data.id}): non-public competition has a guide route at ${path.relative(root, route)}`);
 			} catch (error) {
 				if (error.code !== 'ENOENT') throw error;
+			}
+		}
+	}
+
+	for (const practice of entries.practices) {
+		const route = path.join(dist, 'practices', practice.data.slug, 'index.html');
+		try {
+			await access(route, constants.R_OK);
+			if (!publicPracticeIds.has(practice.data.id)) {
+				errors.push(`${practice.file} (${practice.data.id}): non-public practice has a detail route at ${path.relative(root, route)}`);
+			}
+		} catch (error) {
+			if (error.code !== 'ENOENT') throw error;
+			if (publicPracticeIds.has(practice.data.id)) {
+				errors.push(`${practice.file} (${practice.data.id}): published practice has no generated page at ${path.relative(root, route)}`);
 			}
 		}
 	}
@@ -567,6 +647,8 @@ export async function checkContent(root = defaultRoot, { report = true } = {}) {
 	}
 
 	validateDirectReferences(errors, entries, collections, allById);
+	validateGuideClaimReferences(errors, entries, collections);
+	await validateClaimMarkers(errors, entries);
 	validatePublicationStates(errors, entries, collections, allById);
 	if (process.env.CHECK_BUILT_CONTENT === '1') {
 		await validateBuildOutput(root, entries, collections, allById.values(), errors);

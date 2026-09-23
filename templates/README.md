@@ -14,7 +14,7 @@ Copy templates into these destinations when content authoring starts:
 
 Start with sources, then solutions, then competition synthesis and linked practices. Replace all IDs consistently. Repeat solution/source records as needed. Keep unknown fields null and explain consequential gaps in prose. Remove example array entries that are not supported; do not fill them with invented data. Reproduction records are optional until a run is planned.
 
-Competition/practice files combine YAML frontmatter with Markdown; the other templates are YAML records. Keep the entry filename ID and the record's prefixed `id` field identical. Body markers such as `[claim:lesson-01]` refer to local claims in frontmatter. Source locators belong in each claim's evidence, not only in the source registry.
+Competition/practice files combine YAML frontmatter with Markdown; the other templates are YAML records. Keep the entry filename ID and the record's prefixed `id` field identical. Body markers such as `[claim:lesson-01]` link to local evidence cards and are checked against the record's claims. Source locators belong in each claim's evidence, not only in the source registry.
 
 Before publication, follow the [editorial workflow](../docs/editorial-workflow.md). These templates have no automatic publication effect.
 

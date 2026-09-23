@@ -40,8 +40,6 @@ claims:
     limitations: "REPLACE: what the evidence does not establish"
 ---
 
-# REPLACE: competition title
-
 ## At a glance
 
 Explain the prediction problem, why this competition is instructive, and who should read it. List up to three supported lessons with claim markers. First lesson: REPLACE. [claim:lesson-01]

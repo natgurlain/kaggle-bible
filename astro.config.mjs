@@ -1,7 +1,12 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { satteri } from '@astrojs/markdown-satteri';
+import claimReferenceLinks from './src/markdown/claim-reference-links.js';
 
 export default defineConfig({
+	markdown: {
+		processor: satteri({ mdastPlugins: [claimReferenceLinks] }),
+	},
 	integrations: [
 		starlight({
 			title: 'Kaggle Bible',
