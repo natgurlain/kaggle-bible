@@ -81,7 +81,9 @@ export function validateLevel2Readiness(record, { sources, solutions }) {
 	if (!solutionEntries.length) errors.push('Level 2 requires at least one structured solution record');
 	for (const solution of solutionEntries) {
 		const solutionData = solution.data;
-		if (data.status !== 'draft' && solutionData.status === 'draft') {
+		if (data.status === 'published' && solutionData.status !== 'published') {
+			errors.push(`published guide depends on non-published solution ${solutionData.id}`);
+		} else if (data.status !== 'draft' && solutionData.status === 'draft') {
 			errors.push(`solution ${solutionData.id} is still a draft`);
 		}
 		if (!solutionData.source_ids?.length) errors.push(`solution ${solutionData.id} needs source attribution`);
@@ -161,4 +163,12 @@ export function isPubliclyPublishable(record, context) {
 
 export function filterPublicContent(records, context) {
 	return records.filter((record) => isPubliclyPublishable(record, context));
+}
+
+/** Public guide routes are reserved for reviewed Level 2 evidence maps and Level 3 guides. */
+export function filterPublicGuides(records, context) {
+	return records.filter((record) => {
+		const data = record?.data ?? record;
+		return data?.kaggle_bible_completeness_level >= 2 && isPubliclyPublishable(record, context);
+	});
 }

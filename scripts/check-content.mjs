@@ -187,6 +187,19 @@ function validateClaims(errors, entry, collections, allById) {
 	}
 }
 
+function validateClaimMarkers(errors, entries) {
+	for (const collectionName of ['competitions', 'practices']) {
+		for (const entry of entries[collectionName]) {
+			const claims = new Set((entry.data.claims ?? []).map((claim) => claim.id));
+			for (const match of entry.body.matchAll(/\[claim:([^\]]+)\]/g)) {
+				if (!claims.has(match[1])) {
+					errors.push(`${entry.file} (${entry.data.id}): unresolved claim marker "${match[0]}"`);
+				}
+			}
+		}
+	}
+}
+
 function validateDirectReferences(errors, entries, collections, allById) {
 	for (const entry of entries.competitions) {
 		const { data } = entry;
@@ -567,6 +580,7 @@ export async function checkContent(root = defaultRoot, { report = true } = {}) {
 	}
 
 	validateDirectReferences(errors, entries, collections, allById);
+	validateClaimMarkers(errors, entries);
 	validatePublicationStates(errors, entries, collections, allById);
 	if (process.env.CHECK_BUILT_CONTENT === '1') {
 		await validateBuildOutput(root, entries, collections, allById.values(), errors);

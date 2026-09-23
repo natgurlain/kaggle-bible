@@ -6,10 +6,12 @@ import test from 'node:test';
 import { checkContent } from './check-content.mjs';
 import {
 	filterPublicContent,
+	filterPublicGuides,
 	isPubliclyPublishable,
 	validateLevel2Readiness,
 } from '../src/content/publication-policy.js';
 import { normalizeCatalogTitles } from './normalize-built-catalog.mjs';
+import claimReferenceLinks from '../src/markdown/claim-reference-links.js';
 
 function level2Fixture() {
 	const sources = new Map([
@@ -21,6 +23,7 @@ function level2Fixture() {
 		['solution-example', {
 			data: {
 				id: 'solution-example',
+				status: 'published',
 				source_ids: ['source-author-a'],
 				validation: { strategy: 'grouped-cross-validation', details: null },
 				techniques: ['groupby-aggregation'],
@@ -91,6 +94,52 @@ test('complete Level 2 evidence map passes readiness checks', () => {
 	assert.equal(isPubliclyPublishable(fixture.record, fixture), true);
 });
 
+test('only reviewed Level 2+ content receives public guide routes', () => {
+	const fixture = level2Fixture();
+	fixture.record.data.status = 'published';
+	fixture.record.data.editorial_status = 'published';
+	const catalogOnly = {
+		...fixture.record,
+		data: {
+			...fixture.record.data,
+			id: 'competition-catalog-only',
+			kaggle_bible_completeness_level: 1,
+		},
+	};
+	assert.deepEqual(
+		filterPublicGuides([catalogOnly, fixture.record], fixture).map((entry) => entry.data.id),
+		['competition-example'],
+	);
+});
+
+test('a published guide is withheld until every linked solution is published', () => {
+	const fixture = level2Fixture();
+	fixture.record.data.status = 'published';
+	fixture.record.data.editorial_status = 'published';
+	fixture.solutions.get('solution-example').data.status = 'in-review';
+	assert.equal(isPubliclyPublishable(fixture.record, fixture), false);
+	assert.deepEqual(filterPublicGuides([fixture.record], fixture), []);
+});
+
+test('claim markers become evidence links without rewriting code or existing links', () => {
+	const paragraph = {
+		type: 'paragraph',
+		children: [
+			{ type: 'text', value: 'Supported claim [claim:gain-01]. ' },
+			{ type: 'inlineCode', value: '[claim:code-example]' },
+			{ type: 'link', url: '/existing', children: [{ type: 'text', value: '[claim:nested-link]' }] },
+			{ type: 'emphasis', children: [{ type: 'text', value: '[claim:lesson-02]' }] },
+		],
+	};
+	const transformed = claimReferenceLinks.paragraph(paragraph);
+	assert.equal(transformed.children[1].type, 'link');
+	assert.equal(transformed.children[1].url, '#evidence-gain-01');
+	assert.equal(transformed.children[1].data.hProperties['aria-label'], 'View evidence for gain-01');
+	assert.equal(transformed.children[3].value, '[claim:code-example]');
+	assert.equal(transformed.children[4].url, '/existing');
+	assert.equal(transformed.children[5].children[0].url, '#evidence-lesson-02');
+});
+
 test('incomplete Level 2 evidence map fails readiness and cannot be published', () => {
 	const fixture = level2Fixture();
 	fixture.record.data.coverage = 'partial';
@@ -136,10 +185,13 @@ test('broken references report the source record and field', async () => {
 			'---',
 			'',
 			'# Draft',
+			'',
+			'Unresolved marker [claim:missing-claim].',
 		].join('\n'));
 		const result = await checkContent(root, { report: false });
 		assert.equal(result.ok, false);
 		assert.ok(result.errors.some((error) => error.includes('competition-orphan.md (competition-orphan): source_ids references missing sources "source-missing"')));
+		assert.ok(result.errors.some((error) => error.includes('unresolved claim marker "[claim:missing-claim]"')));
 	} finally {
 		await rm(root, { recursive: true, force: true });
 	}
