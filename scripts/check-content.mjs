@@ -561,6 +561,8 @@ export async function validateBuildOutput(root, entries, collections, allEntries
 	const policyContext = { sources: collections.sources, solutions: collections.solutions, practices: collections.practices };
 	const competitions = new Map(entries.competitions.map((entry) => [entry.data.slug, entry]));
 	const publicGuideIds = new Set(filterPublicGuides(entries.competitions, policyContext).map((entry) => entry.data.id));
+	const publicPractices = filterPublicContent(entries.practices, policyContext);
+	const publicPracticeIds = new Set(publicPractices.map((entry) => entry.data.id));
 	for (const row of catalog) {
 		if (!row.guide_slug) continue;
 		const guide = competitions.get(row.guide_slug);
