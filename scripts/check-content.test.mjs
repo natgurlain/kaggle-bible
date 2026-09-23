@@ -99,6 +99,7 @@ function level3Fixture() {
 		['practice-example', {
 			data: {
 				id: 'practice-example',
+				slug: 'validation-method',
 				status: 'published',
 				reviewed_by: 'Editorial reviewer',
 				reviewed_at: '2026-09-23',
@@ -397,6 +398,49 @@ test('built catalog guide links require an eligible Level 2+ record and an emitt
 		const emittedRouteErrors = [];
 		await validateBuildOutput(root, eligibleEntries, eligible, Object.values(eligibleEntries).flat(), emittedRouteErrors);
 		assert.equal(emittedRouteErrors.some((error) => error.includes('has no generated page')), false);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('built practice pages exist only for publicly publishable practice records', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-built-practice-route-'));
+	try {
+		const dist = path.join(root, 'dist');
+		await mkdir(path.join(dist, 'data'), { recursive: true });
+		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
+		await writeCatalog(dist);
+
+		const practice = {
+			file: 'src/content/practices/practice-validation-checks.md',
+			data: {
+				id: 'practice-example',
+				slug: 'validation-method',
+				status: 'published',
+				reviewed_by: 'Editorial reviewer',
+				reviewed_at: '2026-09-23',
+				editorial_status: 'published',
+			},
+		};
+		const entries = { competitions: [], solutions: [], sources: [], practices: [practice], reproductions: [] };
+		const collections = Object.fromEntries(Object.keys(entries).map((name) => [
+			name,
+			new Map(entries[name].map((entry) => [entry.data.id, entry])),
+		]));
+		const missingRouteErrors = [];
+		await validateBuildOutput(root, entries, collections, [practice], missingRouteErrors);
+		assert.ok(missingRouteErrors.some((error) => error.includes('published practice has no generated page at dist/practices/validation-method/index.html')));
+
+		await mkdir(path.join(dist, 'practices/validation-method'), { recursive: true });
+		await writeFile(path.join(dist, 'practices/validation-method/index.html'), '<main>reviewed practice</main>');
+		const emittedRouteErrors = [];
+		await validateBuildOutput(root, entries, collections, [practice], emittedRouteErrors);
+		assert.equal(emittedRouteErrors.some((error) => error.includes('practice has no generated page')), false);
+
+		practice.data.status = 'in-review';
+		const hiddenRouteErrors = [];
+		await validateBuildOutput(root, entries, collections, [practice], hiddenRouteErrors);
+		assert.ok(hiddenRouteErrors.some((error) => error.includes('non-public practice has a detail route')));
 	} finally {
 		await rm(root, { recursive: true, force: true });
 	}

@@ -262,7 +262,7 @@ const citationSource = (reference: unknown) => {
 				<section class="content-section" aria-labelledby="practices-heading">
 					<h2 id="practices-heading">Related reviewed practices</h2>
 					<ul class="practice-list">
-						{linkedPractices.map((practice) => <li><strong>{practice.data.title}</strong><span>{practice.data.summary}</span></li>)}
+						{linkedPractices.map((practice) => <li><a href={`/practices/${encodeURIComponent(practice.data.slug)}/`}>{practice.data.title}</a><span>{practice.data.summary}</span></li>)}
 					</ul>
 				</section>
 			)}

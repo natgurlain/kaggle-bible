@@ -6,6 +6,7 @@ import { parse } from 'yaml';
 import { satteri } from '@astrojs/markdown-satteri';
 import { createClaimMarkerCollector } from '../src/markdown/claim-reference-links.js';
 import {
+	filterPublicContent,
 	filterPublicGuides,
 	isPubliclyPublishable,
 	validateLevel2Readiness,
@@ -585,6 +586,21 @@ export async function validateBuildOutput(root, entries, collections, allEntries
 				errors.push(`${entry.file} (${entry.data.id}): non-public competition has a guide route at ${path.relative(root, route)}`);
 			} catch (error) {
 				if (error.code !== 'ENOENT') throw error;
+			}
+		}
+	}
+
+	for (const practice of entries.practices) {
+		const route = path.join(dist, 'practices', practice.data.slug, 'index.html');
+		try {
+			await access(route, constants.R_OK);
+			if (!publicPracticeIds.has(practice.data.id)) {
+				errors.push(`${practice.file} (${practice.data.id}): non-public practice has a detail route at ${path.relative(root, route)}`);
+			}
+		} catch (error) {
+			if (error.code !== 'ENOENT') throw error;
+			if (publicPracticeIds.has(practice.data.id)) {
+				errors.push(`${practice.file} (${practice.data.id}): published practice has no generated page at ${path.relative(root, route)}`);
 			}
 		}
 	}
