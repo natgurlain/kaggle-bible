@@ -2,6 +2,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { satteri } from '@astrojs/markdown-satteri';
 import claimReferenceLinks from '../../markdown/claim-reference-links.js';
+import { removeMatchingLeadingTitle } from '../../markdown/guide-body.js';
 import { filterPublicGuides, isPubliclyPublishable } from '../../content/publication-policy.js';
 
 const idOf = (value: unknown): string | null => {
@@ -68,7 +69,8 @@ const claims = [
 ];
 const metricById = new Map((competition.data.metrics ?? []).map((metric) => [metric.id, metric]));
 const guideMarkdown = await satteri({ mdastPlugins: [claimReferenceLinks] }).createRenderer({});
-const { code: guideBodyHTML } = await guideMarkdown.render(competition.body ?? '', {
+const guideBody = removeMatchingLeadingTitle(competition.body ?? '', competition.data.title);
+const { code: guideBodyHTML } = await guideMarkdown.render(guideBody, {
 	frontmatter: competition.data,
 });
 

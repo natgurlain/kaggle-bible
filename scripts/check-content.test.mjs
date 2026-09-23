@@ -13,6 +13,7 @@ import {
 } from '../src/content/publication-policy.js';
 import { normalizeCatalogTitles } from './normalize-built-catalog.mjs';
 import claimReferenceLinks from '../src/markdown/claim-reference-links.js';
+import { removeMatchingLeadingTitle } from '../src/markdown/guide-body.js';
 import { isHttpUrl } from '../src/content/url-validation.js';
 
 function level2Fixture() {
@@ -157,6 +158,18 @@ test('the Markdown renderer links a claim marker when the whole phrase is bold',
 	const renderer = await satteri({ mdastPlugins: [claimReferenceLinks] }).createRenderer({});
 	const { code } = await renderer.render('**[claim:gain-01]**', { frontmatter: {} });
 	assert.match(code, /<strong><a[^>]*href="#evidence-gain-01"/);
+});
+
+test('guide body omits a matching leading title but retains other content headings', () => {
+	const body = '\n# Home Credit Default Risk\n\n## At a glance\nA concise orientation.';
+	assert.equal(
+		removeMatchingLeadingTitle(body, 'Home Credit Default Risk'),
+		'\n\n## At a glance\nA concise orientation.',
+	);
+	assert.equal(
+		removeMatchingLeadingTitle('# Different heading\n\n## At a glance', 'Home Credit Default Risk'),
+		'# Different heading\n\n## At a glance',
+	);
 });
 
 test('external content URLs accept only HTTP and HTTPS schemes', () => {
