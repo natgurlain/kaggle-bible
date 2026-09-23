@@ -49,7 +49,7 @@ When every ticket is complete, open one pull request from `epic/evidence-pilot` 
 
 - Summarize the complete outcome and list all child issues with `Closes #<issue>` references.
 - Run the full content checks and production build on the final epic head. Run that build locally with `pnpm preview` and confirm the catalog-to-guide and practice-to-evidence paths at 1280px desktop and 390px narrow width.
-- Have a read-only Codex subagent using GPT-6 Luna (`gpt-6-luna`) at Max reasoning review the exact final diff, including integration effects across tickets. Provide the reviewed SHA and verdict in the prompt and record both in the PR. Rerun the review if the epic branch changes afterward.
+- Have a read-only Codex subagent using GPT-6 Luna (`gpt-6-luna`) at Max reasoning review the exact final diff, including integration effects across tickets. Provide the head SHA, base SHA, and ticket criteria in the prompt; record the returned verdict and reviewed SHA in the PR. Rerun the review if the epic branch changes afterward.
 - Merge the epic PR only after GPT-6 Luna at Max reasoning explicitly returns `APPROVE` for the exact current head, required checks pass, and no blocking finding remains unresolved. Record a disposition for any non-blocking review notes. A `REQUEST_CHANGES`, missing verdict, stale review, or failed check is not merge approval. Verify the merge is present on `main`, then close the epic. Deployment is automated and is not a review or acceptance gate.
 
 Do not merge ticket branches directly to `main` or put unrelated tickets on the epic branch. If scope changes, update the epic and affected acceptance criteria before implementing the extra work.
