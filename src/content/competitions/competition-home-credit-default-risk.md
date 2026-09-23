@@ -31,6 +31,7 @@ solution_ids:
   - solution-home-credit-12th
 practice_ids:
   - practice-validation-checks
+  - practice-compute-planning
 source_ids:
   - source-home-credit-official
   - source-home-credit-data
