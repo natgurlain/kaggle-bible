@@ -63,6 +63,16 @@ Pass each surface only when every control or link in the scenario is reachable a
 | R4 | Not run | Not run | Not run |
 | R5 | Not run | Not run | Not run |
 
+### Desktop layout check
+
+At exactly 1280 × 900 CSS pixels and 100% zoom, review the catalog, each eligible published competition guide, and each eligible published practice page. Confirm there is no horizontal page overflow; catalog search and filters work; an eligible catalog link opens its matching guide; and each visible practice recommendation reaches its supporting claim/evidence. Unpublished content must remain unavailable from the catalog. Record objective outcomes only.
+
+| Page / path | Local build commit | Viewport | Pass? | Non-identifying finding category |
+| --- | --- | --- | --- | --- |
+| Catalog | Not run | 1280 × 900 CSS px | Not run | Not run |
+| Catalog → eligible guide | Not run | 1280 × 900 CSS px | Not run | Not run |
+| Practice → supporting evidence | Not run | 1280 × 900 CSS px | Not run | Not run |
+
 ### Mobile layout check
 
 At exactly 390 × 844 CSS pixels and 100% zoom, pass the catalog if controls and result cards are fully visible, usable without horizontal page scrolling, and the guide link opens the expected page. Pass the guide if headings, claim references, evidence cards, source labels, and source links are readable and usable without clipping, overlap, or horizontal page scrolling.
@@ -86,7 +96,7 @@ For each observed issue, record the affected page/flow, impact, anonymous sessio
 - [ ] Five real reader sessions recorded on one identified local build commit.
 - [ ] At least four of five pass the discovery task within three minutes, or the epic explicitly records that the gate failed and does not claim it passed.
 - [ ] The same locally served `pnpm preview` build is used for every session; its commit SHA matches the recorded local build.
-- [ ] Material source paths and guide/catalog links pass the defined rubric, keyboard scenarios pass, and both pages pass the 390 × 844 CSS-pixel mobile checks; release-blocking findings are resolved and retested.
+- [ ] Review the final built site locally at 1280 × 900 desktop and 390 × 844 narrow width. Catalog-to-guide and practice-to-evidence paths work where published; unpublished content stays unavailable; keyboard and source checks pass; release-blocking findings are fixed and retested.
 - [ ] Final content checks and `pnpm build` pass on the final epic head.
 - [ ] GPT-6 Luna at Max reasoning approves the exact epic-to-main head; any head change receives a fresh review.
 - [ ] The epic merge is verified on `main`.
