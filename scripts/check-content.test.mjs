@@ -323,6 +323,73 @@ test('built public output rejects draft titles and body text without record IDs'
 	}
 });
 
+test('built public output rejects short draft titles, claims, and fenced code text', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-build-short-text-'));
+	const previous = process.env.CHECK_BUILT_CONTENT;
+	try {
+		const records = path.join(root, 'src/content/competitions');
+		const dist = path.join(root, 'dist');
+		await mkdir(records, { recursive: true });
+		await mkdir(path.join(dist, 'data'), { recursive: true });
+		await writeFile(path.join(records, 'competition-hidden-short.md'), [
+			'---',
+			'id: competition-hidden-short',
+			'status: draft',
+			'title: Hidden Draft',
+			'summary: Secret summary',
+			'claims:',
+			'  - id: private-claim',
+			'    kind: editorial-inference',
+			'    statement: Critical finding',
+			'slug: hidden-short',
+			'kaggle_slug: hidden-short',
+			'---',
+			'',
+			'```text',
+			'Privately measured cutoff',
+			'```',
+		].join('\n'));
+		await writeFile(path.join(dist, 'index.html'), [
+			'<meta name="description" content="Secret summary">',
+			'<h1>Hidden Draft</h1>',
+			'<p>Critical finding</p>',
+			'<pre><code>Privately measured cutoff</code></pre>',
+		].join('\n'));
+		await writeFile(path.join(dist, 'data/competition-catalog.json'), '[]');
+		process.env.CHECK_BUILT_CONTENT = '1';
+
+		const result = await checkContent(root, { report: false });
+		assert.ok(result.errors.some((error) => error.includes('non-published title appears')));
+		assert.ok(result.errors.some((error) => error.includes('non-published summary appears')));
+		assert.ok(result.errors.some((error) => error.includes('non-published claim private-claim appears')));
+		assert.ok(result.errors.some((error) => error.includes('non-published body paragraph')));
+	} finally {
+		if (previous === undefined) delete process.env.CHECK_BUILT_CONTENT;
+		else process.env.CHECK_BUILT_CONTENT = previous;
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('built catalog validation rejects rows missing the required schema', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-catalog-schema-'));
+	const previous = process.env.CHECK_BUILT_CONTENT;
+	try {
+		const dist = path.join(root, 'dist');
+		await mkdir(path.join(dist, 'data'), { recursive: true });
+		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
+		await writeFile(path.join(dist, 'data/competition-catalog.json'), '[{}]');
+		process.env.CHECK_BUILT_CONTENT = '1';
+
+		const result = await checkContent(root, { report: false });
+		assert.ok(result.errors.some((error) => error.includes('row 1 is missing required string "id"')));
+		assert.ok(result.errors.some((error) => error.includes('row 1 is missing required string "record_state"')));
+	} finally {
+		if (previous === undefined) delete process.env.CHECK_BUILT_CONTENT;
+		else process.env.CHECK_BUILT_CONTENT = previous;
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
 test('built-output validation fails when the build or catalog asset is missing', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-build-missing-'));
 	const previous = process.env.CHECK_BUILT_CONTENT;

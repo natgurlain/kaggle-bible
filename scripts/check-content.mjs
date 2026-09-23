@@ -305,28 +305,121 @@ function normalizeLeakText(value) {
 
 function nonPublishedTextCandidates(entry, catalogText) {
 	const candidates = [];
-	const add = (label, value, minimumWords, minimumLength, allowCatalogCopy = false) => {
+	const add = (label, value, allowCatalogCopy = false) => {
 		const normalized = normalizeLeakText(value);
 		if (!normalized) return;
 		const words = normalized.split(' ');
-		if (words.length < minimumWords || normalized.length < minimumLength) return;
+		if ((words.length < 2 && normalized.length < 16) || normalized.length < 8) return;
 		if (allowCatalogCopy && entry.collection === 'competitions' && catalogText.has(normalized)) return;
 		candidates.push({ label, text: normalized });
 	};
 
-	add('title', entry.data.title, 3, 16, true);
-	add('summary', entry.data.summary, 6, 40, true);
-	for (const claim of entry.data.claims ?? []) add(`claim ${claim.id}`, claim.statement, 8, 48);
+	add('title', entry.data.title, true);
+	add('summary', entry.data.summary, true);
+	for (const claim of entry.data.claims ?? []) add(`claim ${claim.id}`, claim.statement);
 	const body = (entry.body ?? '')
-		.replace(/```[\s\S]*?```/g, ' ')
+		.replace(/^\s{0,3}```[^\n]*$/gm, '')
 		.replace(/^\s{0,3}#{1,6}\s+/gm, '')
 		.replace(/^\s{0,3}>\s?/gm, '')
 		.replace(/^\s*[-*+]\s+/gm, '')
 		.replace(/\[claim:[^\]]+\]/gi, ' ');
 	for (const [index, paragraph] of body.split(/\n\s*\n/).entries()) {
-		add(`body paragraph ${index + 1}`, paragraph, 10, 80);
+		add(`body paragraph ${index + 1}`, paragraph, true);
 	}
 	return [...new Map(candidates.map((candidate) => [candidate.text, candidate])).values()];
+}
+
+function textSegments(value) {
+	return String(value ?? '')
+		.split(/[\r\n.!?;:|]+/)
+		.map(normalizeLeakText)
+		.filter(Boolean);
+}
+
+function htmlTextSegments(html) {
+	const visibleText = html
+		.replace(/<(script|style|noscript|template)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, ' ')
+		.replace(/<\/?(?:address|article|aside|blockquote|br|dd|div|dl|dt|fieldset|figcaption|figure|footer|form|h[1-6]|header|hr|li|main|nav|ol|p|pre|section|table|tbody|td|tfoot|th|thead|tr|ul)\b[^>]*>/gi, '\n')
+		.replace(/<[^>]*>/g, ' ');
+	const attributeText = [...html.matchAll(/<[^>]+>/g)].flatMap(([tag]) =>
+		[...tag.matchAll(/\b(?:content|title|aria-label|alt|value)\s*=\s*(["'])(.*?)\1/gi)].map(([, , value]) => value));
+	return [...textSegments(visibleText), ...attributeText.flatMap(textSegments)];
+}
+
+function jsonTextSegments(source) {
+	let value;
+	try {
+		value = JSON.parse(source);
+	} catch {
+		return [];
+	}
+	const strings = [];
+	const collect = (item) => {
+		if (typeof item === 'string') strings.push(item);
+		else if (Array.isArray(item)) item.forEach(collect);
+		else if (item && typeof item === 'object') Object.values(item).forEach(collect);
+	};
+	collect(value);
+	return strings.flatMap(textSegments);
+}
+
+function candidateAppears(candidate, normalizedOutput, segments) {
+	const words = candidate.text.split(' ').length;
+	if (words >= 6 && candidate.text.length >= 40) return normalizedOutput.includes(candidate.text);
+	if (words < 2 && candidate.text.length < 16) return false;
+	return segments.includes(candidate.text);
+}
+
+function validateCatalogRows(catalog, errors) {
+	const requiredStrings = [
+		'id', 'slug', 'title', 'subtitle', 'competition_url', 'category', 'enabled_at', 'deadline_at',
+		'record_state', 'metric_abbreviation', 'metric_name', 'metric_direction', 'completeness_level',
+		'completeness_label', 'editorial_status', 'priority', 'work_order', 'learning_path_stage', 'guide_slug',
+	];
+	const completenessLabels = { '1': 'catalog', '2': 'evidence-map', '3': 'full-guide' };
+	const recordStates = new Set(['active', 'upcoming', 'closed', 'undated']);
+	const editorialStatuses = new Set(['unstarted', 'queued', 'in-progress', 'blocked', 'in-review', 'published']);
+	const learningStages = new Set(['', 'beginner', 'intermediate', 'advanced']);
+	const validDate = (value) => {
+		if (value === '') return true;
+		if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(value)) return false;
+		const date = new Date(value);
+		return !Number.isNaN(date.valueOf()) && date.toISOString().replace(/\.000Z$/, 'Z') === value;
+	};
+
+	for (const [index, row] of catalog.entries()) {
+		const label = `dist/data/competition-catalog.json: row ${index + 1}`;
+		if (!row || typeof row !== 'object' || Array.isArray(row)) {
+			errors.push(`${label} must be an object`);
+			continue;
+		}
+		for (const field of requiredStrings) {
+			if (typeof row[field] !== 'string') errors.push(`${label} is missing required string "${field}"`);
+		}
+		for (const field of ['id', 'slug', 'competition_url']) {
+			if (typeof row[field] === 'string' && !row[field].trim()) errors.push(`${label} requires a non-empty "${field}"`);
+		}
+		if (typeof row.competition_url === 'string' && row.competition_url.trim()) {
+			try {
+				const url = new URL(row.competition_url);
+				if (url.protocol !== 'https:' || url.hostname !== 'www.kaggle.com' || !/^\/competitions\/[^/]+\/?$/.test(url.pathname)) {
+					errors.push(`${label} has an invalid Kaggle competition URL`);
+				}
+			} catch {
+				errors.push(`${label} has an invalid Kaggle competition URL`);
+			}
+		}
+		if (typeof row.enabled_at === 'string' && !validDate(row.enabled_at)) errors.push(`${label} has an invalid "enabled_at" timestamp`);
+		if (typeof row.deadline_at === 'string' && !validDate(row.deadline_at)) errors.push(`${label} has an invalid "deadline_at" timestamp`);
+		if (typeof row.record_state === 'string' && !recordStates.has(row.record_state)) errors.push(`${label} has an invalid "record_state"`);
+		if (typeof row.metric_direction === 'string' && !['', 'maximize', 'minimize'].includes(row.metric_direction)) errors.push(`${label} has an invalid "metric_direction"`);
+		if (typeof row.completeness_level === 'string'
+			&& completenessLabels[row.completeness_level] !== row.completeness_label) {
+			errors.push(`${label} has an inconsistent completeness level and label`);
+		}
+		if (typeof row.editorial_status === 'string' && !editorialStatuses.has(row.editorial_status)) errors.push(`${label} has an invalid "editorial_status"`);
+		if (typeof row.learning_path_stage === 'string' && !learningStages.has(row.learning_path_stage)) errors.push(`${label} has an invalid "learning_path_stage"`);
+	}
 }
 
 async function validateBuildOutput(root, entries, collections, allEntries, errors) {
@@ -347,10 +440,17 @@ async function validateBuildOutput(root, entries, collections, allEntries, error
 		errors.push(`dist/data/competition-catalog.json: required catalog asset is missing or invalid (${error.message})`);
 		return;
 	}
+	validateCatalogRows(catalog, errors);
 
 	const outputFiles = (await walk(dist)).filter((file) => /\.(?:html|js|mjs|json|xml|txt|css|svg)$/i.test(file));
-	const output = (await Promise.all(outputFiles.map((file) => readFile(file, 'utf8')))).join('\n');
+	const outputContents = await Promise.all(outputFiles.map(async (file) => ({ file, content: await readFile(file, 'utf8') })));
+	const output = outputContents.map(({ content }) => content).join('\n');
 	const normalizedOutput = normalizeLeakText(output);
+	const shortTextSegments = outputContents.flatMap(({ file, content }) => {
+		if (/\.html$/i.test(file)) return htmlTextSegments(content);
+		if (/\.json$/i.test(file)) return jsonTextSegments(content);
+		return [];
+	});
 	const leakedIds = new Set([...output.matchAll(/\b(?:competition|solution|source|practice|reproduction)-[a-z0-9-]+\b/g)].map(([id]) => id));
 	const catalogText = new Set(catalog.flatMap((row) => [row.title, row.subtitle]).map(normalizeLeakText).filter(Boolean));
 	for (const entry of allEntries) {
@@ -359,7 +459,7 @@ async function validateBuildOutput(root, entries, collections, allEntries, error
 		}
 		if (!['draft', 'in-review'].includes(entry.data.status)) continue;
 		for (const candidate of nonPublishedTextCandidates(entry, catalogText)) {
-			if (normalizedOutput.includes(candidate.text)) {
+			if (candidateAppears(candidate, normalizedOutput, shortTextSegments)) {
 				errors.push(`${entry.file} (${entry.data.id}): non-published ${candidate.label} appears in the built public output`);
 			}
 		}
