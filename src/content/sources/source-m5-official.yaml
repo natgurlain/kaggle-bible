@@ -1,0 +1,15 @@
+schema_version: 1
+id: source-m5-official
+title: M5 Forecasting – Accuracy official overview
+url: https://www.kaggle.com/competitions/m5-forecasting-accuracy/overview
+kind: official-competition
+authors:
+  - Kaggle
+published_at: null
+accessed_at: '2026-09-22'
+revision: null
+locator_notes: Competition description; evaluation metric.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Official overview inspected in the dated source-qualification audit. The full rules text was not exposed in that audit.

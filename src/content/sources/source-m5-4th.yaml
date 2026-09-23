@@ -1,0 +1,15 @@
+schema_version: 1
+id: source-m5-4th
+title: M5 Forecasting – Accuracy fourth-place solution
+url: https://www.kaggle.com/competitions/m5-forecasting-accuracy/writeups/monsaraida-4th-place-solution
+kind: author-writeup
+authors:
+  - monsaraida
+published_at: null
+accessed_at: '2026-09-22'
+revision: null
+locator_notes: Solution bullets; strategy commentary; five dated holdout windows.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Participant report. The displayed fourth-place label was not independently matched to an official final-leaderboard row in the source audit.

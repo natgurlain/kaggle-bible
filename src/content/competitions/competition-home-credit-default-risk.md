@@ -28,12 +28,14 @@ metrics:
     source_id: source-home-credit-official
 solution_ids:
   - solution-home-credit-8th
+  - solution-home-credit-12th
 practice_ids:
   - practice-validation-checks
 source_ids:
   - source-home-credit-official
   - source-home-credit-leaderboard
   - source-home-credit-8th
+  - source-home-credit-12th
 claims:
   - id: task-01
     statement: Home Credit Default Risk asks participants to predict applicants' repayment ability.

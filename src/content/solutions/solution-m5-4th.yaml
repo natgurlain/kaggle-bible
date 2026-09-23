@@ -1,0 +1,80 @@
+schema_version: 1
+id: solution-m5-4th
+status: draft
+title: Author-reported fourth-place M5 solution
+summary: A single LightGBM approach partitioned by store and forecast week, evaluated on several dated holdout windows.
+reviewed_by: null
+reviewed_at: null
+competition_id: competition-m5-forecasting-accuracy
+team: Unknown
+authors:
+  - monsaraida
+source_ids:
+  - source-m5-4th
+rank:
+  value: 4
+  basis: author-report
+  source_id: source-m5-4th
+scores: []
+validation:
+  strategy: temporal-holdout
+  details: The author lists five dated holdout windows (d_1578–d_1605, d_1830–d_1857, d_1858–d_1885, d_1886–d_1913, and d_1914–d_1941); aggregate validation scores and a full tuning protocol are not reported in the audit.
+  source_ids:
+    - source-m5-4th
+techniques:
+  - gradient-boosting
+resources:
+  - id: final-pipeline
+    scope: full-pipeline
+    hardware_class: unknown
+    accelerator_model: null
+    accelerator_count: null
+    vram_gb_per_device: null
+    ram_gb: null
+    wall_hours: null
+    accelerator_hours: null
+    basis: unknown
+    claim_id: null
+reproducibility:
+  code_url: null
+  code_revision: null
+  status: not-assessed
+  reproduction_ids: []
+  notes: No matching code repository or execution was assessed in the source audit.
+claims:
+  - id: approach-01
+    statement: The author describes one LightGBM model with a Tweedie objective and separate store/week partitions across the 28-day horizon.
+    kind: source-reported
+    evidence:
+      - source_id: source-m5-4th
+        locator: Solution bullets; strategy commentary
+        support_summary: The author lists the model objective and partitions by store and week for the forecast horizon.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This describes the author's M5 implementation.
+    limitations: No numeric validation result or isolated component comparison is available in the inspected write-up.
+  - id: validation-01
+    statement: The author reports evaluating across five dated holdout windows and says they did not use post-processing, recursive features, or large compute.
+    kind: source-reported
+    evidence:
+      - source_id: source-m5-4th
+        locator: Five dated holdout windows; strategy commentary
+        support_summary: The write-up lists the windows and qualitative design choices.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These statements are specific to the author's report.
+    limitations: The phrase "not too much" compute is qualitative; no hardware, runtime, or WRMSSE optimization claim is implied.
+  - id: rank-01
+    statement: The Kaggle write-up displays a fourth-place label; this record treats the placement as author-reported.
+    kind: source-reported
+    evidence:
+      - source_id: source-m5-4th
+        locator: Write-up title and placement label
+        support_summary: The Kaggle write-up is labeled fourth place.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This is the placement label shown with the participant write-up.
+    limitations: The source audit did not reliably match the author to an official final-leaderboard row.
+unsuccessful_attempts: []
+transfer_limits:
+  - One author's M5 holdout and partitioning choices do not establish a universally valid forecasting split or training budget.
