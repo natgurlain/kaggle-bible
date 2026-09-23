@@ -91,6 +91,30 @@ test('model review metadata alone cannot publish an evidence guide in the catalo
 	}
 });
 
+test('human editorial approval cannot replace the evidence review receipt in the catalog', () => {
+	const editorialApproval = {
+		editorial_approval_type: 'human',
+		editorial_approved_by: 'Independent editor',
+		editorial_approved_at: '2026-09-23',
+	};
+	for (const evidenceReview of [
+		{},
+		{ reviewed_by: 'GPT-6 Luna Max', reviewed_at: '' },
+		{ reviewed_by: 'GPT-6 Luna Max', reviewed_at: '2026-02-30' },
+	]) {
+		assert.deepEqual(
+			getCatalogCardPresentation({
+				completeness_level: '2',
+				editorial_status: 'published',
+				guide_slug: 'home-credit-default-risk',
+				...editorialApproval,
+				...evidenceReview,
+			}),
+			{ completenessLevel: '1', completenessLabel: 'Catalog', guideHref: null },
+		);
+	}
+});
+
 test('catalog guide mapping must match the exact Meta Kaggle competition identity', () => {
 	const homeCreditRow = { id: '9120', slug: 'home-credit-default-risk', guide_slug: 'home-credit-default-risk' };
 	const homeCreditGuide = { meta_kaggle_id: '9120', kaggle_slug: 'home-credit-default-risk', slug: 'home-credit-default-risk' };

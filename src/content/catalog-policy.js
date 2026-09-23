@@ -14,6 +14,14 @@ function hasCatalogEditorialApproval(competition) {
 		&& date.toISOString().slice(0, 10) === reviewedAt;
 }
 
+function hasCatalogEvidenceReview(competition) {
+	const reviewer = typeof competition?.reviewed_by === 'string' ? competition.reviewed_by.trim() : '';
+	const reviewedAt = typeof competition?.reviewed_at === 'string' ? competition.reviewed_at : '';
+	if (!reviewer || !/^\d{4}-\d{2}-\d{2}$/.test(reviewedAt)) return false;
+	const date = new Date(reviewedAt + 'T00:00:00Z');
+	return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === reviewedAt;
+}
+
 export function catalogGuideMatchesRecord(row, guide) {
 	const catalogId = String(row?.id ?? '').trim();
 	const guideId = String(guide?.meta_kaggle_id ?? '').trim();
@@ -33,7 +41,11 @@ export function getCatalogCardPresentation(competition) {
 		? competition.guide_slug.trim()
 		: '';
 
-	if (competition?.editorial_status !== 'published' || !['2', '3'].includes(level) || !guideSlug || !hasCatalogEditorialApproval(competition)) {
+	if (competition?.editorial_status !== 'published'
+		|| !['2', '3'].includes(level)
+		|| !guideSlug
+		|| !hasCatalogEvidenceReview(competition)
+		|| !hasCatalogEditorialApproval(competition)) {
 		return {
 			completenessLevel: '1',
 			completenessLabel: completenessLabels['1'],

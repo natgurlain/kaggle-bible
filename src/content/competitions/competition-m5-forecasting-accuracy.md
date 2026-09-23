@@ -52,7 +52,7 @@ claims:
         locator: Overview; competition description
         support_summary: Kaggle describes the 28-day daily retail sales forecast.
       - source_id: source-m5-official-guide
-        locator: Evaluation → Weighting, printed p. 7; WRMSSE weighting example across the hierarchy
+        locator: Evaluation → Point forecasts, printed p. 6 (WRMSSE formula); Evaluation → Weighting, printed pp. 8–9 (hierarchy weighting example)
         support_summary: The official guide says participating methods are ranked using Weighted RMSSE (WRMSSE), explains weighting across the hierarchy, and states lower WRMSSE is better.
     supports_claim_refs: []
     reproduction_ids: []
