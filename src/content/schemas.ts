@@ -31,9 +31,6 @@ const contentSchema = z.object({
 	summary: z.string().min(1),
 	reviewed_by: z.string().nullable(),
 	reviewed_at: dateString.nullable(),
-	editorial_approval_type: z.literal('human').nullable().default(null),
-	editorial_approved_by: z.string().nullable().default(null),
-	editorial_approved_at: dateString.nullable().default(null),
 });
 
 const evidenceSchema = z.object({

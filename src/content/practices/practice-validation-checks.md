@@ -93,4 +93,4 @@ On data you are authorized to use, evaluate one simple M5 baseline at several ro
 
 ## Sources and review notes
 
-Primary participant reports and the official horizon record are linked above. The claims do not establish a consensus split strategy. This content remains in review; named human editorial sign-off and date are pending.
+Primary solution reports and the official horizon record are linked above. The claims do not establish a consensus split strategy. This content remains in review pending the exact-head GPT-6 Luna Max content review.

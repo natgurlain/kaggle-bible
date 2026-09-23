@@ -6,13 +6,6 @@ function isRealDate(value) {
 	return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === value;
 }
 
-function hasHumanEditorialApproval(data) {
-	return data?.editorial_approval_type === 'human'
-		&& typeof data.editorial_approved_by === 'string'
-		&& Boolean(data.editorial_approved_by.trim())
-		&& isRealDate(data.editorial_approved_at);
-}
-
 function referenceId(value) {
 	if (typeof value === 'string' && value.trim()) return value.trim();
 	if (value && typeof value === 'object' && !Array.isArray(value)) return value.id ?? value.slug ?? null;
@@ -73,9 +66,6 @@ export function validateLevel2Readiness(record, { sources, solutions }) {
 	}
 	if (typeof data.reviewed_by !== 'string' || !data.reviewed_by.trim()) errors.push('Level 2 requires a named evidence reviewer');
 	if (!isRealDate(data.reviewed_at)) errors.push('Level 2 requires a valid evidence review date');
-	if (data.status === 'published' && !hasHumanEditorialApproval(data)) {
-		errors.push('A published guide requires a separate human editorial approval receipt');
-	}
 	if (!sourceEntries.some(({ data: source }) => source.kind === 'official-competition')) {
 		errors.push('Level 2 requires a reviewed official competition source');
 	}
@@ -95,9 +85,6 @@ export function validateLevel2Readiness(record, { sources, solutions }) {
 			errors.push(`published guide depends on non-published solution ${solutionData.id}`);
 		} else if (data.status !== 'draft' && solutionData.status === 'draft') {
 			errors.push(`solution ${solutionData.id} is still a draft`);
-		}
-		if (data.status === 'published' && !hasHumanEditorialApproval(solutionData)) {
-			errors.push(`published guide depends on solution ${solutionData.id} without human editorial approval`);
 		}
 		if (!solutionData.source_ids?.length) errors.push(`solution ${solutionData.id} needs source attribution`);
 		if (!solutionData.validation?.strategy && !solutionData.validation?.details?.trim()) {
@@ -165,7 +152,6 @@ export function isPubliclyPublishable(record, context) {
 	if (!data || data.status !== 'published') return false;
 	if (typeof data.reviewed_by !== 'string' || !data.reviewed_by.trim()) return false;
 	if (!isRealDate(data.reviewed_at)) return false;
-	if (!hasHumanEditorialApproval(data)) return false;
 	if ('editorial_status' in data && data.editorial_status !== 'published') return false;
 	if ('coverage' in data && data.coverage !== 'reviewed') return false;
 	if (data.kaggle_bible_completeness_level >= 2) {

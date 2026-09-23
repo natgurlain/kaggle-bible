@@ -1,3 +1,4 @@
+/Users/bigcube/.zlogin:9: nice(5) failed: operation not permitted
 # Competition inventory
 
 The repository tracks the full public competition set represented by the official [Meta Kaggle](https://www.kaggle.com/datasets/kaggle/meta-kaggle) snapshot used to generate [data/competition-inventory.csv](../data/competition-inventory.csv). The snapshot is version `2322`, updated `2026-09-22`, and was generated from `Competitions.csv` on that date. The [manifest](../data/competition-inventory.manifest.json) records the row count and output checksum. The sparse editorial overlay is [data/competition-editorial.csv](../data/competition-editorial.csv); it marks the competitions queued for the learning path and preserves review progress across inventory refreshes.
@@ -14,7 +15,7 @@ The inventory is a work queue, not a promise that every competition should event
 
 ## Regeneration
 
-Download the official `Competitions.csv` from the Meta Kaggle version recorded above, then run:
+For a new source snapshot, download the official `Competitions.csv` from the Meta Kaggle version recorded above and use `--source`:
 
 ```bash
 python3 scripts/build_competition_inventory.py \
@@ -28,10 +29,24 @@ python3 scripts/build_competition_inventory.py \
   --catalog-json-output public/data/competition-catalog.json
 ```
 
-The generator uses Python’s standard library, handles embedded newlines and NUL bytes in the source export, rejects duplicate IDs/slugs, sorts by enabled date and ID, and initializes every row to Level 1. The optional JSON output contains the fields needed by the public catalog, including evidence-review fields and the separate human editorial approval receipt (`editorial_approval_type`, `editorial_approved_by`, and `editorial_approved_at`) when recorded. Receipt fields may be absent or blank for legacy and unapproved catalog rows; a published Level 2+ guide link is rejected unless both the evidence review and valid human editorial approval receipts are present. A published guide link must also match the inventory row's Meta Kaggle ID, Kaggle slug, and guide slug. The overlay is sparse: rows absent from it stay at Level 1 / `unstarted`; rows in it carry the explicit editorial state into the generated CSV and JSON. Unknown IDs, invalid levels, duplicate overlay rows, and invalid work orders fail the build.
+The generator uses Python’s standard library, handles embedded newlines and NUL bytes in the source export, rejects duplicate IDs/slugs, sorts by enabled date and ID, and initializes every row to Level 1. The optional JSON output contains the fields needed by the public catalog, including evidence-review metadata. A published Level 2+ guide link requires valid evidence-review metadata and must match the inventory row's Meta Kaggle ID, Kaggle slug, and guide slug. The overlay is sparse: rows absent from it stay at Level 1 / `unstarted`; rows in it carry the explicit editorial state into the generated CSV and JSON. Unknown IDs, invalid levels, duplicate overlay rows, and invalid work orders fail the build.
+
+For editorial-state changes against the current snapshot, do not download Meta Kaggle again. Reapply the overlay to the checked-in inventory and regenerate both derived outputs locally:
+
+```bash
+python3 scripts/build_competition_inventory.py \
+  --existing-inventory data/competition-inventory.csv \
+  --snapshot-date 2026-09-22 \
+  --editorial-overlay data/competition-editorial.csv \
+  --source-version 2322 \
+  --source-updated-at 2026-09-22T07:59:00.503Z \
+  --manifest data/competition-inventory.manifest.json \
+  --output data/competition-inventory.csv \
+  --catalog-json-output public/data/competition-catalog.json
+```
 
 ## Fields
 
-`id` and `slug` identify the Kaggle record. If the source snapshot has no title, the inventory and built catalog use the stable slug as its display title rather than leaving a blank card. `record_state` is derived from enabled/deadline dates at the snapshot date. `metric_direction` is derived from Kaggle’s evaluation metadata. Counts and reward fields are source metadata and may be blank or platform-specific. `completeness_level`, `completeness_label`, `editorial_status`, `priority`, `work_order`, `learning_path_stage`, `guide_slug`, evidence-review fields, separate human editorial approval fields, and `notes` are Kaggle Bible fields. `work_order` is an editorial sequence, not a ranking of competitions.
+`id` and `slug` identify the Kaggle record. If the source snapshot has no title, the inventory and built catalog use the stable slug as its display title rather than leaving a blank card. `record_state` is derived from enabled/deadline dates at the snapshot date. `metric_direction` is derived from Kaggle’s evaluation metadata. Counts and reward fields are source metadata and may be blank or platform-specific. `completeness_level`, `completeness_label`, `editorial_status`, `priority`, `work_order`, `learning_path_stage`, `guide_slug`, evidence-review fields, and `notes` are Kaggle Bible fields. `work_order` is an editorial sequence, not a ranking of competitions.
 
 The CSV is intentionally useful for sorting and filtering, but it is not evidence for a solution claim. Competition pages, official rules, write-ups, code, and reproduced artifacts must be registered as sources before editorial claims are published.

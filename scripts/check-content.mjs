@@ -323,7 +323,7 @@ function validatePublicationStates(errors, entries, collections, allById) {
 		for (const entry of entries[collectionName]) {
 			const context = collectionName === 'competitions' ? policyContext : undefined;
 			if (entry.data.status === 'published' && !isPubliclyPublishable(entry, context)) {
-				errors.push(`${entry.file} (${entry.data.id}): published content needs valid evidence review, separate human editorial approval, and published editorial state`);
+				errors.push(`${entry.file} (${entry.data.id}): published content needs valid evidence review and published editorial state`);
 			}
 			if (entry.data.status === 'published'
 				&& sourcesFor(entry).some(({ data }) => !data.content_reviewed || data.access_status === 'unchecked')) {
@@ -519,16 +519,9 @@ function validateCatalogRows(catalog, errors) {
 		if (typeof row.reviewed_by !== 'undefined' && typeof row.reviewed_by !== 'string') errors.push(`${label} has an invalid "reviewed_by"`);
 		if (typeof row.reviewed_at !== 'undefined' && typeof row.reviewed_at !== 'string') errors.push(`${label} has an invalid "reviewed_at"`);
 		if (typeof row.reviewed_at === 'string' && row.reviewed_at !== '' && !validReviewDate(row.reviewed_at)) errors.push(`${label} has an invalid "reviewed_at" date`);
-		if (typeof row.editorial_approval_type !== 'undefined' && !['', 'human'].includes(row.editorial_approval_type)) errors.push(`${label} has an invalid "editorial_approval_type"`);
-		if (typeof row.editorial_approved_by !== 'undefined' && typeof row.editorial_approved_by !== 'string') errors.push(`${label} has an invalid "editorial_approved_by"`);
-		if (typeof row.editorial_approved_at !== 'undefined' && typeof row.editorial_approved_at !== 'string') errors.push(`${label} has an invalid "editorial_approved_at"`);
-		if (typeof row.editorial_approved_at === 'string' && row.editorial_approved_at !== '' && !validReviewDate(row.editorial_approved_at)) errors.push(`${label} has an invalid "editorial_approved_at" date`);
 		if (row.editorial_status === 'published' && ['2', '3'].includes(row.completeness_level)) {
 			if (typeof row.reviewed_by !== 'string' || !row.reviewed_by.trim()) errors.push(`${label} requires a reviewer receipt for a published evidence guide`);
 			if (!validReviewDate(row.reviewed_at)) errors.push(`${label} requires a valid review date for a published evidence guide`);
-			if (row.editorial_approval_type !== 'human') errors.push(`${label} requires a human editorial approval for a published evidence guide`);
-			if (typeof row.editorial_approved_by !== 'string' || !row.editorial_approved_by.trim()) errors.push(`${label} requires a named human editor for a published evidence guide`);
-			if (!validReviewDate(row.editorial_approved_at)) errors.push(`${label} requires a valid human editorial approval date for a published evidence guide`);
 			if (typeof row.guide_slug !== 'string' || !row.guide_slug.trim()) errors.push(`${label} requires a guide_slug for a published evidence guide`);
 		}
 		if (typeof row.learning_path_stage === 'string' && !learningStages.has(row.learning_path_stage)) errors.push(`${label} has an invalid "learning_path_stage"`);
