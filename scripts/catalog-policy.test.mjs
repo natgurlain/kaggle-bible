@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import {
 	catalogGuideMatchesRecord,
@@ -58,8 +59,8 @@ test('missing guide route keeps even a published Level 2 entry at Guide pending'
 			completeness_level: '2',
 			editorial_status: 'published',
 			guide_slug: '',
-		}),
-		{ completenessLevel: '1', completenessLabel: 'Catalog', guideHref: null },
+	}),
+	{ completenessLevel: '1', completenessLabel: 'Catalog', guideHref: null },
 	);
 });
 
@@ -95,7 +96,7 @@ test('catalog guide mapping must match the exact Meta Kaggle competition identit
 	assert.equal(catalogGuideMatchesRecord({ ...homeCreditRow, slug: m5Row.slug }, homeCreditGuide), false);
 });
 
-test('catalog filters restore directly from a shared URL and round-trip without empty facets', () => {
+test('catalog filters restore from and round-trip to shareable URLs', () => {
 	const filters = readCatalogFilters('?q=WRMSSE+validation&category=Featured&state=closed&level=2');
 	assert.deepEqual(filters, {
 		query: 'WRMSSE validation',
@@ -104,8 +105,12 @@ test('catalog filters restore directly from a shared URL and round-trip without 
 		level: '2',
 	});
 	assert.equal(serializeCatalogFilters(filters), 'q=WRMSSE+validation&category=Featured&state=closed&level=2');
+	assert.equal(serializeCatalogFilters({ query: '  ', category: '', state: '', level: '' }), '');
 });
 
-test('empty catalog filters serialize to no query string', () => {
-	assert.equal(serializeCatalogFilters({ query: '  ', category: '', state: '', level: '' }), '');
+test('the catalog page uses the shared publication and URL filter policies', async () => {
+	const page = await readFile(new URL('../src/pages/competitions/index.astro', import.meta.url), 'utf8');
+	assert.match(page, /getCatalogCardPresentation\(competition\)/);
+	assert.match(page, /readCatalogFilters\(window\.location\.search\)/);
+	assert.match(page, /serializeCatalogFilters\(/);
 });

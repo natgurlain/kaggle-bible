@@ -1,5 +1,6 @@
 import { reference } from 'astro:content';
 import { z } from 'astro/zod';
+import { isHttpUrl } from './url-validation.js';
 import {
 	datasetCharacteristicSchema,
 	modalitySchema,
@@ -18,7 +19,8 @@ const dateString = z
 	}, 'Expected a real calendar date in YYYY-MM-DD format');
 
 const idString = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Expected a lowercase kebab-case ID');
-const nullableUrl = z.url().nullable();
+const webUrl = z.url().refine(isHttpUrl, 'Expected an HTTP(S) URL');
+const nullableUrl = webUrl.nullable();
 const nonNegativeNumber = z.number().nonnegative();
 
 const contentSchema = z.object({
@@ -98,7 +100,7 @@ export const competitionSchema = contentSchema.extend({
 	slug: idString,
 	meta_kaggle_id: z.string().regex(/^\d+$/).optional(),
 	kaggle_slug: idString,
-	competition_url: z.url(),
+	competition_url: webUrl,
 	end_date: dateString.nullable(),
 	coverage: z.enum(['partial', 'reviewed']),
 	modalities: z.array(modalitySchema),
@@ -157,7 +159,7 @@ export const sourceSchema = z.object({
 	schema_version: z.literal(1),
 	id: z.string().regex(/^source-[a-z0-9]+(?:-[a-z0-9]+)*$/),
 	title: z.string().min(1),
-	url: z.url(),
+	url: webUrl,
 	kind: z.enum(['official-competition', 'author-writeup', 'code', 'paper', 'documentation', 'discovery-index']),
 	authors: z.array(z.string()),
 	published_at: dateString.nullable(),

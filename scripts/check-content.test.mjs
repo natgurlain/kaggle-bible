@@ -3,13 +3,19 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { checkContent } from './check-content.mjs';
+import { satteri } from '@astrojs/markdown-satteri';
+import { checkContent, validateBuildOutput, validateClaimMarkers } from './check-content.mjs';
 import {
 	filterPublicContent,
+	filterPublicGuides,
 	isPubliclyPublishable,
 	validateLevel2Readiness,
+	validateLevel3Readiness,
 } from '../src/content/publication-policy.js';
 import { normalizeCatalogTitles } from './normalize-built-catalog.mjs';
+import claimReferenceLinks from '../src/markdown/claim-reference-links.js';
+import { removeMatchingLeadingTitle } from '../src/markdown/guide-body.js';
+import { isHttpUrl } from '../src/content/url-validation.js';
 
 function level2Fixture() {
 	const sources = new Map([
@@ -21,6 +27,7 @@ function level2Fixture() {
 		['solution-example', {
 			data: {
 				id: 'solution-example',
+				status: 'published',
 				source_ids: ['source-author-a'],
 				validation: { strategy: 'grouped-cross-validation', details: null },
 				techniques: ['groupby-aggregation'],
@@ -53,6 +60,54 @@ function level2Fixture() {
 		].join('\n\n'),
 	};
 	return { record, sources, solutions };
+}
+
+function level3Fixture() {
+	const fixture = level2Fixture();
+	fixture.record.data.kaggle_bible_completeness_level = 3;
+	fixture.record.data.solution_ids = ['solution-example', 'solution-comparison'];
+	fixture.record.data.practice_ids = ['practice-example'];
+	fixture.record.body += '\n\n' + [
+		'## Top-solution comparison',
+		'Compare source-backed validation, reported results, and methods across the reviewed solutions.',
+		'## Validation and results',
+		'Describe the validation setup and retain the source-reported result provenance.',
+		'## Compute and reproduction',
+		'Record the available compute scope and whether any component was reproduced.',
+		'## Transfer limits',
+		'State which conditions limit transfer of each lesson to a new experiment.',
+		'## Next experiment',
+		'Propose a bounded experiment that can be completed with explicitly stated resources.',
+		'## Techniques',
+		'Distinguish decisive techniques from methods that are merely present in a solution.',
+	].join('\n\n');
+	const firstSolution = fixture.solutions.get('solution-example');
+	Object.assign(firstSolution.data, {
+		reviewed_by: 'Editorial reviewer',
+		reviewed_at: '2026-09-23',
+		transfer_limits: ['The source used a different validation split.'],
+	});
+	fixture.solutions.set('solution-comparison', {
+		data: {
+			...firstSolution.data,
+			id: 'solution-comparison',
+			source_ids: ['source-author-b'],
+			transfer_limits: ['The reported result uses a different compute budget.'],
+		},
+	});
+	const practices = new Map([
+		['practice-example', {
+			data: {
+				id: 'practice-example',
+				slug: 'validation-method',
+				status: 'published',
+				reviewed_by: 'Editorial reviewer',
+				reviewed_at: '2026-09-23',
+				editorial_status: 'published',
+			},
+		}],
+	]);
+	return { ...fixture, practices };
 }
 
 function validCatalogRow() {
@@ -89,6 +144,340 @@ test('complete Level 2 evidence map passes readiness checks', () => {
 	fixture.record.data.status = 'published';
 	fixture.record.data.editorial_status = 'published';
 	assert.equal(isPubliclyPublishable(fixture.record, fixture), true);
+});
+
+test('Level 3 requires a linked practice that is publicly publishable', () => {
+	const fixture = level3Fixture();
+	assert.deepEqual(validateLevel3Readiness(fixture.record, fixture), []);
+	fixture.record.data.status = 'published';
+	fixture.record.data.editorial_status = 'published';
+	assert.equal(isPubliclyPublishable(fixture.record, fixture), true);
+
+	fixture.practices.get('practice-example').data.status = 'in-review';
+	assert.ok(validateLevel3Readiness(fixture.record, fixture)
+		.some((error) => error.includes('publicly publishable practice')));
+	assert.equal(isPubliclyPublishable(fixture.record, fixture), false);
+});
+
+test('only reviewed Level 2+ content receives public guide routes', () => {
+	const fixture = level2Fixture();
+	fixture.record.data.status = 'published';
+	fixture.record.data.editorial_status = 'published';
+	const catalogOnly = {
+		...fixture.record,
+		data: {
+			...fixture.record.data,
+			id: 'competition-catalog-only',
+			kaggle_bible_completeness_level: 1,
+		},
+	};
+	assert.deepEqual(
+		filterPublicGuides([catalogOnly, fixture.record], fixture).map((entry) => entry.data.id),
+		['competition-example'],
+	);
+});
+
+test('a published guide is withheld until every linked solution is published', () => {
+	const fixture = level2Fixture();
+	fixture.record.data.status = 'published';
+	fixture.record.data.editorial_status = 'published';
+	fixture.solutions.get('solution-example').data.status = 'in-review';
+	assert.equal(isPubliclyPublishable(fixture.record, fixture), false);
+	assert.deepEqual(filterPublicGuides([fixture.record], fixture), []);
+});
+
+test('claim markers become evidence links without rewriting code or existing links', () => {
+	const paragraph = {
+		type: 'paragraph',
+		children: [
+			{ type: 'text', value: 'Supported claim [claim:gain-01]. ' },
+			{ type: 'inlineCode', value: '[claim:code-example]' },
+			{ type: 'link', url: '/existing', children: [{ type: 'text', value: '[claim:nested-link]' }] },
+			{ type: 'emphasis', children: [{ type: 'text', value: '[claim:lesson-02]' }] },
+		],
+	};
+	const transformed = claimReferenceLinks.paragraph(paragraph);
+	assert.equal(transformed.children[1].type, 'link');
+	assert.equal(transformed.children[1].url, '#evidence-gain-01');
+	assert.equal(transformed.children[1].data.hProperties['aria-label'], 'View evidence for gain-01');
+	assert.equal(transformed.children[3].value, '[claim:code-example]');
+	assert.equal(transformed.children[4].url, '/existing');
+	assert.equal(transformed.children[5].children[0].url, '#evidence-lesson-02');
+});
+
+test('a claim marker inside an emphasized-only paragraph becomes an evidence link', () => {
+	const paragraph = {
+		type: 'paragraph',
+		children: [{ type: 'strong', children: [{ type: 'text', value: '[claim:gain-01]' }] }],
+	};
+	const transformed = claimReferenceLinks.paragraph(paragraph);
+	assert.equal(transformed.children[0].type, 'strong');
+	assert.equal(transformed.children[0].children[0].type, 'link');
+	assert.equal(transformed.children[0].children[0].url, '#evidence-gain-01');
+});
+
+test('the Markdown renderer links a claim marker when the whole phrase is bold', async () => {
+	const renderer = await satteri({ mdastPlugins: [claimReferenceLinks] }).createRenderer({});
+	const { code } = await renderer.render('**[claim:gain-01]**', { frontmatter: {} });
+	assert.match(code, /<strong><a[^>]*href="#evidence-gain-01"/);
+});
+
+test('guide body omits a matching leading title but retains other content headings', () => {
+	const body = '\n# Home Credit Default Risk\n\n## At a glance\nA concise orientation.';
+	assert.equal(
+		removeMatchingLeadingTitle(body, 'Home Credit Default Risk'),
+		'\n\n## At a glance\nA concise orientation.',
+	);
+	assert.equal(
+		removeMatchingLeadingTitle('# Different heading\n\n## At a glance', 'Home Credit Default Risk'),
+		'# Different heading\n\n## At a glance',
+	);
+	assert.equal(removeMatchingLeadingTitle('# C#\n\n## Overview', 'C#'), '\n## Overview');
+});
+
+test('external content URLs accept only HTTP and HTTPS schemes', () => {
+	assert.equal(isHttpUrl('https://www.kaggle.com/competitions/example'), true);
+	assert.equal(isHttpUrl('http://example.com/source'), true);
+	for (const value of ['javascript:alert(1)', 'data:text/html,hello', 'file:///etc/passwd', 'mailto:editor@example.com', '/relative/path']) {
+		assert.equal(isHttpUrl(value), false, `${value} must not be accepted`);
+	}
+});
+
+test('claim marker validation ignores code and already-linked markers', async () => {
+	const errors = [];
+	await validateClaimMarkers(errors, {
+		competitions: [{
+			file: 'competition-sample.md',
+			data: { id: 'competition-sample', claims: [{ id: 'supported-claim' }] },
+			body: [
+				'A supported statement [claim:supported-claim].',
+				'',
+				'`[claim:inline-code]` and [claim:linked](https://example.com).',
+				'',
+				'```md',
+				'[claim:fenced-code]',
+				'```',
+			].join(String.fromCharCode(10)),
+		}],
+		practices: [],
+	});
+	assert.deepEqual(errors, []);
+});
+
+test('claim marker validation still rejects unresolved markers in prose', async () => {
+	const errors = [];
+	await validateClaimMarkers(errors, {
+		competitions: [{
+			file: 'competition-sample.md',
+			data: { id: 'competition-sample', claims: [] },
+			body: 'Plain prose [claim:missing-claim] and `[claim:literal]`.',
+		}],
+		practices: [],
+	});
+	assert.deepEqual(errors, [
+		'competition-sample.md (competition-sample): unresolved claim marker "[claim:missing-claim]"',
+	]);
+});
+
+test('guide evidence references must target claims rendered on that guide', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-guide-claim-target-'));
+	try {
+		const competitions = path.join(root, 'src/content/competitions');
+		const solutions = path.join(root, 'src/content/solutions');
+		const sources = path.join(root, 'src/content/sources');
+		await mkdir(competitions, { recursive: true });
+		await mkdir(solutions, { recursive: true });
+		await mkdir(sources, { recursive: true });
+		await writeFile(path.join(competitions, 'competition-sample.md'), [
+			'---',
+			'id: competition-sample',
+			'status: draft',
+			'slug: sample',
+			'kaggle_bible_completeness_level: 2',
+			'solution_ids:',
+			'  - solution-linked',
+			'claims:',
+			'  - id: guide-claim',
+			'    kind: editorial-inference',
+			'    evidence: []',
+			'    supports_claim_refs:',
+			'      - competition-other#other-claim',
+			'---',
+			'',
+			'# Sample guide',
+		].join('\n'));
+		await writeFile(path.join(competitions, 'competition-other.md'), [
+			'---',
+			'id: competition-other',
+			'status: draft',
+			'slug: other',
+			'source_ids:',
+			'  - source-claim',
+			'claims:',
+			'  - id: other-claim',
+			'    kind: source-reported',
+			'    evidence:',
+			'      - source_id: source-claim',
+			'        locator: Results section',
+			'        support_summary: The source reports this result.',
+			'    supports_claim_refs: []',
+			'---',
+			'',
+			'# Other guide',
+		].join('\n'));
+		await writeFile(path.join(solutions, 'solution-linked.yaml'), [
+			'id: solution-linked',
+			'competition_id: competition-sample',
+			'claims: []',
+		].join('\n'));
+		await writeFile(path.join(sources, 'source-claim.yaml'), 'id: source-claim\n');
+
+		const result = await checkContent(root, { report: false });
+		assert.ok(result.errors.some((error) => error.includes('target "competition-other#other-claim" is not rendered in the competition-sample guide')));
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('built catalog guide links require an eligible Level 2+ record and an emitted route', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-built-guide-route-'));
+	try {
+		const dist = path.join(root, 'dist');
+		await mkdir(path.join(dist, 'data'), { recursive: true });
+		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
+
+		const levelOne = level2Fixture();
+		levelOne.record.data.slug = 'catalog-only';
+		levelOne.record.data.kaggle_bible_completeness_level = 1;
+		levelOne.record.data.status = 'published';
+		levelOne.record.data.editorial_status = 'published';
+		await mkdir(path.join(dist, 'competitions/catalog-only'), { recursive: true });
+		await writeFile(path.join(dist, 'competitions/catalog-only/index.html'), '<main>not a guide</main>');
+		await writeCatalog(dist, [{
+			...validCatalogRow(),
+			completeness_level: '1',
+			completeness_label: 'catalog',
+			guide_slug: 'catalog-only',
+		}]);
+		const levelOneEntries = {
+			competitions: [levelOne.record],
+			solutions: [...levelOne.solutions.values()],
+			sources: [...levelOne.sources.values()],
+			practices: [],
+			reproductions: [],
+		};
+		const levelOneErrors = [];
+		await validateBuildOutput(root, levelOneEntries, levelOne, Object.values(levelOneEntries).flat(), levelOneErrors);
+		assert.ok(levelOneErrors.some((error) => error.includes('does not point to a published, reviewed Level 2+ guide')));
+		assert.ok(levelOneErrors.some((error) => error.includes('non-public competition has a guide route')));
+
+		const eligible = level2Fixture();
+		eligible.record.data.slug = 'evidence-map';
+		eligible.record.data.kaggle_slug = 'example-competition';
+		eligible.record.data.meta_kaggle_id = '123';
+		eligible.record.data.status = 'published';
+		eligible.record.data.editorial_status = 'published';
+		const eligibleEntries = {
+			competitions: [eligible.record],
+			solutions: [...eligible.solutions.values()],
+			sources: [...eligible.sources.values()],
+			practices: [],
+			reproductions: [],
+		};
+		const eligibleCatalogRow = {
+			...validCatalogRow(),
+			completeness_level: '2',
+			completeness_label: 'evidence-map',
+			editorial_status: 'published',
+			guide_slug: 'evidence-map',
+			reviewed_by: 'Editorial reviewer',
+			reviewed_at: '2026-09-23',
+		};
+		await writeCatalog(dist, [eligibleCatalogRow]);
+		const missingRouteErrors = [];
+		await validateBuildOutput(root, eligibleEntries, eligible, Object.values(eligibleEntries).flat(), missingRouteErrors);
+		assert.ok(missingRouteErrors.some((error) => error.includes('has no generated page at dist/competitions/evidence-map/index.html')));
+
+		await mkdir(path.join(dist, 'competitions/evidence-map'), { recursive: true });
+		await writeFile(path.join(dist, 'competitions/evidence-map/index.html'), '<main>published evidence map</main>');
+		const emittedRouteErrors = [];
+		await validateBuildOutput(root, eligibleEntries, eligible, Object.values(eligibleEntries).flat(), emittedRouteErrors);
+		assert.deepEqual(emittedRouteErrors, []);
+
+		await writeCatalog(dist, [{ ...eligibleCatalogRow, id: '456' }]);
+		const mismatchedGuideErrors = [];
+		await validateBuildOutput(root, eligibleEntries, eligible, Object.values(eligibleEntries).flat(), mismatchedGuideErrors);
+		assert.ok(mismatchedGuideErrors.some((error) => error.includes('does not match catalog competition "456" / "example-competition"')));
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('built catalog rejects published evidence guides without a review receipt', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-catalog-review-receipt-'));
+	try {
+		const dist = path.join(root, 'dist');
+		await mkdir(path.join(dist, 'data'), { recursive: true });
+		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
+		await writeCatalog(dist, [{
+			...validCatalogRow(),
+			completeness_level: '2',
+			completeness_label: 'evidence-map',
+			editorial_status: 'published',
+			guide_slug: 'home-credit-default-risk',
+		}]);
+		const entries = { competitions: [], solutions: [], sources: [], practices: [], reproductions: [] };
+		const collections = Object.fromEntries(Object.keys(entries).map((name) => [name, new Map()]));
+		const errors = [];
+		await validateBuildOutput(root, entries, collections, [], errors);
+		assert.ok(errors.some((error) => error.includes('requires a reviewer receipt for a published evidence guide')));
+		assert.ok(errors.some((error) => error.includes('requires a valid review date for a published evidence guide')));
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('built practice pages exist only for publicly publishable practice records', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-built-practice-route-'));
+	try {
+		const dist = path.join(root, 'dist');
+		await mkdir(path.join(dist, 'data'), { recursive: true });
+		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
+		await writeCatalog(dist);
+
+		const practice = {
+			file: 'src/content/practices/practice-validation-checks.md',
+			data: {
+				id: 'practice-example',
+				slug: 'validation-method',
+				status: 'published',
+				reviewed_by: 'Editorial reviewer',
+				reviewed_at: '2026-09-23',
+				editorial_status: 'published',
+			},
+		};
+		const entries = { competitions: [], solutions: [], sources: [], practices: [practice], reproductions: [] };
+		const collections = Object.fromEntries(Object.keys(entries).map((name) => [
+			name,
+			new Map(entries[name].map((entry) => [entry.data.id, entry])),
+		]));
+		const missingRouteErrors = [];
+		await validateBuildOutput(root, entries, collections, [practice], missingRouteErrors);
+		assert.ok(missingRouteErrors.some((error) => error.includes('published practice has no generated page at dist/practices/validation-method/index.html')));
+
+		await mkdir(path.join(dist, 'practices/validation-method'), { recursive: true });
+		await writeFile(path.join(dist, 'practices/validation-method/index.html'), '<main>reviewed practice</main>');
+		const emittedRouteErrors = [];
+		await validateBuildOutput(root, entries, collections, [practice], emittedRouteErrors);
+		assert.equal(emittedRouteErrors.some((error) => error.includes('practice has no generated page')), false);
+
+		practice.data.status = 'in-review';
+		const hiddenRouteErrors = [];
+		await validateBuildOutput(root, entries, collections, [practice], hiddenRouteErrors);
+		assert.ok(hiddenRouteErrors.some((error) => error.includes('non-public practice has a detail route')));
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
 });
 
 test('incomplete Level 2 evidence map fails readiness and cannot be published', () => {
@@ -136,10 +525,13 @@ test('broken references report the source record and field', async () => {
 			'---',
 			'',
 			'# Draft',
+			'',
+			'Unresolved marker [claim:missing-claim].',
 		].join('\n'));
 		const result = await checkContent(root, { report: false });
 		assert.equal(result.ok, false);
 		assert.ok(result.errors.some((error) => error.includes('competition-orphan.md (competition-orphan): source_ids references missing sources "source-missing"')));
+		assert.ok(result.errors.some((error) => error.includes('unresolved claim marker "[claim:missing-claim]"')));
 	} finally {
 		await rm(root, { recursive: true, force: true });
 	}
@@ -317,32 +709,6 @@ test('completed reproductions require a run receipt and matching solution claim'
 		const untraceableCode = await checkContent(root, { report: false });
 		assert.ok(untraceableCode.errors.some((error) => error.includes('requires an HTTP(S) code.url or a code.snapshot_ref included in artifacts')));
 	} finally {
-		await rm(root, { recursive: true, force: true });
-	}
-});
-
-test('built catalog rejects published evidence guides without a review receipt', async () => {
-	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-catalog-review-receipt-'));
-	const previous = process.env.CHECK_BUILT_CONTENT;
-	try {
-		const dist = path.join(root, 'dist');
-		await mkdir(path.join(dist, 'data'), { recursive: true });
-		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
-		await writeCatalog(dist, [{
-			...validCatalogRow(),
-			completeness_level: '2',
-			completeness_label: 'evidence-map',
-			editorial_status: 'published',
-			guide_slug: 'home-credit-default-risk',
-		}]);
-		process.env.CHECK_BUILT_CONTENT = '1';
-
-		const result = await checkContent(root, { report: false });
-		assert.ok(result.errors.some((error) => error.includes('requires a reviewer receipt for a published evidence guide')));
-		assert.ok(result.errors.some((error) => error.includes('requires a valid review date for a published evidence guide')));
-	} finally {
-		if (previous === undefined) delete process.env.CHECK_BUILT_CONTENT;
-		else process.env.CHECK_BUILT_CONTENT = previous;
 		await rm(root, { recursive: true, force: true });
 	}
 });

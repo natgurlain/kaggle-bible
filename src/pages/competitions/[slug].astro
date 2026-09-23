@@ -1,0 +1,433 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { satteri } from '@astrojs/markdown-satteri';
+import claimReferenceLinks from '../../markdown/claim-reference-links.js';
+import { removeMatchingLeadingTitle } from '../../markdown/guide-body.js';
+import { filterPublicGuides, isPubliclyPublishable } from '../../content/publication-policy.js';
+
+const idOf = (value: unknown): string | null => {
+	if (typeof value === 'string') return value;
+	if (value && typeof value === 'object' && 'id' in value && typeof value.id === 'string') return value.id;
+	if (value && typeof value === 'object' && 'slug' in value && typeof value.slug === 'string') return value.slug;
+	return null;
+};
+
+function resolveReferences<Entry extends { id: string }>(references: unknown[], entriesById: Map<string, Entry>): Entry[] {
+	return references
+		.map(idOf)
+		.filter((id): id is string => id !== null)
+		.map((id) => entriesById.get(id))
+		.filter((entry): entry is Entry => entry !== undefined);
+}
+
+export async function getStaticPaths() {
+	const [competitions, solutions, sources, practices] = await Promise.all([
+		getCollection('competitions'),
+		getCollection('solutions'),
+		getCollection('sources'),
+		getCollection('practices'),
+	]);
+	const context = {
+		solutions: new Map(solutions.map((entry) => [entry.id, entry])),
+		sources: new Map(sources.map((entry) => [entry.id, entry])),
+		practices: new Map(practices.map((entry) => [entry.id, entry])),
+	};
+	return filterPublicGuides(competitions, context).map((entry: CollectionEntry<'competitions'>) => ({
+		params: { slug: entry.data.slug },
+	}));
+}
+
+const [competitions, solutions, sources, practices, reproductions] = await Promise.all([
+	getCollection('competitions'),
+	getCollection('solutions'),
+	getCollection('sources'),
+	getCollection('practices'),
+	getCollection('reproductions'),
+]);
+const routeParams = Astro.params as Record<string, string | undefined>;
+const slug = routeParams.slug;
+const competition = competitions.find((entry) => entry.data.slug === slug);
+if (!competition) throw new Error(`No competition guide found for slug "${slug ?? 'unknown'}".`);
+
+const solutionsById = new Map(solutions.map((entry) => [entry.id, entry]));
+const sourcesById = new Map(sources.map((entry) => [entry.id, entry]));
+const practicesById = new Map(practices.map((entry) => [entry.id, entry]));
+const reproductionsById = new Map(reproductions.map((entry) => [entry.id, entry]));
+const publicationContext = { solutions: solutionsById, sources: sourcesById, practices: practicesById };
+if (!isPubliclyPublishable(competition, publicationContext)) {
+	throw new Error(`Competition "${competition.data.id}" is not complete and reviewed for publication.`);
+}
+
+const linkedSolutions = resolveReferences(competition.data.solution_ids ?? [], solutionsById);
+const linkedPractices = resolveReferences(competition.data.practice_ids ?? [], practicesById)
+	.filter((entry) => isPubliclyPublishable(entry, publicationContext));
+const claims = [
+	...(competition.data.claims ?? []).map((claim) => ({ claim, ownerId: competition.data.id, owner: 'Guide' })),
+	...linkedSolutions.flatMap((solution) => (solution.data.claims ?? []).map((claim) => ({
+		claim,
+		ownerId: solution.data.id,
+		owner: solution.data.team,
+	}))),
+];
+const metricById = new Map((competition.data.metrics ?? []).map((metric) => [metric.id, metric]));
+const guideMarkdown = await satteri({ mdastPlugins: [claimReferenceLinks] }).createRenderer({});
+const guideBody = removeMatchingLeadingTitle(competition.body ?? '', competition.data.title);
+const { code: guideBodyHTML } = await guideMarkdown.render(guideBody, {
+	frontmatter: competition.data,
+});
+
+const levelLabel = {
+	1: 'Catalog',
+	2: 'Evidence map',
+	3: 'Full guide',
+}[competition.data.kaggle_bible_completeness_level] ?? 'Unclassified';
+const statusLabel = (value: string | number | null | undefined) => value === 'unknown' || value == null
+	? 'Not reported'
+	: String(value).replaceAll('-', ' ');
+const splitLabel = (value: string) => ({
+	'local-cv': 'Local cross-validation',
+	'public-lb': 'Public leaderboard',
+	'private-lb': 'Private leaderboard',
+} as Record<string, string>)[value] ?? statusLabel(value);
+const rankLabel = (rank: CollectionEntry<'solutions'>['data']['rank']) => {
+	if (rank.value == null) return 'Rank not reported';
+	const basis = ({
+		unknown: 'basis unknown',
+		'author-report': 'author-reported',
+		'official-final-private': 'official final private leaderboard',
+	} as Record<string, string>)[rank.basis] ?? 'basis not recorded';
+	return `Rank ${rank.value} · ${basis}`;
+};
+const evidenceAnchor = (claimId: string, ownerId: string) => ownerId === competition.data.id
+	? `evidence-${claimId}`
+	: `evidence-${ownerId}-${claimId}`;
+const renderedClaimKeys = new Set(claims.map(({ claim, ownerId }) => `${ownerId}#${claim.id}`));
+const claimReferenceHref = (reference: string, ownerId: string) => {
+	const separator = reference.indexOf('#');
+	const targetOwner = separator < 0 ? ownerId : reference.slice(0, separator);
+	const claimId = separator < 0 ? reference : reference.slice(separator + 1);
+	if (!renderedClaimKeys.has(`${targetOwner}#${claimId}`)) return null;
+	return `#${evidenceAnchor(claimId, targetOwner)}`;
+};
+const citationSource = (reference: unknown) => {
+	const id = idOf(reference);
+	return id ? sourcesById.get(id) : undefined;
+};
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content={competition.data.summary} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<title>{competition.data.title} · Kaggle Bible</title>
+	</head>
+	<body>
+		<main class="guide-shell">
+			<nav class="breadcrumbs" aria-label="Breadcrumb">
+				<a href="/">Kaggle Bible</a>
+				<span aria-hidden="true">/</span>
+				<a href="/competitions/">Competition catalog</a>
+				<span aria-hidden="true">/</span>
+				<span aria-current="page">{competition.data.title}</span>
+			</nav>
+
+			<header class="guide-header">
+				<p class="eyebrow">Reviewed competition guide</p>
+				<div class="title-row">
+					<h1>{competition.data.title}</h1>
+					<span class="level-badge">Level {competition.data.kaggle_bible_completeness_level} · {levelLabel}</span>
+				</div>
+				<p class="lede">{competition.data.summary}</p>
+				<p class="review-note">
+					Reviewed by {competition.data.reviewed_by} on <time datetime={competition.data.reviewed_at ?? undefined}>{competition.data.reviewed_at}</time>.
+					Coverage: {statusLabel(competition.data.coverage)}.
+				</p>
+				<a class="official-link" href={competition.data.competition_url} target="_blank" rel="noreferrer">Open official Kaggle competition ↗</a>
+			</header>
+
+			<section class="overview-grid" aria-label="Competition summary">
+				<article class="panel">
+					<h2>Task and data</h2>
+					<dl>
+						<div><dt>Task</dt><dd>{competition.data.tasks.map(statusLabel).join(', ') || 'Not reported'}</dd></div>
+						<div><dt>Modality</dt><dd>{competition.data.modalities.map(statusLabel).join(', ') || 'Not reported'}</dd></div>
+						<div><dt>Data characteristics</dt><dd>{competition.data.dataset_characteristics.map(statusLabel).join(', ') || 'Not reported'}</dd></div>
+						<div><dt>Competition closed</dt><dd>{competition.data.end_date ?? 'Not reported'}</dd></div>
+					</dl>
+				</article>
+				<article class="panel">
+					<h2>Official metric</h2>
+					{competition.data.metrics.map((metric) => {
+						const source = citationSource(metric.source_id);
+						return (
+							<div class="metric">
+								<h3>{metric.name}</h3>
+								<p>{statusLabel(metric.direction)} · {metric.aggregation}</p>
+								{source && <a href={source.data.url} target="_blank" rel="noreferrer">Official source: {source.data.title} ↗</a>}
+							</div>
+						);
+					})}
+				</article>
+			</section>
+
+			<section class="content-section guide-body" aria-labelledby="guide-content-heading">
+				<h2 id="guide-content-heading">Evidence map</h2>
+				<div class="prose" set:html={guideBodyHTML}></div>
+			</section>
+
+			<section class="content-section" aria-labelledby="solutions-heading">
+				<div class="section-heading">
+					<div>
+						<p class="eyebrow">Documented approaches</p>
+						<h2 id="solutions-heading">Solution comparison</h2>
+					</div>
+					<p>Reported results retain their original split and provenance. Unknown values stay explicit.</p>
+				</div>
+				<div class="solution-grid">
+					{linkedSolutions.map((solution) => (
+						<article class="solution-card" aria-labelledby={`solution-${solution.id}-title`}>
+							<div class="solution-header">
+								<div>
+									<p class="eyebrow">Participant report</p>
+									<h3 id={`solution-${solution.id}-title`}>{solution.data.title}</h3>
+								</div>
+								<p class="rank">{rankLabel(solution.data.rank)}</p>
+							</div>
+							<p>{solution.data.summary}</p>
+							<p class="byline">Team: {solution.data.team} · Authors: {solution.data.authors.join(', ') || 'Not reported'}</p>
+							{solution.data.scores.length > 0 ? (
+								<ul class="score-list" aria-label={`Reported scores for ${solution.data.title}`}>
+									{solution.data.scores.map((score) => {
+										const metric = metricById.get(score.metric_id);
+										const claim = solution.data.claims.find((item) => item.id === score.claim_id);
+										return (
+											<li>
+												<strong>{metric?.name ?? score.metric_id}: {score.value}</strong>
+												<span>{splitLabel(score.split)}</span>
+												<p>{score.configuration}</p>
+												{claim && <a href={`#${evidenceAnchor(claim.id, solution.data.id)}`}>Trace score to evidence</a>}
+												<p>Fold detail: {score.fold_summary ?? 'Not reported'}</p>
+											</li>
+										);
+									})}
+								</ul>
+							) : <p class="unknown-note">No numeric score was reported in the reviewed source.</p>}
+							<dl class="solution-details">
+								<div><dt>Validation</dt><dd>{solution.data.validation.details ?? statusLabel(solution.data.validation.strategy)}</dd></div>
+								<div><dt>Techniques reported</dt><dd>{solution.data.techniques.map(statusLabel).join(', ') || 'Not reported'}</dd></div>
+								<div><dt>Reproduction</dt><dd>{statusLabel(solution.data.reproducibility.status)}</dd></div>
+							</dl>
+							<div class="resource-block">
+								<h4>Compute and resources</h4>
+								{solution.data.resources.length > 0 ? (
+									<ul>
+										{solution.data.resources.map((resource) => {
+											const resourceClaim = solution.data.claims.find((claim) => claim.id === resource.claim_id);
+											return (
+											<li>
+												<strong>{statusLabel(resource.scope)}</strong>
+												<span>Hardware: {resource.hardware_class === 'unknown' ? 'Not reported' : statusLabel(resource.hardware_class)}</span>
+												<span>RAM: {resource.ram_gb == null ? 'Not reported' : `${resource.ram_gb} GB`}</span>
+												<span>Wall time: {resource.wall_hours == null ? 'Not reported' : `${resource.wall_hours} hours`}</span>
+												<span>Evidence basis: {statusLabel(resource.basis)}</span>
+												{resource.claim_id && <a href={`#${evidenceAnchor(resource.claim_id, solution.data.id)}`}>Resource evidence</a>}
+												{resource.accelerator_model && <span>Accelerator: {resource.accelerator_model}</span>}
+												{resource.accelerator_count != null && <span>Accelerator count: {resource.accelerator_count}</span>}
+												{resource.vram_gb_per_device != null && <span>VRAM per device: {resource.vram_gb_per_device} GB</span>}
+												{resource.accelerator_hours != null && <span>Accelerator time: {resource.accelerator_hours} hours</span>}
+											{resourceClaim?.limitations && (
+												<p>{resourceClaim.limitations}</p>
+											)}
+										</li>
+										);
+										})}
+									</ul>
+								) : <p>Resource profile: Not reported.</p>}
+							</div>
+							{solution.data.transfer_limits.length > 0 && (
+								<div class="transfer-note">
+									<h4>Transfer limits</h4>
+									<ul>{solution.data.transfer_limits.map((limit) => <li>{limit}</li>)}</ul>
+								</div>
+							)}
+						</article>
+					))}
+				</div>
+			</section>
+
+			{linkedPractices.length > 0 && (
+				<section class="content-section" aria-labelledby="practices-heading">
+					<h2 id="practices-heading">Related reviewed practices</h2>
+					<ul class="practice-list">
+						{linkedPractices.map((practice) => <li><a href={`/practices/${encodeURIComponent(practice.data.slug)}/`}>{practice.data.title}</a><span>{practice.data.summary}</span></li>)}
+					</ul>
+				</section>
+			)}
+
+			<section class="content-section evidence-section" aria-labelledby="evidence-heading">
+				<div class="section-heading">
+					<div>
+						<p class="eyebrow">Trace each statement</p>
+						<h2 id="evidence-heading">Evidence and sources</h2>
+					</div>
+					<p>Labels describe the evidence basis, not confidence or correctness.</p>
+				</div>
+				<div class="evidence-list">
+					{claims.map(({ claim, ownerId, owner }) => (
+						<article class="evidence-card" id={evidenceAnchor(claim.id, ownerId)} tabindex="-1" aria-labelledby={`claim-${ownerId}-${claim.id}`}>
+							<div class="claim-meta">
+								<span class={`claim-kind kind-${claim.kind}`}>{statusLabel(claim.kind)}</span>
+								<span>{ownerId === competition.data.id ? 'Guide claim' : `Solution record · ${owner}`}</span>
+							</div>
+							<h3 id={`claim-${ownerId}-${claim.id}`}>{claim.statement}</h3>
+							{claim.evidence.length > 0 ? (
+								<ul class="citations">
+									{claim.evidence.map((item) => {
+										const source = citationSource(item.source_id);
+										return (
+											<li>
+												{source ? <a href={source.data.url} target="_blank" rel="noreferrer">{source.data.title} ↗</a> : <span>Source not available</span>}
+												<strong>Locator:</strong> {item.locator}
+												<p>{item.support_summary}</p>
+												{source && <p class="source-meta">{source.data.authors.join(', ') || 'Author not reported'} · source reviewed {source.data.accessed_at} · {statusLabel(source.data.access_status)}</p>}
+											</li>
+										);
+									})}
+								</ul>
+							) : <p class="unknown-note">No direct source is attached; follow the supporting claim or reproduction record.</p>}
+							{claim.supports_claim_refs.length > 0 && (
+								<p class="claim-links">Builds on: {claim.supports_claim_refs.map((reference, index) => (
+									<span>{index > 0 && ', '}{claimReferenceHref(reference, ownerId)
+										? <a href={claimReferenceHref(reference, ownerId) ?? undefined}>{reference}</a>
+										: <span>{reference} (not shown on this guide)</span>}</span>
+								))}</p>
+							)}
+							{claim.reproduction_ids.length > 0 && (
+								<ul class="reproduction-list" aria-label="Reproduction records">
+									{claim.reproduction_ids.map((reference) => {
+										const reproductionId = idOf(reference);
+										const reproduction = reproductionId ? reproductionsById.get(reproductionId) : undefined;
+										return <li>Reproduction {reproduction?.data.id ?? reproductionId ?? 'Not found'} · {statusLabel(reproduction?.data.status)}</li>;
+									})}
+								</ul>
+							)}
+							<dl class="claim-conditions">
+								<div><dt>Conditions</dt><dd>{claim.conditions || 'Not reported'}</dd></div>
+								<div><dt>Limitations</dt><dd>{claim.limitations || 'Not reported'}</dd></div>
+							</dl>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<footer class="guide-footer">
+				<a href="/competitions/">← Back to the competition catalog</a>
+				<p>This is a Level {competition.data.kaggle_bible_completeness_level} · {levelLabel} guide; it does not imply that any approach has been reproduced.</p>
+			</footer>
+		</main>
+	</body>
+</html>
+
+<style>
+	:root { font-family: system-ui, sans-serif; color: #211b2b; background: #faf9fc; }
+	* { box-sizing: border-box; }
+	body { margin: 0; }
+	a { color: #56309d; text-underline-offset: .18em; }
+	a:hover { color: #321568; }
+	a:focus-visible { outline: 3px solid #7c3aed; outline-offset: 3px; border-radius: .2rem; }
+	.guide-shell { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; padding: 1.25rem 0 4rem; }
+	.breadcrumbs { display: flex; flex-wrap: wrap; gap: .55rem; color: #6d6478; font-size: .9rem; }
+	.breadcrumbs [aria-current="page"] { color: #43384f; }
+	.guide-header { padding: 3.25rem 0 2rem; max-width: 860px; }
+	.eyebrow { margin: 0 0 .55rem; color: #7250a7; font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+	.title-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 1rem; }
+	h1 { max-width: 780px; margin: 0; font-size: clamp(2.5rem, 6vw, 4.75rem); line-height: 1; letter-spacing: -.055em; }
+	.level-badge { margin-top: .35rem; padding: .45rem .7rem; border: 1px solid #d8c9f0; border-radius: 999px; background: #f0eafb; color: #442075; font-size: .8rem; font-weight: 750; }
+	.lede { max-width: 740px; margin: 1.2rem 0 .6rem; color: #51495b; font-size: 1.2rem; line-height: 1.6; }
+	.review-note { color: #706779; font-size: .9rem; }
+	.official-link { display: inline-block; margin-top: .45rem; font-weight: 700; }
+	.overview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+	.panel, .solution-card, .evidence-card { border: 1px solid #e5e0eb; border-radius: 1rem; background: #fff; box-shadow: 0 8px 24px #24104408; }
+	.panel { padding: 1.25rem; }
+	h2 { margin: 0; font-size: clamp(1.45rem, 3vw, 2rem); letter-spacing: -.025em; }
+	.panel h2 { font-size: 1.2rem; }
+	dl { margin: 1rem 0 0; }
+	dl > div { display: grid; grid-template-columns: minmax(8rem, .65fr) minmax(0, 1fr); gap: .8rem; padding: .7rem 0; border-top: 1px solid #eeeaf2; }
+	dt { color: #746b7e; font-size: .82rem; font-weight: 700; }
+	dd { margin: 0; line-height: 1.5; overflow-wrap: anywhere; }
+	.metric + .metric { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eeeaf2; }
+	.metric h3 { margin: 0; font-size: 1rem; }
+	.metric p { margin: .45rem 0; color: #554d60; line-height: 1.5; }
+	.content-section { margin-top: 3.5rem; scroll-margin-top: 1rem; }
+	.content-section > h2 { margin-bottom: 1rem; }
+	.guide-body { padding: clamp(1rem, 4vw, 2rem); border: 1px solid #e5e0eb; border-radius: 1rem; background: #fff; }
+	.prose { max-width: 760px; line-height: 1.75; }
+	.prose :global(h2) { margin: 2rem 0 .7rem; font-size: 1.4rem; }
+	.prose :global(h3) { margin: 1.5rem 0 .5rem; font-size: 1.1rem; }
+	.prose :global(p), .prose :global(ul), .prose :global(ol) { color: #443c4d; }
+	.prose :global(li + li) { margin-top: .35rem; }
+	.prose :global(.claim-reference) { display: inline-block; margin-left: .15rem; font-size: .85em; font-weight: 750; }
+	.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.15rem; }
+	.section-heading > p { max-width: 390px; margin: 0; color: #6b6274; line-height: 1.5; }
+	.solution-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+	.solution-card { min-width: 0; padding: 1.25rem; }
+	.solution-header { display: flex; align-items: flex-start; justify-content: space-between; gap: .8rem; }
+	.solution-header h3 { margin: 0; font-size: 1.25rem; line-height: 1.25; }
+	.solution-header .eyebrow { margin-bottom: .35rem; }
+	.rank { margin: .1rem 0 0; padding: .45rem .6rem; border-radius: .65rem; background: #f2eff6; color: #41354f; font-size: .78rem; font-weight: 700; text-align: right; }
+	.solution-card > p { color: #554d60; line-height: 1.55; }
+	.byline { padding-bottom: .8rem; border-bottom: 1px solid #eeeaf2; font-size: .85rem; }
+	.score-list, .resource-block ul, .transfer-note ul, .practice-list, .reproduction-list { padding-left: 1.2rem; }
+	.score-list { display: grid; gap: .8rem; }
+	.score-list li { padding-left: .15rem; }
+	.score-list li > * { display: block; margin: .3rem 0; }
+	.score-list span { color: #62596d; font-size: .86rem; font-weight: 700; }
+	.score-list p { color: #5e5669; line-height: 1.45; }
+	.solution-details { margin-top: 1.2rem; }
+	.solution-details > div { grid-template-columns: minmax(7rem, .5fr) minmax(0, 1fr); }
+	.resource-block, .transfer-note { margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid #eeeaf2; }
+	.resource-block h4, .transfer-note h4 { margin: 0; font-size: .95rem; }
+	.resource-block li { display: grid; gap: .4rem; padding: .5rem 0; color: #554d60; }
+	.resource-block li > strong { color: #2e2638; }
+	.resource-block p, .transfer-note li { color: #62596d; line-height: 1.5; }
+	.unknown-note { padding: .75rem; border-left: 3px solid #b8a5d8; background: #f7f4fb; color: #554d60; line-height: 1.5; }
+	.practice-list { display: grid; gap: .7rem; }
+	.practice-list li { padding-left: .3rem; line-height: 1.5; }
+	.practice-list span { display: block; color: #62596d; }
+	.evidence-section { padding: clamp(1rem, 4vw, 2rem); border-radius: 1.2rem; background: #f2eff6; }
+	.evidence-list { display: grid; gap: .85rem; }
+	.evidence-card { padding: 1.15rem; scroll-margin-top: 1rem; }
+	.evidence-card:target { outline: 3px solid #72519a; outline-offset: 3px; }
+	.claim-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; color: #61586c; font-size: .8rem; }
+	.claim-kind { display: inline-block; padding: .25rem .55rem; border: 1px solid #d8cde7; border-radius: 999px; background: #f7f4fb; color: #352344; font-weight: 800; }
+	.claim-kind::before { content: "Evidence type: "; font-weight: 500; }
+	.kind-reproduced { border-color: #92c5ab; background: #eff8f2; }
+	.kind-editorial-inference { border-color: #d8b56c; background: #fff8e9; }
+	.evidence-card h3 { margin: .8rem 0; font-size: 1.05rem; line-height: 1.5; }
+	.citations { display: grid; gap: .75rem; margin: 1rem 0; padding-left: 1.15rem; }
+	.citations li { padding-left: .2rem; line-height: 1.5; }
+	.citations strong { margin-left: .4rem; }
+	.citations p { margin: .35rem 0; color: #51495b; }
+	.citations .source-meta { color: #746b7e; font-size: .82rem; }
+	.claim-links { color: #5d5369; line-height: 1.5; }
+	.claim-conditions { margin-top: 1rem; }
+	.claim-conditions > div { grid-template-columns: 7.5rem minmax(0, 1fr); }
+	.guide-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid #e3dce9; color: #716879; font-size: .88rem; }
+	.guide-footer p { margin: 0; }
+	@media (max-width: 760px) {
+		.overview-grid, .solution-grid { grid-template-columns: 1fr; }
+		.section-heading { align-items: flex-start; flex-direction: column; }
+		.section-heading > p { max-width: 100%; }
+		.solution-header { flex-direction: column; }
+		.rank { text-align: left; }
+	}
+	@media (max-width: 480px) {
+		.guide-shell { width: min(100% - 1.1rem, 1120px); }
+		.guide-header { padding-top: 2.25rem; }
+		dl > div, .solution-details > div, .claim-conditions > div { grid-template-columns: 1fr; gap: .25rem; }
+		.panel, .solution-card, .evidence-card { padding: 1rem; }
+	}
+</style>

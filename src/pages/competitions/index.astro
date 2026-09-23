@@ -14,7 +14,7 @@ const catalogAsset = '/data/competition-catalog.json';
 		/>
 	</head>
 	<body>
-		<main class="catalog-shell">
+		<main class="catalog-shell" data-catalog-asset={catalogAsset}>
 			<header class="catalog-header">
 				<a class="back-link" href="/">← Kaggle Bible</a>
 				<p class="eyebrow">Browse the archive</p>
@@ -68,32 +68,62 @@ const catalogAsset = '/data/competition-catalog.json';
 			</section>
 		</main>
 
-		<script define:vars={{ catalogAsset }}>
-			const query = document.querySelector('#query');
-			const category = document.querySelector('#category');
-			const state = document.querySelector('#state');
-			const level = document.querySelector('#level');
-			const summary = document.querySelector('#summary');
-			const results = document.querySelector('#results');
-			let competitions = [];
+		<script>
+			import {
+				getCatalogCardPresentation,
+				readCatalogFilters,
+				serializeCatalogFilters,
+			} from '../../content/catalog-policy.js';
 
-			const escapeHtml = (value) =>
-				String(value ?? '').replace(/[&<>"']/g, (character) => ({
+			type CatalogCompetition = {
+				id: string;
+				slug: string;
+				title: string;
+				subtitle: string;
+				competition_url: string;
+				category: string;
+				record_state: string;
+				metric_abbreviation: string;
+				metric_name: string;
+				completeness_level: string;
+				completeness_label: string;
+				editorial_status: string;
+				guide_slug: string;
+				reviewed_by?: string;
+				reviewed_at?: string;
+				deadline_at: string;
+			};
+
+			const query = document.querySelector<HTMLInputElement>('#query')!;
+			const category = document.querySelector<HTMLSelectElement>('#category')!;
+			const state = document.querySelector<HTMLSelectElement>('#state')!;
+			const level = document.querySelector<HTMLSelectElement>('#level')!;
+			const summary = document.querySelector<HTMLParagraphElement>('#summary')!;
+			const results = document.querySelector<HTMLDivElement>('#results')!;
+			const catalogAsset = document.querySelector<HTMLElement>('.catalog-shell')?.dataset.catalogAsset;
+		if (!catalogAsset) throw new Error('The catalog asset path is missing.');
+			let competitions: CatalogCompetition[] = [];
+
+			const escapeHtml = (value: unknown) => {
+				const escapedCharacters: Record<string, string> = {
 					'&': '&amp;',
 					'<': '&lt;',
-					'>': '&gt;',
-					'"': '&quot;',
-					"'": '&#039;',
-				}[character]));
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#039;',
+				};
+				return String(value ?? '').replace(/[&<>"']/g, (character) => escapedCharacters[character] ?? character);
+			};
 
-			const stateLabel = (value) => ({
+			const stateLabels: Record<string, string> = {
 				active: 'Active',
 				upcoming: 'Upcoming',
 				closed: 'Closed',
 				undated: 'Undated',
-			}[value] ?? value ?? 'Unknown');
+			};
+			const stateLabel = (value: string) => stateLabels[value] ?? value ?? 'Unknown';
 
-			const dateLabel = (value) => {
+			const dateLabel = (value: string) => {
 				if (!value) return '—';
 				const date = new Date(value);
 				return Number.isNaN(date.getTime())
@@ -102,18 +132,22 @@ const catalogAsset = '/data/competition-catalog.json';
 			};
 
 			const updateUrl = () => {
-				const params = new URLSearchParams();
-				if (query.value.trim()) params.set('q', query.value.trim());
-				if (category.value) params.set('category', category.value);
-				if (state.value) params.set('state', state.value);
-				if (level.value) params.set('level', level.value);
-				const next = params.toString();
-				window.history.replaceState({}, '', next ? `?${next}` : window.location.pathname);
+				const search = serializeCatalogFilters({
+					query: query.value,
+					category: category.value,
+					state: state.value,
+					level: level.value,
+				});
+				const next = search
+					? `?${search}${window.location.hash}`
+					: `${window.location.pathname}${window.location.hash}`;
+				window.history.replaceState({}, '', next);
 			};
 
 			const render = () => {
 				const needle = query.value.trim().toLowerCase();
 				const filtered = competitions.filter((competition) => {
+					const presentation = getCatalogCardPresentation(competition);
 					const searchable = [
 						competition.title,
 						competition.slug,
@@ -124,7 +158,7 @@ const catalogAsset = '/data/competition-catalog.json';
 					return (!needle || searchable.includes(needle))
 						&& (!category.value || competition.category === category.value)
 						&& (!state.value || competition.record_state === state.value)
-						&& (!level.value || competition.completeness_level === level.value);
+						&& (!level.value || presentation.completenessLevel === level.value);
 				});
 
 				const visible = filtered.slice(0, 100);
@@ -139,13 +173,14 @@ const catalogAsset = '/data/competition-catalog.json';
 				}
 
 				results.innerHTML = visible.map((competition) => {
-					const guide = competition.guide_slug
-						? `<a class="guide-link" href="/competitions/${encodeURIComponent(competition.guide_slug)}/">Read guide</a>`
+					const presentation = getCatalogCardPresentation(competition);
+					const guide = presentation.guideHref
+						? `<a class="guide-link" href="${escapeHtml(presentation.guideHref)}">Read guide</a>`
 						: '<span class="pending">Guide pending</span>';
 					const metric = competition.metric_abbreviation || competition.metric_name || 'Metric not recorded';
 					return `<article class="card">
 						<div class="card-topline">
-							<span class="pill">Level ${escapeHtml(competition.completeness_level)} · ${escapeHtml(competition.completeness_label)}</span>
+							<span class="pill">Level ${escapeHtml(presentation.completenessLevel)} · ${escapeHtml(presentation.completenessLabel)}</span>
 							<span class="state state-${escapeHtml(competition.record_state)}">${escapeHtml(stateLabel(competition.record_state))}</span>
 						</div>
 						<h3>${escapeHtml(competition.title || competition.slug)}</h3>
@@ -165,23 +200,23 @@ const catalogAsset = '/data/competition-catalog.json';
 				updateUrl();
 			};
 
-			const params = new URLSearchParams(window.location.search);
-			query.value = params.get('q') ?? '';
-			state.value = params.get('state') ?? '';
-			level.value = params.get('level') ?? '';
+			const filters = readCatalogFilters(window.location.search);
+			query.value = filters.query;
+			state.value = filters.state;
+			level.value = filters.level;
 			[query, state, level].forEach((control) => control.addEventListener('input', render));
 			category.addEventListener('change', render);
 
 			fetch(catalogAsset)
 				.then((response) => {
 					if (!response.ok) throw new Error(`Catalog request failed (${response.status})`);
-					return response.json();
+					return response.json() as Promise<CatalogCompetition[]>;
 				})
 				.then((data) => {
 					competitions = data;
 					const categories = [...new Set(competitions.map((competition) => competition.category).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 					category.insertAdjacentHTML('beforeend', categories.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join(''));
-					category.value = params.get('category') ?? '';
+					category.value = filters.category;
 					render();
 				})
 				.catch((error) => {
