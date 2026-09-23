@@ -12,7 +12,7 @@ Run five sessions with real people from the intended Kaggle-learning audience, i
 
 ## Session setup
 
-- Use the same final preview deployment and commit for every session. Record its commit SHA and Vercel deployment ID, plus the test environment's browser family/version, once; do not record per-participant device details.
+- Use the same locally built preview and commit for every session. On the final epic head, run `pnpm build` once and serve it with `pnpm preview`; do not use a hosted preview. Record the commit SHA and test browser family/version once; do not record per-participant device details.
 - Run the mobile layout check at exactly 390 × 844 CSS pixels at 100% browser zoom.
 - Start each session on the competition catalog with filters cleared.
 - Read the task below verbatim. Before timing, allow one verbatim reread if requested; after the participant says they are ready, say “Start now” and start the timer immediately. Do not coach or point to a page.
@@ -45,9 +45,9 @@ Use anonymous IDs (R1–R5). Do not enter names, contact details, raw notes, quo
 | R4 | Not run | Not run | Not run | Not run | Not run | — | Not run | — |
 | R5 | Not run | Not run | Not run | Not run | Not run | — | Not run | — |
 
-| Preview commit SHA | Vercel deployment ID | Test browser family/version | Viewport |
-| --- | --- | --- | --- |
-| Not run | Not run | Not run | 390 × 844 CSS px at 100% zoom |
+| Local build commit SHA | Test browser family/version | Viewport |
+| --- | --- | --- |
+| Not run | Not run | 390 × 844 CSS px at 100% zoom |
 
 Aggregate cohort coverage (not linked to IDs): beginner participants — not run; limited-compute participants — not run.
 
@@ -63,11 +63,21 @@ Pass each surface only when every control or link in the scenario is reachable a
 | R4 | Not run | Not run | Not run |
 | R5 | Not run | Not run | Not run |
 
+### Desktop layout check
+
+At exactly 1280 × 900 CSS pixels and 100% zoom, review the catalog, each eligible published competition guide, and each eligible published practice page. Confirm there is no horizontal page overflow; catalog search and filters work; an eligible catalog link opens its matching guide; and each visible practice recommendation reaches its supporting claim/evidence. Unpublished content must remain unavailable from the catalog. Record objective outcomes only.
+
+| Page / path | Local build commit | Viewport | Pass? | Non-identifying finding category |
+| --- | --- | --- | --- | --- |
+| Catalog | Not run | 1280 × 900 CSS px | Not run | Not run |
+| Catalog → eligible guide | Not run | 1280 × 900 CSS px | Not run | Not run |
+| Practice → supporting evidence | Not run | 1280 × 900 CSS px | Not run | Not run |
+
 ### Mobile layout check
 
 At exactly 390 × 844 CSS pixels and 100% zoom, pass the catalog if controls and result cards are fully visible, usable without horizontal page scrolling, and the guide link opens the expected page. Pass the guide if headings, claim references, evidence cards, source labels, and source links are readable and usable without clipping, overlap, or horizontal page scrolling.
 
-| Page | Preview commit / deployment | Viewport | Pass? | Non-identifying finding category |
+| Page | Local build commit | Viewport | Pass? | Non-identifying finding category |
 | --- | --- | --- | --- | --- |
 | Catalog | Not run | 390 × 844 CSS px | Not run | Not run |
 | Guide | Not run | 390 × 844 CSS px | Not run | Not run |
@@ -83,12 +93,12 @@ For each observed issue, record the affected page/flow, impact, anonymous sessio
 ## Release gate
 
 - [ ] Separate affirmative consent for public reporting is confirmed for every included outcome; consent records stay outside the repository and the public results contain no raw or identifying data.
-- [ ] Five real reader sessions recorded on one identified final preview commit.
+- [ ] Five real reader sessions recorded on one identified local build commit.
 - [ ] At least four of five pass the discovery task within three minutes, or the epic explicitly records that the gate failed and does not claim it passed.
-- [ ] The identified preview deployment is reviewed; its commit SHA matches the recorded test build.
-- [ ] Material source paths and guide/catalog links pass the defined rubric, keyboard scenarios pass, and both pages pass the 390 × 844 CSS-pixel mobile checks; release-blocking findings are resolved and retested.
-- [ ] Final content checks and production build pass on the final epic head.
+- [ ] The same locally served `pnpm preview` build is used for every session; its commit SHA matches the recorded local build.
+- [ ] Review the final built site locally at 1280 × 900 desktop and 390 × 844 narrow width. Catalog-to-guide and practice-to-evidence paths work where published; unpublished content stays unavailable; keyboard and source checks pass; release-blocking findings are fixed and retested.
+- [ ] Final content checks and `pnpm build` pass on the final epic head.
 - [ ] GPT-6 Luna at Max reasoning approves the exact epic-to-main head; any head change receives a fresh review.
-- [ ] After integration, production is verified against the merged main commit.
+- [ ] The epic merge is verified on `main`.
 
 No result may be marked complete until it is observed in an actual session.
