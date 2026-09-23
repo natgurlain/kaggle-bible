@@ -1,0 +1,20 @@
+schema_version: 1
+id: source-home-credit-12th
+title: '#12 solution — Home Credit Default Risk'
+url: https://www.kaggle.com/competitions/home-credit-default-risk/writeups/12-solution
+kind: author-writeup
+authors:
+  - zr
+  - ouyangxuan
+  - cxlcc
+  - Yifan Xie
+  - Zhiqiang Zhong
+  - YL
+published_at: '2018-08-30'
+accessed_at: '2026-09-22'
+revision: null
+locator_notes: Feature Engineer; Model Ensemble; write-up rank label.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Participant report. Its displayed 12th-place label was not independently matched to a final private-leaderboard row in the source audit.
