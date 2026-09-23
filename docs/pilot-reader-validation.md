@@ -17,7 +17,7 @@ Run five sessions with real people from the intended Kaggle-learning audience, i
 - Read the task below verbatim. Before timing, allow one verbatim reread if requested; after the participant says they are ready, say “Start now” and start the timer immediately. Do not coach or point to a page.
 - Stop the timer when all three outcomes are reached or exactly at 180 seconds, whichever comes first. Do not pause or restart it. If the participant asks for clarification after timing starts, give one verbatim reread without explanation, keep the timer running, and record only that a clarification occurred. If an external interruption invalidates a session, mark it invalid and recruit a replacement rather than counting it as a pass or fail.
 - After the timed discovery task, run a keyboard-only walkthrough of both the catalog and the guide. In the catalog, tab through search and every filter, enter a query, change a filter with the keyboard, and activate the selected guide link. In the guide, navigate to a material claim, follow its claim reference to the evidence card, and activate a source link. Separately check the catalog and guide at a narrow mobile viewport (at most 520 CSS pixels).
-- Record whether each cited source opens and whether its locator lets the participant find the supporting passage. Do not treat a source link alone as proof of traceability.
+- Record whether each cited source opens and whether its locator lets the participant find the supporting passage. Use only the categories `opens and locator works`, `opens but locator fails`, `login required`, `unavailable`, or `other generic issue`; do not include free-text participant remarks. Do not treat a source link alone as proof of traceability.
 
 ## Task prompt
 
@@ -29,7 +29,7 @@ A session passes only if the participant, without facilitator hints, (1) reaches
 
 Use anonymous IDs (R1–R5). Do not enter names, contact details, raw notes, quotes, recordings, IP addresses, or personal device details. Record only objective task outcomes, elapsed seconds, whether a clarification occurred, and coarse issue categories. Report beginner and limited-compute coverage as aggregate counts separate from session IDs; do not tie those cohorts to individual rows.
 
-| ID | Relevant guide found? | Claim and source passage traced? | Feasible experiment or explicit uncertainty? | Time (seconds) | Clarification? | Pass? | Source-access finding |
+| ID | Relevant guide found? | Claim and source passage traced? | Feasible experiment or explicit uncertainty? | Time (seconds) | Clarification? | Pass? | Source-access category |
 | --- | --- | --- | --- | ---: | --- | --- | --- |
 | R1 | Not run | Not run | Not run | — | Not run | — | Not run |
 | R2 | Not run | Not run | Not run | — | Not run | — | Not run |
@@ -61,6 +61,7 @@ For each observed issue, record the affected page/flow, impact, anonymous sessio
 
 ## Release gate
 
+- [ ] Separate affirmative consent for public reporting is confirmed for every included outcome; consent records stay outside the repository and the public results contain no raw or identifying data.
 - [ ] Five real reader sessions recorded on one identified final preview commit.
 - [ ] At least four of five pass the discovery task within three minutes, or the epic explicitly records that the gate failed and does not claim it passed.
 - [ ] Material source paths, keyboard navigation, guide/catalog links, and narrow-screen layout reviewed; the defined catalog and guide keyboard scenarios pass, release-blocking findings are resolved, and fixes are retested.
