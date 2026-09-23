@@ -147,7 +147,7 @@ def build_row(row: dict[str, str], snapshot_date: dt.date) -> dict[str, str]:
     return {
         "id": competition_id,
         "slug": slug,
-        "title": value_or_empty(row, "Title"),
+        "title": value_or_empty(row, "Title") or slug,
         "subtitle": value_or_empty(row, "Subtitle"),
         "competition_url": f"https://www.kaggle.com/competitions/{slug}",
         "category": value_or_empty(row, "HostSegmentTitle"),

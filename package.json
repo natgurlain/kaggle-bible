@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/normalize-built-catalog.mjs",
     "preview": "astro preview",
     "check": "astro check",
+    "check-content": "node scripts/check-content.mjs",
+    "test:content": "node --test scripts/check-content.test.mjs",
     "astro": "astro"
   },
   "engines": {
@@ -22,6 +24,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "yaml": "^2.9.1"
   }
 }

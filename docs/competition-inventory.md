@@ -32,6 +32,6 @@ The generator uses Python’s standard library, handles embedded newlines and NU
 
 ## Fields
 
-`id` and `slug` identify the Kaggle record. `record_state` is derived from enabled/deadline dates at the snapshot date. `metric_direction` is derived from Kaggle’s evaluation metadata. Counts and reward fields are source metadata and may be blank or platform-specific. `completeness_level`, `completeness_label`, `editorial_status`, `priority`, `work_order`, `learning_path_stage`, `guide_slug`, reviewer fields, and `notes` are Kaggle Bible fields. `work_order` is an editorial sequence, not a ranking of competitions.
+`id` and `slug` identify the Kaggle record. If the source snapshot has no title, the inventory and built catalog use the stable slug as its display title rather than leaving a blank card. `record_state` is derived from enabled/deadline dates at the snapshot date. `metric_direction` is derived from Kaggle’s evaluation metadata. Counts and reward fields are source metadata and may be blank or platform-specific. `completeness_level`, `completeness_label`, `editorial_status`, `priority`, `work_order`, `learning_path_stage`, `guide_slug`, reviewer fields, and `notes` are Kaggle Bible fields. `work_order` is an editorial sequence, not a ranking of competitions.
 
 The CSV is intentionally useful for sorting and filtering, but it is not evidence for a solution claim. Competition pages, official rules, write-ups, code, and reproduced artifacts must be registered as sources before editorial claims are published.
