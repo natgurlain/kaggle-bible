@@ -1,6 +1,7 @@
 ---
 schema_version: 1
 id: competition-home-credit-default-risk
+meta_kaggle_id: '9120'
 slug: home-credit-default-risk
 status: in-review
 title: Home Credit Default Risk

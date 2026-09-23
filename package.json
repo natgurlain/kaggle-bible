@@ -9,7 +9,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "check-content": "node scripts/check-content.mjs",
-    "test:content": "node --test scripts/check-content.test.mjs",
+    "test:content": "node --test scripts/check-content.test.mjs scripts/catalog-policy.test.mjs",
     "astro": "astro"
   },
   "engines": {

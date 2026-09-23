@@ -373,6 +373,8 @@ test('built catalog guide links require an eligible Level 2+ record and an emitt
 
 		const eligible = level2Fixture();
 		eligible.record.data.slug = 'evidence-map';
+		eligible.record.data.kaggle_slug = 'example-competition';
+		eligible.record.data.meta_kaggle_id = '123';
 		eligible.record.data.status = 'published';
 		eligible.record.data.editorial_status = 'published';
 		const eligibleEntries = {
@@ -382,13 +384,16 @@ test('built catalog guide links require an eligible Level 2+ record and an emitt
 			practices: [],
 			reproductions: [],
 		};
-		await writeCatalog(dist, [{
+		const eligibleCatalogRow = {
 			...validCatalogRow(),
 			completeness_level: '2',
 			completeness_label: 'evidence-map',
 			editorial_status: 'published',
 			guide_slug: 'evidence-map',
-		}]);
+			reviewed_by: 'Editorial reviewer',
+			reviewed_at: '2026-09-23',
+		};
+		await writeCatalog(dist, [eligibleCatalogRow]);
 		const missingRouteErrors = [];
 		await validateBuildOutput(root, eligibleEntries, eligible, Object.values(eligibleEntries).flat(), missingRouteErrors);
 		assert.ok(missingRouteErrors.some((error) => error.includes('has no generated page at dist/competitions/evidence-map/index.html')));
@@ -397,7 +402,36 @@ test('built catalog guide links require an eligible Level 2+ record and an emitt
 		await writeFile(path.join(dist, 'competitions/evidence-map/index.html'), '<main>published evidence map</main>');
 		const emittedRouteErrors = [];
 		await validateBuildOutput(root, eligibleEntries, eligible, Object.values(eligibleEntries).flat(), emittedRouteErrors);
-		assert.equal(emittedRouteErrors.some((error) => error.includes('has no generated page')), false);
+		assert.deepEqual(emittedRouteErrors, []);
+
+		await writeCatalog(dist, [{ ...eligibleCatalogRow, id: '456' }]);
+		const mismatchedGuideErrors = [];
+		await validateBuildOutput(root, eligibleEntries, eligible, Object.values(eligibleEntries).flat(), mismatchedGuideErrors);
+		assert.ok(mismatchedGuideErrors.some((error) => error.includes('does not match catalog competition "456" / "example-competition"')));
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('built catalog rejects published evidence guides without a review receipt', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-catalog-review-receipt-'));
+	try {
+		const dist = path.join(root, 'dist');
+		await mkdir(path.join(dist, 'data'), { recursive: true });
+		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
+		await writeCatalog(dist, [{
+			...validCatalogRow(),
+			completeness_level: '2',
+			completeness_label: 'evidence-map',
+			editorial_status: 'published',
+			guide_slug: 'home-credit-default-risk',
+		}]);
+		const entries = { competitions: [], solutions: [], sources: [], practices: [], reproductions: [] };
+		const collections = Object.fromEntries(Object.keys(entries).map((name) => [name, new Map()]));
+		const errors = [];
+		await validateBuildOutput(root, entries, collections, [], errors);
+		assert.ok(errors.some((error) => error.includes('requires a reviewer receipt for a published evidence guide')));
+		assert.ok(errors.some((error) => error.includes('requires a valid review date for a published evidence guide')));
 	} finally {
 		await rm(root, { recursive: true, force: true });
 	}

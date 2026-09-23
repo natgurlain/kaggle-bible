@@ -84,6 +84,8 @@ CATALOG_FIELDS = [
     "work_order",
     "learning_path_stage",
     "guide_slug",
+    "reviewed_by",
+    "reviewed_at",
 ]
 
 EDITORIAL_FIELDS = [
