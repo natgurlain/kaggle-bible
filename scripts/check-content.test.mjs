@@ -54,6 +54,34 @@ function level2Fixture() {
 	return { record, sources, solutions };
 }
 
+function validCatalogRow() {
+	return {
+		id: '123',
+		slug: 'example-competition',
+		title: 'Example Competition',
+		subtitle: '',
+		competition_url: 'https://www.kaggle.com/competitions/example-competition',
+		category: 'Community',
+		enabled_at: '',
+		deadline_at: '',
+		record_state: 'undated',
+		metric_abbreviation: '',
+		metric_name: '',
+		metric_direction: '',
+		completeness_level: '1',
+		completeness_label: 'catalog',
+		editorial_status: 'unstarted',
+		priority: '',
+		work_order: '',
+		learning_path_stage: '',
+		guide_slug: '',
+	};
+}
+
+async function writeCatalog(dist, rows = [validCatalogRow()]) {
+	await writeFile(path.join(dist, 'data/competition-catalog.json'), JSON.stringify(rows));
+}
+
 test('complete Level 2 evidence map passes readiness checks', () => {
 	const fixture = level2Fixture();
 	assert.deepEqual(validateLevel2Readiness(fixture.record, fixture), []);
@@ -185,7 +213,7 @@ test('known resource records require a supporting claim', async () => {
 	}
 });
 
-test('reproduced claims require a non-empty artifact and matching solution claim', async () => {
+test('completed reproductions require a run receipt and matching solution claim', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-reproduction-'));
 	try {
 		const competitions = path.join(root, 'src/content/competitions');
@@ -235,16 +263,46 @@ test('reproduced claims require a non-empty artifact and matching solution claim
 		const result = await checkContent(root, { report: false });
 		assert.equal(result.ok, false);
 		assert.ok(result.errors.some((error) => error.includes('non-empty artifact references')));
+		assert.ok(result.errors.some((error) => error.includes('completed reproduction requires code.revision')));
 		assert.ok(result.errors.some((error) => error.includes('must match the supporting solution and claim IDs')));
 
 		await writeFile(path.join(reproductions, 'reproduction-a.yaml'), [
 			'id: reproduction-a',
 			'solution_id: solution-a',
 			'status: completed',
+			'code:',
+			'  url: null',
+			'  revision: abc123',
+			'  local_changes: null',
+			'data:',
+			'  source_url: null',
+			'  version_or_fingerprint: sha256:dataset123',
+			'  split_definition: fixed validation holdout',
+			'  access_requirements: null',
+			'environment:',
+			'  dependency_lock_or_image: lockfile hash abc123',
+			'  operating_system: Linux x86_64',
+			'  hardware: CPU-only',
+			'  seeds: [42]',
+			'command: node reproduce.mjs',
+			'expected:',
+			'  metric_id: auc',
+			'  split: local-cv',
+			'  value: 0.8',
+			'  tolerance: 0.001',
+			'  tolerance_rationale: rounded source-reported value',
+			'observed:',
+			'  value: 0.801',
+			'  fold_results: [0.801]',
+			'  wall_hours: null',
+			'  peak_memory_gb: null',
 			'claim_ids:',
 			'  - observed-result',
 			'artifacts:',
 			'  - artifacts/observed-result.json',
+			'executed_by: test runner',
+			'executed_at: 2026-09-23',
+			'limitations: []',
 		].join('\n'));
 		const matched = await checkContent(root, { report: false });
 		assert.equal(matched.ok, true, matched.errors.join('\n'));
@@ -272,7 +330,7 @@ test('built public output rejects a draft record ID', async () => {
 			'# Hidden draft',
 		].join('\n'));
 		await writeFile(path.join(dist, 'index.html'), '<p>competition-hidden</p>');
-		await writeFile(path.join(dist, 'data/competition-catalog.json'), '[]');
+		await writeCatalog(dist);
 		process.env.CHECK_BUILT_CONTENT = '1';
 		const result = await checkContent(root, { report: false });
 		assert.equal(result.ok, false);
@@ -306,7 +364,7 @@ test('built public output rejects draft titles and body text without record IDs'
 			'',
 			'This distinctive paragraph describes a private validation procedure that must not appear in the public website output.',
 		].join('\n'));
-		await writeFile(path.join(dist, 'data/competition-catalog.json'), '[]');
+		await writeCatalog(dist);
 		process.env.CHECK_BUILT_CONTENT = '1';
 
 		await writeFile(path.join(dist, 'index.html'), '<h2>Unpublished Pilot Evidence Guide</h2>');
@@ -355,7 +413,7 @@ test('built public output rejects short draft titles, claims, and fenced code te
 			'<p>Critical finding</p>',
 			'<pre><code>Privately measured cutoff</code></pre>',
 		].join('\n'));
-		await writeFile(path.join(dist, 'data/competition-catalog.json'), '[]');
+		await writeCatalog(dist);
 		process.env.CHECK_BUILT_CONTENT = '1';
 
 		const result = await checkContent(root, { report: false });
@@ -363,6 +421,16 @@ test('built public output rejects short draft titles, claims, and fenced code te
 		assert.ok(result.errors.some((error) => error.includes('non-published summary appears')));
 		assert.ok(result.errors.some((error) => error.includes('non-published claim private-claim appears')));
 		assert.ok(result.errors.some((error) => error.includes('non-published body paragraph')));
+
+		await writeFile(path.join(dist, 'index.html'), [
+			'<meta name="description" content="Secret summary was included in this public snippet">',
+			'<p>Critical finding was used to select the model.</p>',
+			'<pre><code>Diagnostics: Privately measured cutoff was selected.</code></pre>',
+		].join('\n'));
+		const embeddedResult = await checkContent(root, { report: false });
+		assert.ok(embeddedResult.errors.some((error) => error.includes('non-published summary appears')));
+		assert.ok(embeddedResult.errors.some((error) => error.includes('non-published claim private-claim appears')));
+		assert.ok(embeddedResult.errors.some((error) => error.includes('non-published body paragraph')));
 	} finally {
 		if (previous === undefined) delete process.env.CHECK_BUILT_CONTENT;
 		else process.env.CHECK_BUILT_CONTENT = previous;
@@ -399,10 +467,14 @@ test('built-output validation fails when the build or catalog asset is missing',
 		assert.ok(noBuild.errors.some((error) => error.includes('build output is missing')));
 
 		const dist = path.join(root, 'dist');
-		await mkdir(dist, { recursive: true });
+		await mkdir(path.join(dist, 'data'), { recursive: true });
 		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
 		const noCatalog = await checkContent(root, { report: false });
 		assert.ok(noCatalog.errors.some((error) => error.includes('required catalog asset is missing or invalid')));
+
+		await writeCatalog(dist, []);
+		const emptyCatalog = await checkContent(root, { report: false });
+		assert.ok(emptyCatalog.errors.some((error) => error.includes('catalog must contain at least one competition row')));
 	} finally {
 		if (previous === undefined) delete process.env.CHECK_BUILT_CONTENT;
 		else process.env.CHECK_BUILT_CONTENT = previous;

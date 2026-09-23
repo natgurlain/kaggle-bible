@@ -105,6 +105,40 @@ function reproducedClaimMatches(entry, claim, reproduction, allById) {
 	});
 }
 
+function validateCompletedReproduction(errors, entry) {
+	const { data } = entry;
+	const artifacts = data.artifacts;
+	if (!Array.isArray(artifacts) || !artifacts.length || artifacts.some((artifact) => typeof artifact !== 'string' || !artifact.trim())) {
+		errors.push(`${entry.file} (${data.id}): completed reproduction requires non-empty artifact references`);
+	}
+	const requiredValues = [
+		['code.revision', data.code?.revision],
+		['data.version_or_fingerprint', data.data?.version_or_fingerprint],
+		['data.split_definition', data.data?.split_definition],
+		['environment.dependency_lock_or_image', data.environment?.dependency_lock_or_image],
+		['environment.operating_system', data.environment?.operating_system],
+		['environment.hardware', data.environment?.hardware],
+		['command', data.command],
+		['expected.metric_id', data.expected?.metric_id],
+		['expected.split', data.expected?.split],
+		['expected.tolerance_rationale', data.expected?.tolerance_rationale],
+		['executed_by', data.executed_by],
+		['executed_at', data.executed_at],
+	];
+	for (const [field, value] of requiredValues) {
+		if (typeof value !== 'string' || !value.trim()) {
+			errors.push(`${entry.file} (${data.id}): completed reproduction requires ${field}`);
+		}
+	}
+	for (const field of ['expected.value', 'expected.tolerance', 'observed.value']) {
+		const [section, key] = field.split('.');
+		const value = data[section]?.[key];
+		if (typeof value !== 'number' || !Number.isFinite(value)) {
+			errors.push(`${entry.file} (${data.id}): completed reproduction requires numeric ${field}`);
+		}
+	}
+}
+
 function validateClaims(errors, entry, collections, allById) {
 	const claims = entry.data.claims ?? [];
 	for (const [index, claim] of claims.entries()) {
@@ -133,11 +167,8 @@ function validateClaims(errors, entry, collections, allById) {
 			addReferenceError(errors, entry, `${field}.reproduction_ids`, 'reproductions', id, collections);
 			const reproduction = collections.reproductions.get(referenceId(id));
 			if (claim.kind === 'reproduced' && reproduction) {
-				const artifacts = reproduction.data.artifacts ?? [];
-				if (reproduction.data.status !== 'completed'
-					|| artifacts.length === 0
-					|| artifacts.some((artifact) => typeof artifact !== 'string' || !artifact.trim())) {
-					errors.push(`${entry.file} (${entry.data.id}): ${field} needs a completed reproduction with non-empty artifact references`);
+				if (reproduction.data.status !== 'completed') {
+					errors.push(`${entry.file} (${entry.data.id}): ${field} needs a completed reproduction`);
 				}
 				if (!reproducedClaimMatches(entry, claim, reproduction, allById)) {
 					errors.push(`${entry.file} (${entry.data.id}): ${field} reproduction "${referenceId(id)}" must match the supporting solution and claim IDs`);
@@ -208,6 +239,7 @@ function validateDirectReferences(errors, entries, collections, allById) {
 	}
 	for (const entry of entries.reproductions) {
 		const { data } = entry;
+		if (data.status === 'completed') validateCompletedReproduction(errors, entry);
 		addReferenceError(errors, entry, 'solution_id', 'solutions', data.solution_id, collections);
 		const solutionId = referenceId(data.solution_id);
 		const solution = collections.solutions.get(solutionId);
@@ -367,7 +399,8 @@ function candidateAppears(candidate, normalizedOutput, segments) {
 	const words = candidate.text.split(' ').length;
 	if (words >= 6 && candidate.text.length >= 40) return normalizedOutput.includes(candidate.text);
 	if (words < 2 && candidate.text.length < 16) return false;
-	return segments.includes(candidate.text);
+	const phrase = ` ${candidate.text} `;
+	return segments.some((segment) => ` ${segment} `.includes(phrase));
 }
 
 function validateCatalogRows(catalog, errors) {
@@ -440,6 +473,7 @@ async function validateBuildOutput(root, entries, collections, allEntries, error
 		errors.push(`dist/data/competition-catalog.json: required catalog asset is missing or invalid (${error.message})`);
 		return;
 	}
+	if (catalog.length === 0) errors.push('dist/data/competition-catalog.json: catalog must contain at least one competition row');
 	validateCatalogRows(catalog, errors);
 
 	const outputFiles = (await walk(dist)).filter((file) => /\.(?:html|js|mjs|json|xml|txt|css|svg)$/i.test(file));
