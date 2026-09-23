@@ -346,8 +346,7 @@ function nonPublishedTextCandidates(entry, catalogText) {
 	const add = (label, value, allowCatalogCopy = false) => {
 		const normalized = normalizeLeakText(value);
 		if (!normalized) return;
-		const words = normalized.split(' ');
-		if ((words.length < 2 && normalized.length < 16) || normalized.length < 8) return;
+		if (normalized.length < 8) return;
 		if (allowCatalogCopy && entry.collection === 'competitions' && catalogText.has(normalized)) return;
 		candidates.push({ label, text: normalized });
 	};
@@ -404,7 +403,6 @@ function jsonTextSegments(source) {
 function candidateAppears(candidate, normalizedOutput, segments) {
 	const words = candidate.text.split(' ').length;
 	if (words >= 6 && candidate.text.length >= 40) return normalizedOutput.includes(candidate.text);
-	if (words < 2 && candidate.text.length < 16) return false;
 	const phrase = ` ${candidate.text} `;
 	return segments.some((segment) => ` ${segment} `.includes(phrase));
 }

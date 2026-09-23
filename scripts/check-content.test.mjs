@@ -403,25 +403,25 @@ test('built public output rejects short draft titles, claims, and fenced code te
 			'---',
 			'id: competition-hidden-short',
 			'status: draft',
-			'title: Hidden Draft',
+			'title: CatBoost',
 			'summary: Secret summary',
 			'claims:',
 			'  - id: private-claim',
 			'    kind: editorial-inference',
-			'    statement: Critical finding',
+			'    statement: LightGBM',
 			'slug: hidden-short',
 			'kaggle_slug: hidden-short',
 			'---',
 			'',
 			'```text',
-			'Privately measured cutoff',
+			'AdaBoost',
 			'```',
 		].join('\n'));
 		await writeFile(path.join(dist, 'index.html'), [
 			'<meta name="description" content="Secret summary">',
-			'<h1>Hidden Draft</h1>',
-			'<p>Critical finding</p>',
-			'<pre><code>Privately measured cutoff</code></pre>',
+			'<h1>CatBoost</h1>',
+			'<p>LightGBM</p>',
+			'<pre><code>AdaBoost</code></pre>',
 		].join('\n'));
 		await writeCatalog(dist);
 		process.env.CHECK_BUILT_CONTENT = '1';
@@ -434,8 +434,8 @@ test('built public output rejects short draft titles, claims, and fenced code te
 
 		await writeFile(path.join(dist, 'index.html'), [
 			'<meta name="description" content="Secret summary was included in this public snippet">',
-			'<p>Critical finding was used to select the model.</p>',
-			'<pre><code>Diagnostics: Privately measured cutoff was selected.</code></pre>',
+			'<p>LightGBM was used to select the model.</p>',
+			'<pre><code>Diagnostics: AdaBoost was selected.</code></pre>',
 		].join('\n'));
 		const embeddedResult = await checkContent(root, { report: false });
 		assert.ok(embeddedResult.errors.some((error) => error.includes('non-published summary appears')));
