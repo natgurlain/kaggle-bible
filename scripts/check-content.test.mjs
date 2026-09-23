@@ -321,6 +321,32 @@ test('completed reproductions require a run receipt and matching solution claim'
 	}
 });
 
+test('built catalog rejects published evidence guides without a review receipt', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-catalog-review-receipt-'));
+	const previous = process.env.CHECK_BUILT_CONTENT;
+	try {
+		const dist = path.join(root, 'dist');
+		await mkdir(path.join(dist, 'data'), { recursive: true });
+		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
+		await writeCatalog(dist, [{
+			...validCatalogRow(),
+			completeness_level: '2',
+			completeness_label: 'evidence-map',
+			editorial_status: 'published',
+			guide_slug: 'home-credit-default-risk',
+		}]);
+		process.env.CHECK_BUILT_CONTENT = '1';
+
+		const result = await checkContent(root, { report: false });
+		assert.ok(result.errors.some((error) => error.includes('requires a reviewer receipt for a published evidence guide')));
+		assert.ok(result.errors.some((error) => error.includes('requires a valid review date for a published evidence guide')));
+	} finally {
+		if (previous === undefined) delete process.env.CHECK_BUILT_CONTENT;
+		else process.env.CHECK_BUILT_CONTENT = previous;
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
 test('built public output rejects a draft record ID', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-build-'));
 	const previous = process.env.CHECK_BUILT_CONTENT;
