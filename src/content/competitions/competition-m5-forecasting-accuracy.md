@@ -1,6 +1,7 @@
 ---
 schema_version: 1
 id: competition-m5-forecasting-accuracy
+meta_kaggle_id: '18599'
 status: in-review
 title: M5 Forecasting – Accuracy
 summary: An evidence map comparing a hierarchical LightGBM/N-BEATS ensemble report with a single-model, multi-window validation report, without inventing comparable scores or compute costs.
