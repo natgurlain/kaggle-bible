@@ -1,4 +1,4 @@
-id,completeness_level,editorial_status,priority,work_order,learning_path_stage,guide_slug,reviewed_by,reviewed_at,notes
+id,completeness_level,editorial_status,priority,work_order,learning_path_stage,guide_slug,reviewed_by,reviewed_at,notes,editorial_approval_type,editorial_approved_by,editorial_approved_at
 3136,1,queued,path,1,beginner,,,,Suggested starting competition: first valid submission and binary classification loop.
 5407,1,queued,path,2,beginner,,,,Suggested regression practice: feature types, transformations, and cross-validation.
 3004,1,queued,path,3,beginner,,,,Suggested vision introduction: small neural model and compute budgeting.

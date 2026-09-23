@@ -97,7 +97,7 @@ const topicLabel = practice.data.topic.replaceAll('-', ' ');
 				<p class="eyebrow">Reviewed practice · {topicLabel}</p>
 				<h1>{practice.data.title}</h1>
 				<p class="lede">{practice.data.summary}</p>
-				<p class="review-note">Reviewed by {practice.data.reviewed_by} on {reviewedDate} · Evidence scope: {practice.data.evidence_scope.replaceAll('-', ' ')}</p>
+				<p class="review-note">Evidence reviewed by {practice.data.reviewed_by} on {reviewedDate} · Evidence scope: {practice.data.evidence_scope.replaceAll('-', ' ')}</p>
 			</header>
 
 			<article class="practice-content" aria-label="Practice guidance" set:html={practiceBodyHTML} />

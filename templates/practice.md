@@ -7,6 +7,9 @@ title: "REPLACE: decision-oriented practice title"
 summary: "REPLACE: what decision this helps and for whom"
 reviewed_by: null
 reviewed_at: null
+editorial_approval_type: null
+editorial_approved_by: null
+editorial_approved_at: null
 topic: validation # Replace with a controlled topic.
 evidence_scope: single-case
 modalities: []

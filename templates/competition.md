@@ -7,6 +7,9 @@ title: "REPLACE: competition title"
 summary: "REPLACE: problem and why studying it helps a participant"
 reviewed_by: null
 reviewed_at: null
+editorial_approval_type: null
+editorial_approved_by: null
+editorial_approved_at: null
 kaggle_bible_completeness_level: 1
 kaggle_bible_completeness_label: catalog
 editorial_status: unstarted

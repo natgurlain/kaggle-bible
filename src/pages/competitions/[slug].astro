@@ -142,7 +142,7 @@ const citationSource = (reference: unknown) => {
 				</div>
 				<p class="lede">{competition.data.summary}</p>
 				<p class="review-note">
-					Reviewed by {competition.data.reviewed_by} on <time datetime={competition.data.reviewed_at ?? undefined}>{competition.data.reviewed_at}</time>.
+					Evidence reviewed by {competition.data.reviewed_by} on <time datetime={competition.data.reviewed_at ?? undefined}>{competition.data.reviewed_at}</time>.
 					Coverage: {statusLabel(competition.data.coverage)}.
 				</p>
 				<a class="official-link" href={competition.data.competition_url} target="_blank" rel="noreferrer">Open official Kaggle competition ↗</a>

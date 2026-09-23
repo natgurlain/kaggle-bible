@@ -4,7 +4,17 @@ const completenessLabels = Object.freeze({
 	'3': 'Full guide',
 });
 
-function hasCatalogReviewReceipt(competition) {
+function hasCatalogEditorialApproval(competition) {
+	const reviewer = typeof competition?.editorial_approved_by === 'string' ? competition.editorial_approved_by.trim() : '';
+	const reviewedAt = typeof competition?.editorial_approved_at === 'string' ? competition.editorial_approved_at : '';
+	if (!reviewer || !/^\d{4}-\d{2}-\d{2}$/.test(reviewedAt)) return false;
+	const date = new Date(reviewedAt + 'T00:00:00Z');
+	return competition?.editorial_approval_type === 'human'
+		&& !Number.isNaN(date.valueOf())
+		&& date.toISOString().slice(0, 10) === reviewedAt;
+}
+
+function hasCatalogEvidenceReview(competition) {
 	const reviewer = typeof competition?.reviewed_by === 'string' ? competition.reviewed_by.trim() : '';
 	const reviewedAt = typeof competition?.reviewed_at === 'string' ? competition.reviewed_at : '';
 	if (!reviewer || !/^\d{4}-\d{2}-\d{2}$/.test(reviewedAt)) return false;
@@ -31,7 +41,11 @@ export function getCatalogCardPresentation(competition) {
 		? competition.guide_slug.trim()
 		: '';
 
-	if (competition?.editorial_status !== 'published' || !['2', '3'].includes(level) || !guideSlug || !hasCatalogReviewReceipt(competition)) {
+	if (competition?.editorial_status !== 'published'
+		|| !['2', '3'].includes(level)
+		|| !guideSlug
+		|| !hasCatalogEvidenceReview(competition)
+		|| !hasCatalogEditorialApproval(competition)) {
 		return {
 			completenessLevel: '1',
 			completenessLabel: completenessLabels['1'],

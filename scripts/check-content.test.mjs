@@ -28,6 +28,9 @@ function level2Fixture() {
 			data: {
 				id: 'solution-example',
 				status: 'published',
+				editorial_approval_type: 'human',
+				editorial_approved_by: 'Independent editor',
+				editorial_approved_at: '2026-09-23',
 				source_ids: ['source-author-a'],
 				validation: { strategy: 'grouped-cross-validation', details: null },
 				techniques: ['groupby-aggregation'],
@@ -39,8 +42,11 @@ function level2Fixture() {
 		data: {
 			id: 'competition-example',
 			status: 'in-review',
-			reviewed_by: 'Editorial reviewer',
+			reviewed_by: 'GPT-6 Luna Max',
 			reviewed_at: '2026-09-23',
+			editorial_approval_type: 'human',
+			editorial_approved_by: 'Independent editor',
+			editorial_approved_at: '2026-09-23',
 			coverage: 'reviewed',
 			editorial_status: 'in-review',
 			kaggle_bible_completeness_level: 2,
@@ -83,8 +89,11 @@ function level3Fixture() {
 	].join('\n\n');
 	const firstSolution = fixture.solutions.get('solution-example');
 	Object.assign(firstSolution.data, {
-		reviewed_by: 'Editorial reviewer',
+		reviewed_by: 'GPT-6 Luna Max',
 		reviewed_at: '2026-09-23',
+		editorial_approval_type: 'human',
+		editorial_approved_by: 'Independent editor',
+		editorial_approved_at: '2026-09-23',
 		transfer_limits: ['The source used a different validation split.'],
 	});
 	fixture.solutions.set('solution-comparison', {
@@ -101,8 +110,11 @@ function level3Fixture() {
 				id: 'practice-example',
 				slug: 'validation-method',
 				status: 'published',
-				reviewed_by: 'Editorial reviewer',
+				reviewed_by: 'GPT-6 Luna Max',
 				reviewed_at: '2026-09-23',
+				editorial_approval_type: 'human',
+				editorial_approved_by: 'Independent editor',
+				editorial_approved_at: '2026-09-23',
 				editorial_status: 'published',
 			},
 		}],
@@ -131,6 +143,9 @@ function validCatalogRow() {
 		work_order: '',
 		learning_path_stage: '',
 		guide_slug: '',
+		editorial_approval_type: '',
+		editorial_approved_by: '',
+		editorial_approved_at: '',
 	};
 }
 
@@ -144,6 +159,18 @@ test('complete Level 2 evidence map passes readiness checks', () => {
 	fixture.record.data.status = 'published';
 	fixture.record.data.editorial_status = 'published';
 	assert.equal(isPubliclyPublishable(fixture.record, fixture), true);
+});
+
+test('model evidence review cannot substitute for the human editorial approval receipt', () => {
+	const fixture = level2Fixture();
+	fixture.record.data.status = 'published';
+	fixture.record.data.editorial_status = 'published';
+	fixture.record.data.editorial_approval_type = null;
+	fixture.record.data.editorial_approved_by = null;
+	fixture.record.data.editorial_approved_at = null;
+	assert.equal(isPubliclyPublishable(fixture.record, fixture), false);
+	assert.ok(validateLevel2Readiness(fixture.record, fixture)
+		.some((error) => error.includes('separate human editorial approval')));
 });
 
 test('Level 3 requires a linked practice that is publicly publishable', () => {
@@ -390,8 +417,11 @@ test('built catalog guide links require an eligible Level 2+ record and an emitt
 			completeness_label: 'evidence-map',
 			editorial_status: 'published',
 			guide_slug: 'evidence-map',
-			reviewed_by: 'Editorial reviewer',
+			reviewed_by: 'GPT-6 Luna Max',
 			reviewed_at: '2026-09-23',
+			editorial_approval_type: 'human',
+			editorial_approved_by: 'Independent editor',
+			editorial_approved_at: '2026-09-23',
 		};
 		await writeCatalog(dist, [eligibleCatalogRow]);
 		const missingRouteErrors = [];
@@ -413,7 +443,7 @@ test('built catalog guide links require an eligible Level 2+ record and an emitt
 	}
 });
 
-test('built catalog rejects published evidence guides without a review receipt', async () => {
+test('built catalog rejects published evidence guides without a human editorial approval receipt', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-catalog-review-receipt-'));
 	try {
 		const dist = path.join(root, 'dist');
@@ -430,8 +460,30 @@ test('built catalog rejects published evidence guides without a review receipt',
 		const collections = Object.fromEntries(Object.keys(entries).map((name) => [name, new Map()]));
 		const errors = [];
 		await validateBuildOutput(root, entries, collections, [], errors);
-		assert.ok(errors.some((error) => error.includes('requires a reviewer receipt for a published evidence guide')));
-		assert.ok(errors.some((error) => error.includes('requires a valid review date for a published evidence guide')));
+		assert.ok(errors.some((error) => error.includes('requires a human editorial approval for a published evidence guide')));
+		assert.ok(errors.some((error) => error.includes('requires a named human editor for a published evidence guide')));
+		assert.ok(errors.some((error) => error.includes('requires a valid human editorial approval date for a published evidence guide')));
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('legacy Level 1 catalog rows may omit the optional editorial approval receipt', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-legacy-catalog-receipt-'));
+	try {
+		const dist = path.join(root, 'dist');
+		await mkdir(path.join(dist, 'data'), { recursive: true });
+		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
+		const row = { ...validCatalogRow() };
+		delete row.editorial_approval_type;
+		delete row.editorial_approved_by;
+		delete row.editorial_approved_at;
+		await writeCatalog(dist, [row]);
+		const entries = { competitions: [], solutions: [], sources: [], practices: [], reproductions: [] };
+		const collections = Object.fromEntries(Object.keys(entries).map((name) => [name, new Map()]));
+		const errors = [];
+		await validateBuildOutput(root, entries, collections, [], errors);
+		assert.deepEqual(errors, []);
 	} finally {
 		await rm(root, { recursive: true, force: true });
 	}
@@ -451,8 +503,11 @@ test('built practice pages exist only for publicly publishable practice records'
 				id: 'practice-example',
 				slug: 'validation-method',
 				status: 'published',
-				reviewed_by: 'Editorial reviewer',
+				reviewed_by: 'GPT-6 Luna Max',
 				reviewed_at: '2026-09-23',
+				editorial_approval_type: 'human',
+				editorial_approved_by: 'Independent editor',
+				editorial_approved_at: '2026-09-23',
 				editorial_status: 'published',
 			},
 		};
@@ -501,8 +556,11 @@ test('incomplete Level 2 evidence map fails readiness and cannot be published', 
 test('draft and in-review entries stay out of public content selections', () => {
 	const published = {
 		status: 'published',
-		reviewed_by: 'Editor',
+		reviewed_by: 'GPT-6 Luna Max',
 		reviewed_at: '2026-09-23',
+		editorial_approval_type: 'human',
+		editorial_approved_by: 'Independent editor',
+		editorial_approved_at: '2026-09-23',
 	};
 	const draft = { ...published, id: 'draft', status: 'draft' };
 	const inReview = { ...published, id: 'review', status: 'in-review' };
@@ -537,7 +595,7 @@ test('broken references report the source record and field', async () => {
 	}
 });
 
-test('published records without a review receipt fail with their file and ID', async () => {
+test('published records without separate human editorial approval fail with their file and ID', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-review-'));
 	try {
 		const directory = path.join(root, 'src/content/competitions');
@@ -554,7 +612,7 @@ test('published records without a review receipt fail with their file and ID', a
 		].join('\n'));
 		const result = await checkContent(root, { report: false });
 		assert.equal(result.ok, false);
-		assert.ok(result.errors.some((error) => error.includes('competition-unreviewed.md (competition-unreviewed): published content needs a named reviewer')));
+		assert.ok(result.errors.some((error) => error.includes('competition-unreviewed.md (competition-unreviewed): published content needs valid evidence review, separate human editorial approval')));
 	} finally {
 		await rm(root, { recursive: true, force: true });
 	}
