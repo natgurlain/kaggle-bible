@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { satteri } from '@astrojs/markdown-satteri';
-import { checkContent, validateBuildOutput } from './check-content.mjs';
+import { checkContent, validateBuildOutput, validateClaimMarkers } from './check-content.mjs';
 import {
 	filterPublicContent,
 	filterPublicGuides,
@@ -13,6 +13,7 @@ import {
 } from '../src/content/publication-policy.js';
 import { normalizeCatalogTitles } from './normalize-built-catalog.mjs';
 import claimReferenceLinks from '../src/markdown/claim-reference-links.js';
+import { isHttpUrl } from '../src/content/url-validation.js';
 
 function level2Fixture() {
 	const sources = new Map([
@@ -156,6 +157,50 @@ test('the Markdown renderer links a claim marker when the whole phrase is bold',
 	const renderer = await satteri({ mdastPlugins: [claimReferenceLinks] }).createRenderer({});
 	const { code } = await renderer.render('**[claim:gain-01]**', { frontmatter: {} });
 	assert.match(code, /<strong><a[^>]*href="#evidence-gain-01"/);
+});
+
+test('external content URLs accept only HTTP and HTTPS schemes', () => {
+	assert.equal(isHttpUrl('https://www.kaggle.com/competitions/example'), true);
+	assert.equal(isHttpUrl('http://example.com/source'), true);
+	for (const value of ['javascript:alert(1)', 'data:text/html,hello', 'file:///etc/passwd', 'mailto:editor@example.com', '/relative/path']) {
+		assert.equal(isHttpUrl(value), false, `${value} must not be accepted`);
+	}
+});
+
+test('claim marker validation ignores code and already-linked markers', async () => {
+	const errors = [];
+	await validateClaimMarkers(errors, {
+		competitions: [{
+			file: 'competition-sample.md',
+			data: { id: 'competition-sample', claims: [{ id: 'supported-claim' }] },
+			body: [
+				'A supported statement [claim:supported-claim].',
+				'',
+				'`[claim:inline-code]` and [claim:linked](https://example.com).',
+				'',
+				'```md',
+				'[claim:fenced-code]',
+				'```',
+			].join('\\n'),
+		}],
+		practices: [],
+	});
+	assert.deepEqual(errors, []);
+});
+
+test('claim marker validation still rejects unresolved markers in prose', async () => {
+	const errors = [];
+	await validateClaimMarkers(errors, {
+		competitions: [{
+			file: 'competition-sample.md',
+			data: { id: 'competition-sample', claims: [] },
+			body: 'Plain prose [claim:missing-claim] and `[claim:literal]`.',
+		}],
+		practices: [],
+	});
+	assert.deepEqual(errors, [
+		'competition-sample.md (competition-sample): unresolved claim marker "[claim:missing-claim]"',
+	]);
 });
 
 test('guide evidence references must target claims rendered on that guide', async () => {

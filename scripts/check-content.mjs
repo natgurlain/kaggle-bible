@@ -3,6 +3,8 @@ import { constants } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
+import { satteri } from '@astrojs/markdown-satteri';
+import { createClaimMarkerCollector } from '../src/markdown/claim-reference-links.js';
 import {
 	filterPublicGuides,
 	isPubliclyPublishable,
@@ -188,13 +190,17 @@ function validateClaims(errors, entry, collections, allById) {
 	}
 }
 
-function validateClaimMarkers(errors, entries) {
+export async function validateClaimMarkers(errors, entries) {
 	for (const collectionName of ['competitions', 'practices']) {
 		for (const entry of entries[collectionName]) {
 			const claims = new Set((entry.data.claims ?? []).map((claim) => claim.id));
-			for (const match of entry.body.matchAll(/\[claim:([^\]]+)\]/g)) {
-				if (!claims.has(match[1])) {
-					errors.push(`${entry.file} (${entry.data.id}): unresolved claim marker "${match[0]}"`);
+			const markers = [];
+			const markerCollector = createClaimMarkerCollector((text, id) => markers.push({ text, id }));
+			const renderer = await satteri({ mdastPlugins: [markerCollector] }).createRenderer({});
+			await renderer.render(entry.body, { frontmatter: entry.data });
+			for (const { text, id } of markers) {
+				if (!claims.has(id)) {
+					errors.push(`${entry.file} (${entry.data.id}): unresolved claim marker "${text}"`);
 				}
 			}
 		}
@@ -624,7 +630,7 @@ export async function checkContent(root = defaultRoot, { report = true } = {}) {
 
 	validateDirectReferences(errors, entries, collections, allById);
 	validateGuideClaimReferences(errors, entries, collections);
-	validateClaimMarkers(errors, entries);
+	await validateClaimMarkers(errors, entries);
 	validatePublicationStates(errors, entries, collections, allById);
 	if (process.env.CHECK_BUILT_CONTENT === '1') {
 		await validateBuildOutput(root, entries, collections, allById.values(), errors);

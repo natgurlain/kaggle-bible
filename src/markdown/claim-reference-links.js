@@ -41,3 +41,23 @@ export default {
 		return { ...node, children: node.children.flatMap(transformInline) };
 	},
 };
+
+
+export function createClaimMarkerCollector(onMarker) {
+	function visit(node) {
+		if (node.type === 'link' || node.type === 'linkReference' || node.type === 'inlineCode' || node.type === 'code') return;
+		if (node.type === 'text') {
+			for (const match of node.value.matchAll(/\\[claim:([^\\]]+)\\]/g)) onMarker(match[0], match[1]);
+			return;
+		}
+		for (const child of node.children ?? []) visit(child);
+	}
+
+	return {
+		name: 'claim-marker-collector',
+		paragraph(node) {
+			visit(node);
+			return node;
+		},
+	};
+}
