@@ -16,7 +16,7 @@ Run five sessions with real people from the intended Kaggle-learning audience. I
 - Start each session on the competition catalog with filters cleared.
 - Give every participant the task below verbatim. Do not coach or point them to a page; neutral clarification of the task wording is allowed and should be recorded.
 - Time-box the discovery task at three minutes. Stop the timer only after all three outcomes are reached, or at the three-minute limit.
-- Ask participants to use keyboard-only navigation for one part of the flow. Separately check the catalog and guide at a narrow mobile viewport (at most 520 CSS pixels).
+- After the timed discovery task, run a keyboard-only walkthrough of both the catalog and the guide. In the catalog, tab through search and every filter, enter a query, change a filter with the keyboard, and activate the selected guide link. In the guide, navigate to a material claim, follow its claim reference to the evidence card, and activate a source link. Separately check the catalog and guide at a narrow mobile viewport (at most 520 CSS pixels).
 - Record whether each cited source opens and whether its locator lets the participant find the supporting passage. Do not treat a source link alone as proof of traceability.
 
 ## Task prompt
@@ -29,13 +29,25 @@ A session passes only if the participant, without facilitator hints, (1) reaches
 
 Use anonymous IDs (R1–R5). Do not enter names, contact details, or other personal data here.
 
-| ID | Beginner / experience context | Compute context | Viewport and browser | Relevant guide found? | Claim and source passage traced? | Feasible experiment or explicit uncertainty? | Time (seconds) | Pass? | Keyboard/mobile or source-access finding |
+| ID | Beginner / experience context | Compute context | Viewport and browser | Relevant guide found? | Claim and source passage traced? | Feasible experiment or explicit uncertainty? | Time (seconds) | Pass? | Mobile or source-access finding |
 | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- |
 | R1 | Not run | Not run | Not run | Not run | Not run | Not run | — | — | — |
 | R2 | Not run | Not run | Not run | Not run | Not run | Not run | — | — | — |
 | R3 | Not run | Not run | Not run | Not run | Not run | Not run | — | — | — |
 | R4 | Not run | Not run | Not run | Not run | Not run | Not run | — | — | — |
 | R5 | Not run | Not run | Not run | Not run | Not run | Not run | — | — | — |
+
+### Keyboard walkthrough results
+
+Pass each surface only when every control or link in the scenario is reachable and operable by keyboard, focus remains visible and follows a logical order, activating the claim reference reaches the matching evidence card, source links open the expected source, and no keyboard trap occurs. Record failures and observations separately from the timed discovery pass.
+
+| Session ID | Catalog search, filters, and guide link | Guide claim reference and source link | Observation or finding |
+| --- | --- | --- | --- |
+| R1 | Not run | Not run | Not run |
+| R2 | Not run | Not run | Not run |
+| R3 | Not run | Not run | Not run |
+| R4 | Not run | Not run | Not run |
+| R5 | Not run | Not run | Not run |
 
 ## Findings and decisions
 
@@ -49,7 +61,7 @@ For each observed issue, record the affected page/flow, impact, evidence (partic
 
 - [ ] Five real reader sessions recorded on one identified final preview commit.
 - [ ] At least four of five pass the discovery task within three minutes, or the epic explicitly records that the gate failed and does not claim it passed.
-- [ ] Material source paths, keyboard navigation, guide/catalog links, and narrow-screen layout reviewed; release-blocking findings resolved and retested.
+- [ ] Material source paths, keyboard navigation, guide/catalog links, and narrow-screen layout reviewed; the defined catalog and guide keyboard scenarios pass, release-blocking findings are resolved, and fixes are retested.
 - [ ] Final content checks and production build pass on the final epic head.
 - [ ] GPT-6 Luna at Max reasoning approves the exact epic-to-main head; any head change receives a fresh review.
 - [ ] After integration, production is verified against the merged main commit.
