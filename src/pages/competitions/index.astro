@@ -66,31 +66,48 @@
 
 		<script>
 			import { getCatalogCardPresentation, readCatalogFilters, serializeCatalogFilters } from '../../content/catalog-policy.js';
-			const query = document.querySelector('#query');
-			const category = document.querySelector('#category');
-			const state = document.querySelector('#state');
-			const level = document.querySelector('#level');
-			const summary = document.querySelector('#summary');
-			const results = document.querySelector('#results');
-			let competitions = [];
+			type CatalogRow = {
+				id: string;
+				slug: string;
+				title: string;
+				subtitle: string;
+				summary?: string;
+				competition_url: string;
+				category: string;
+				record_state: string;
+				metric_abbreviation: string;
+				metric_name: string;
+				deadline_at: string;
+				completeness_level: string;
+				editorial_status: string;
+				guide_slug: string;
+			};
 
-			const escapeHtml = (value) =>
+			const query = document.querySelector<HTMLInputElement>('#query')!;
+			const category = document.querySelector<HTMLSelectElement>('#category')!;
+			const state = document.querySelector<HTMLSelectElement>('#state')!;
+			const level = document.querySelector<HTMLSelectElement>('#level')!;
+			const summary = document.querySelector<HTMLParagraphElement>('#summary')!;
+			const results = document.querySelector<HTMLDivElement>('#results')!;
+			let competitions: CatalogRow[] = [];
+
+			const escapeHtml = (value: unknown) =>
 				String(value ?? '').replace(/[&<>"']/g, (character) => ({
 					'&': '&amp;',
 					'<': '&lt;',
 					'>': '&gt;',
 					'"': '&quot;',
 					"'": '&#039;',
-				}[character]));
+				}[character] ?? character));
 
-			const stateLabel = (value) => ({
+			const stateLabel = (value: string) => ({
 				active: 'Active',
 				upcoming: 'Upcoming',
 				closed: 'Closed',
 				undated: 'Undated',
-			}[value] ?? value ?? 'Unknown');
+			} as Record<string, string>)[value] ?? value ?? 'Unknown';
 
-			const dateLabel = (value) => {
+			const dateLabel = (value: string) => {
 				if (!value) return '—';
 				const date = new Date(value);
 				return Number.isNaN(date.getTime())
@@ -187,7 +204,8 @@
 				})
 				.catch((error) => {
 					summary.textContent = 'The catalog could not be loaded.';
-					results.innerHTML = `<p class="empty">${escapeHtml(error.message)} Please try again later or report it on GitHub.</p>`;
+					const message = error instanceof Error ? error.message : String(error);
+					results.innerHTML = `<p class="empty">${escapeHtml(message)} Please try again later or report it on GitHub.</p>`;
 				});
 		</script>
 	</body>
