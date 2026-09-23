@@ -28,7 +28,7 @@ python3 scripts/build_competition_inventory.py \
   --catalog-json-output public/data/competition-catalog.json
 ```
 
-The generator uses Python’s standard library, handles embedded newlines and NUL bytes in the source export, rejects duplicate IDs/slugs, sorts by enabled date and ID, and initializes every row to Level 1. The optional JSON output contains only the fields needed by the public catalog. The overlay is sparse: rows absent from it stay at Level 1 / `unstarted`; rows in it carry the explicit editorial state into the generated CSV and JSON. Unknown IDs, invalid levels, duplicate overlay rows, and invalid work orders fail the build.
+The generator uses Python’s standard library, handles embedded newlines and NUL bytes in the source export, rejects duplicate IDs/slugs, sorts by enabled date and ID, and initializes every row to Level 1. The optional JSON output contains only the fields needed by the public catalog, including `reviewed_by` and `reviewed_at` so the interface and build checker can require a review receipt before showing a Level 2+ guide link. A published guide link must also match the inventory row's Meta Kaggle ID, Kaggle slug, and guide slug. The overlay is sparse: rows absent from it stay at Level 1 / `unstarted`; rows in it carry the explicit editorial state into the generated CSV and JSON. Unknown IDs, invalid levels, duplicate overlay rows, and invalid work orders fail the build.
 
 ## Fields
 
