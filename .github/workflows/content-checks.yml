@@ -1,0 +1,30 @@
+name: Content checks
+
+on:
+  push:
+    branches: [main, epic/evidence-pilot]
+  pull_request: {}
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.14.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:content
+      - run: pnpm check-content
+      - run: pnpm check
+      - run: pnpm build
+      - run: pnpm check-content
+        env:
+          CHECK_BUILT_CONTENT: '1'

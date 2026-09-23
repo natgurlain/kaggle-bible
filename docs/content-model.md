@@ -1,6 +1,6 @@
 # Content model and validation contract
 
-This is the version-1 authoring contract. Astro schemas are implemented in `src/content.config.ts`, `src/content/schemas.ts`, and `src/content/taxonomy.ts`; cross-record and publication-gate checks are a separate implementation step. Templates remain draft examples. Field names below match the templates.
+This is the version-1 authoring contract. Astro schemas are implemented in `src/content.config.ts`, `src/content/schemas.ts`, and `src/content/taxonomy.ts`; `pnpm check-content` enforces cross-record evidence and publication rules. Templates remain draft examples. Field names below match the templates.
 
 ## Entities and relations
 
@@ -14,7 +14,7 @@ This is the version-1 authoring contract. Astro schemas are implemented in `src/
 
 Embed claims in the competition, solution, or practice that owns them. A claim reference is `<owner-id>#<claim-id>`; claim IDs are unique within their owner. Practice-to-competition backlinks are generated through evidence claims. Competition solution lists must agree with each solution's `competition_id`.
 
-There is no standalone claims collection: the shared claim schema is embedded in its owning record so evidence does not acquire a second source of truth. The Astro content entry ID is derived from the filename; use the same stable prefixed value in the record's `id` field. Cross-collection references in frontmatter point to those entry IDs. The PR content validator must enforce filename/record-ID agreement and relationships across the embedded claim references.
+There is no standalone claims collection: the shared claim schema is embedded in its owning record so evidence does not acquire a second source of truth. The Astro content entry ID is derived from the filename; use the same stable prefixed value in the record's `id` field. Cross-collection references in frontmatter point to those entry IDs. `pnpm check-content` enforces filename/record-ID agreement, collection references, and embedded claim references.
 
 Use globally unique lowercase kebab-case IDs with prefixes (`competition-`, `solution-`, `practice-`, `source-`, `reproduction-`). Slugs determine public competition/practice URLs; IDs remain stable if titles change. Store schema version `1` in every record. Dates are quoted ISO `YYYY-MM-DD`; unknown scalar values are YAML `null`, never zero or an invented estimate. Empty arrays mean no recorded entries, not evidence that nothing happened. Claim `conditions` and `limitations` are explicit prose strings; use an empty string only when there is genuinely nothing to record.
 
@@ -91,10 +91,11 @@ Initial values and their labels, aliases, and definitions live in `src/content/t
 
 Forecasting is a task; temporal is a data characteristic. Allow arrays so a competition can be both tabular and text, or temporal and grouped. Metric IDs are scoped to their competition. Technique IDs use the registry above. Each taxonomy entry has an ID, display name, aliases, and definition. Define terms before using subjective tags such as "small"; avoid guessed dataset-size or difficulty categories.
 
-## Checks to implement
+## Validation commands and guarantees
 
-Deterministic PR checks should reject duplicate IDs, unknown taxonomy values, broken references, malformed dates/URLs, inconsistent parent relations, invalid metric directions, impossible negative resource values, unresolved claim markers, and published records with missing review metadata. Validate conditional evidence rules and exclude drafts from pages, exports, and search.
+- `pnpm test:content` exercises the publication policy, including a complete Level 2 fixture and draft/in-review exclusion.
+- `pnpm check-content` rejects duplicate IDs, filename/ID mismatches, broken collection and claim references, unsupported claim-evidence shapes, unreviewed sources in published records, incomplete Level 2/3 review states, and publication dependencies on drafts.
+- `pnpm check` runs Astro's schema and TypeScript checks for required fields, controlled values, dates, URLs, and resource bounds.
+- `pnpm build` verifies the static site compiles. After the build, `CHECK_BUILT_CONTENT=1 pnpm check-content` checks that draft/in-review record IDs and guide routes are absent from public output, and that catalog guide links resolve only to publishable guides.
 
-Also reject template placeholders in published content, source-reported claims using only unchecked/index sources, reproduced claims without complete matching artifacts, and resource filters derived from unsupported data. Check publication dependencies: a published guide cannot link to an unpublished solution, and practice evidence must resolve to published owners. Require published pages to cite at least one reviewed primary source.
-
-Automated checks establish structural consistency, not whether a cited source actually proves a statement. A human reviews rankings, metric interpretation, isolated-versus-combined gains, applicability, contradictions, and source attribution. Scheduled external link checks report errors with retries; a 403 or rate limit is not a reason to delete historical evidence or block every unrelated PR.
+The pull-request workflow installs the exact checked-in pnpm version, uses Node 22.12.0 (the repository's declared minimum), installs with a frozen lockfile, and runs these checks without Kaggle credentials, network scraping, or paid services. Automated checks establish structural consistency, not whether a cited source actually proves a statement. Human review still covers rankings, metric interpretation, isolated-versus-combined gains, applicability, contradictions, and source attribution. Markdown claim-marker rendering and external link checks remain separate future work; a 403 or rate limit is not a reason to delete historical evidence or block every unrelated PR.
