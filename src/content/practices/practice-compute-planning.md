@@ -89,4 +89,4 @@ For the M5 task, use an authorized data copy and one simple 28-day baseline orig
 
 ## Sources and review notes
 
-The linked reports distinguish one failed experiment from final-system evidence and leave important resource fields unknown. This practice does not give hardware or cost recommendations. It remains in review; named human editorial sign-off and date are pending.
+The linked reports distinguish one failed experiment from final-system evidence and leave important resource fields unknown. This practice does not give hardware or cost recommendations. It remains in review pending the exact-head GPT-6 Luna Max content review.

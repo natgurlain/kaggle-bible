@@ -13,7 +13,7 @@ This keeps the authoring experience pleasant for competition guides and practice
 | Site area | Implementation | Reason |
 | --- | --- | --- |
 | Start here, practices, methodology, contribution guide | Starlight Markdown/MDX | Mostly prose with stable navigation and reusable docs components |
-| Level 2 and Level 3 competition guides | Starlight Markdown/MDX plus structured frontmatter/data | Human-authored explanations need normal docs navigation; solution comparisons need typed records |
+| Level 2 and Level 3 competition guides | Starlight Markdown/MDX plus structured frontmatter/data | Long-form explanations need normal docs navigation; solution comparisons need typed records |
 | All-competition catalog | Custom Astro route with generated catalog data | 12,296 records need facets, counts, sorting, and URL-persisted filters |
 | Level 1 competition records | Catalog rows/cards linking to Kaggle and showing “guide pending” | A catalog record is not yet a researched guide; generating 12,296 full docs pages is unnecessary for the MVP |
 | Evidence cards and solution comparison tables | Custom Astro components | They need provenance labels, claim links, score/split fields, and resource matching |

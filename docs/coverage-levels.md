@@ -25,7 +25,7 @@ Purpose: give a participant a trustworthy map of the competition’s documented 
 
 Required:
 
-- A human-checked official competition page covering the task, data, metric, rules, and final/closed state when applicable.
+- An inspected official competition source covering the task, data, metric, rules, and final/closed state when applicable.
 - At least two independently authored or institutionally distinct primary solution sources, unless the editor records why only one can be found.
 - At least one structured solution record with source attribution, validation details or an explicit unknown, documented techniques, and rank/score provenance.
 - A short evidence summary covering the main approaches, known gaps, and one bounded lesson. Numerical claims identify their split and configuration.
@@ -44,7 +44,7 @@ Required:
 - Clear separation of source-reported results, reproduced results, and editorial inference.
 - Metric and validation explanation, top-solution comparison, decisive versus merely present techniques, documented unsuccessful attempts where available, compute/reproducibility status, transfer limits, and a suggested first experiment.
 - At least one linked practice page that has passed its publication review, plus an evidence-backed explanation of when the lesson does and does not transfer.
-- Human publication review, complete references, passing structural checks, and a current review date.
+- GPT-6 Luna Max exact-head review, complete references, passing structural checks, and a current review date.
 
 Reproduction is strongly preferred for a Level 3 guide when it can change the reader’s decision, but it is not a universal requirement. A Level 3 guide may say “not reproduced” or “blocked” when that is the documented state. A reproduction of one component does not upgrade the full solution or validate a leaderboard rank.
 

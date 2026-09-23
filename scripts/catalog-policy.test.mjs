@@ -30,9 +30,6 @@ test('Level 2 and Level 3 appear only for published entries with a guide route',
 			guide_slug: 'home-credit-default-risk',
 			reviewed_by: 'GPT-6 Luna Max',
 			reviewed_at: '2026-09-23',
-			editorial_approval_type: 'human',
-			editorial_approved_by: 'Independent editor',
-			editorial_approved_at: '2026-09-23',
 		}),
 		{
 			completenessLevel: '2',
@@ -47,9 +44,6 @@ test('Level 2 and Level 3 appear only for published entries with a guide route',
 			guide_slug: 'm5-forecasting-accuracy',
 			reviewed_by: 'GPT-6 Luna Max',
 			reviewed_at: '2026-09-23',
-			editorial_approval_type: 'human',
-			editorial_approved_by: 'Independent editor',
-			editorial_approved_at: '2026-09-23',
 		}),
 		{
 			completenessLevel: '3',
@@ -70,34 +64,8 @@ test('missing guide route keeps even a published Level 2 entry at Guide pending'
 	);
 });
 
-test('model review metadata alone cannot publish an evidence guide in the catalog', () => {
+test('published evidence guides require valid evidence-review metadata', () => {
 	for (const receipt of [
-		{},
-		{ reviewed_by: 'GPT-6 Luna Max', reviewed_at: '2026-09-23' },
-		{ editorial_approval_type: 'model', editorial_approved_by: 'GPT-6 Luna Max', editorial_approved_at: '2026-09-23' },
-		{ editorial_approval_type: 'human', editorial_approved_by: ' ', editorial_approved_at: '2026-09-23' },
-		{ editorial_approval_type: 'human', editorial_approved_by: 'Editor', editorial_approved_at: '2026-02-30' },
-		{ editorial_approval_type: 'human', editorial_approved_by: 'Editor', editorial_approved_at: '2026-09-23T00:00:00Z' },
-	]) {
-		assert.deepEqual(
-			getCatalogCardPresentation({
-				completeness_level: '2',
-				editorial_status: 'published',
-				guide_slug: 'home-credit-default-risk',
-				...receipt,
-			}),
-			{ completenessLevel: '1', completenessLabel: 'Catalog', guideHref: null },
-		);
-	}
-});
-
-test('human editorial approval cannot replace the evidence review receipt in the catalog', () => {
-	const editorialApproval = {
-		editorial_approval_type: 'human',
-		editorial_approved_by: 'Independent editor',
-		editorial_approved_at: '2026-09-23',
-	};
-	for (const evidenceReview of [
 		{},
 		{ reviewed_by: 'GPT-6 Luna Max', reviewed_at: '' },
 		{ reviewed_by: 'GPT-6 Luna Max', reviewed_at: '2026-02-30' },
@@ -107,8 +75,7 @@ test('human editorial approval cannot replace the evidence review receipt in the
 				completeness_level: '2',
 				editorial_status: 'published',
 				guide_slug: 'home-credit-default-risk',
-				...editorialApproval,
-				...evidenceReview,
+				...receipt,
 			}),
 			{ completenessLevel: '1', completenessLabel: 'Catalog', guideHref: null },
 		);

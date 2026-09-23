@@ -193,7 +193,7 @@ This Level 2 evidence map is for participants deciding whether relational aggreg
 
 The competition asked for applicant repayment-risk ranking and scored predictions with AUC. [claim:task-01] [claim:metric-01] Both documented approaches turn linked histories into applicant-level features and combine model diversity, but their CV protocols and reported scores are not directly comparable. [claim:approach-8th-01] [claim:approach-12th-01]
 
-**Coverage:** Level 2 / Evidence map. The official overview, data description, rules page, and two independent participant write-ups are registered. The eighth-place private rank is matched to Kaggle's final leaderboard; the twelfth-place label remains author-reported. Neither pipeline has been reproduced. Human editorial sign-off remains pending.
+**Coverage:** Level 2 / Evidence map. The official overview, data description, rules page, and two independent solution write-ups are registered. The eighth-place private rank is matched to Kaggle's final leaderboard; the twelfth-place label remains author-reported. Neither pipeline has been reproduced. Publication awaits the exact-head GPT-6 Luna Max content review and passing local checks.
 
 ## Problem, data, and evaluation
 

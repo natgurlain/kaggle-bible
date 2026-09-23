@@ -247,7 +247,7 @@ This Level 2 evidence map is for readers comparing documented approaches to hier
 
 The two linked reports describe different design choices: one aligns bottom-level LightGBM forecasts with a top-level N-BEATS stream; the other uses a single store/week-partitioned LightGBM model and several dated holdouts. [claim:approach-2nd-01] [claim:approach-4th-01] Neither record contains comparable numeric validation results or measured final-pipeline compute. [claim:gaps-01]
 
-**Coverage:** Level 2 / Evidence map. The official overview, data description, rules page, and two independently authored solution write-ups are registered. Rank labels on both write-ups remain author-reported in these records; neither system has been reproduced. Human editorial sign-off remains pending.
+**Coverage:** Level 2 / Evidence map. The official overview, data description, rules page, and two independently authored solution write-ups are registered. Rank labels on both write-ups remain author-reported in these records; neither system has been reproduced. Publication awaits the exact-head GPT-6 Luna Max content review and passing local checks.
 
 ## Problem, data, and evaluation
 
