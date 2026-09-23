@@ -37,7 +37,7 @@ A session passes only if the participant, without facilitator hints, meets all t
 
 Use anonymous IDs (R1–R5). Do not enter names, contact details, raw notes, quotes, recordings, IP addresses, personal device details, or participant screenshots. Record only the codes and objective outcomes defined here. Report beginner and limited-compute coverage as aggregate counts separate from session IDs; do not tie those cohorts to individual rows.
 
-| ID | Guide slug / topic code | Intent match? | Material claim ID / category | Source ID + locator confirmed? | Experiment ID or uncertainty category | Time (seconds) | Clarification? | Pass? |
+| ID | Guide slug / topic code | Intent match? | Material claim ID / category | Source ID / access category / locator confirmed? | Experiment ID or uncertainty category | Time (seconds) | Clarification? | Pass? |
 | --- | --- | --- | --- | --- | --- | ---: | --- | --- |
 | R1 | Not run | Not run | Not run | Not run | Not run | — | Not run | — |
 | R2 | Not run | Not run | Not run | Not run | Not run | — | Not run | — |
