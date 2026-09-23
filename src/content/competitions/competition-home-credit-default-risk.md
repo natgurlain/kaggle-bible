@@ -33,6 +33,8 @@ practice_ids:
   - practice-validation-checks
 source_ids:
   - source-home-credit-official
+  - source-home-credit-data
+  - source-home-credit-rules
   - source-home-credit-leaderboard
   - source-home-credit-8th
   - source-home-credit-12th
@@ -59,6 +61,39 @@ claims:
     reproduction_ids: []
     conditions: This is the official leaderboard metric for Home Credit Default Risk.
     limitations: AUC does not make validation splits or competition leaderboard subsets interchangeable.
+  - id: data-structure-01
+    statement: The official Data tab describes one static application row per sampled loan and separate prior-credit, balance, previous-application, and installment-payment files.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-data
+        locator: Dataset Description; application_{train|test}.csv; bureau.csv; bureau_balance.csv; previous_application.csv; installments_payments.csv
+        support_summary: The official Data tab describes the application table and separate files for prior external credit, monthly balances, previous Home Credit applications, and repayment history.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This describes the historical competition files listed by Kaggle.
+    limitations: The file inventory does not prescribe a modeling join, establish safe feature cutoffs, or independently validate a solution.
+  - id: rules-data-01
+    statement: Home Credit's specific rules limited accepted Competition Data to competition use and allowed external data only when participants had authority to use it and could share it with the sponsor and Kaggle as required.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-rules
+        locator: Competition-Specific Terms; Competition Data Access Use and Restriction; External Data
+        support_summary: The specific terms restrict accepted Competition Data to the competition and condition external-data use on the participant's rights and required sharing with the sponsor and Kaggle.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These are the historical Home Credit competition-specific terms.
+    limitations: This summary is not legal advice and does not determine an individual participant's eligibility or rights for later data use.
+  - id: rules-submission-01
+    statement: The official rules allowed up to five submissions per day and selection of up to two final submissions for judging.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-rules
+        locator: Rules summary; Submission Limits
+        support_summary: Kaggle's rules summary states the daily submission limit and maximum final submissions.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These limits apply to the historical competition.
+    limitations: This does not summarize every deadline, eligibility clause, or sponsor obligation in the linked rules.
   - id: approach-8th-01
     statement: The eighth-place team's write-up describes stratified 10-fold validation, applicant-linked history aggregation, and combining diverse team models.
     kind: source-reported
@@ -156,11 +191,15 @@ This Level 2 evidence map is for participants deciding whether relational aggreg
 
 The competition asked for applicant repayment-risk ranking and scored predictions with AUC. [claim:task-01] [claim:metric-01] Both documented approaches turn linked histories into applicant-level features and combine model diversity, but their CV protocols and reported scores are not directly comparable. [claim:approach-8th-01] [claim:approach-12th-01]
 
-**Coverage:** Level 2 / Evidence map. Two independent participant write-ups and the official competition overview are registered. The eighth-place private rank is matched to Kaggle's final leaderboard; the twelfth-place label remains author-reported. Neither pipeline has been reproduced.
+**Coverage:** Level 2 / Evidence map. The official overview, data description, rules page, and two independent participant write-ups are registered. The eighth-place private rank is matched to Kaggle's final leaderboard; the twelfth-place label remains author-reported. Neither pipeline has been reproduced. Human editorial sign-off remains pending.
 
 ## Problem, data, and evaluation
 
-The official task is to predict each applicant's repayment ability. Kaggle evaluates with area under the ROC curve. [claim:task-01] [claim:metric-01] The solution reports describe multiple history tables associated with an applicant identifier; they do not make every feature or data-use rule available in the overview source. [claim:approach-8th-01]
+The official task is to predict each applicant's repayment ability. Kaggle evaluates with area under the ROC curve. [claim:task-01] [claim:metric-01] The official Data tab lists one static application row per sampled loan and separate prior-credit, balance, previous-application, and repayment-history files. [claim:data-structure-01]
+
+## Rules and participation
+
+The competition-specific rules restricted accepted competition data to competition use. External data was allowed only when participants had authority to use it and could share it with the sponsor and Kaggle as required. [claim:rules-data-01] The rules also allowed up to five submissions per day and up to two final submissions for judging. [claim:rules-submission-01] These are historical contest terms, not current legal advice; consult the linked rules for the complete text.
 
 ## Approaches
 
@@ -190,7 +229,7 @@ On data the reader is authorized to use, freeze applicant-level stratified folds
 
 ## Gaps
 
-The inspected accounts do not define a shared split, provide complete resource measurements, or isolate feature and ensemble gains. The #12 placement has no verified final private leaderboard match in this record. The official rules page was not readable in the audited text view, so this guide does not infer external-data or eligibility rules. [claim:gaps-01] [claim:rank-12th-01]
+The inspected accounts do not define a shared split, provide complete resource measurements, or isolate feature and ensemble gains. The #12 placement has no verified final private leaderboard match in this record. The rules summary does not determine entrant-specific eligibility or provide legal advice. [claim:gaps-01] [claim:rank-12th-01] [claim:rules-data-01]
 
 ## Unsuccessful approaches
 
@@ -202,7 +241,7 @@ Both solution records mark pipeline resources unknown and reproduction as not as
 
 ## Sources, gaps, and corrections
 
-The official task and AUC are linked to Kaggle's competition overview. The eighth-place approach is from its participant write-up, while its rank and private score are tied to the final leaderboard. The #12 approach, CV/public scores, and placement label remain author-reported. No unsupported conversion between public, private, and CV results is made. [claim:metric-01] [claim:final-result-8th] [claim:result-12th-01] [claim:rank-12th-01]
+The official task and AUC are linked to Kaggle's overview, data structure to its Data tab, and participation terms to its Rules tab. The eighth-place approach is from its participant write-up, while its rank and private score are tied to the final leaderboard. The #12 approach, CV/public scores, and placement label remain author-reported. No unsupported conversion between public, private, and CV results is made. [claim:metric-01] [claim:data-structure-01] [claim:rules-data-01] [claim:rules-submission-01] [claim:final-result-8th] [claim:result-12th-01] [claim:rank-12th-01]
 
 ## Unresolved questions
 

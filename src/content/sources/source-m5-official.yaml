@@ -12,4 +12,4 @@ locator_notes: Overview; task, metric, and close date. Submission File; public v
 access_status: accessible
 content_reviewed: true
 license: null
-notes: Official overview inspected in the dated source-qualification audit. The full rules text was not exposed in that audit.
+notes: Official overview and submission description inspected in the source audit. The separately reviewed Kaggle Rules page is registered as source-m5-rules.

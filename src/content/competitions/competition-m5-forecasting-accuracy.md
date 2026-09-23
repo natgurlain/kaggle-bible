@@ -34,6 +34,8 @@ solution_ids:
 practice_ids: []
 source_ids:
   - source-m5-official
+  - source-m5-data
+  - source-m5-rules
   - source-m5-leaderboard
   - source-m5-2nd
   - source-m5-4th
@@ -74,6 +76,50 @@ claims:
     reproduction_ids: []
     conditions: These are the competition's historical 28-day scoring windows.
     limitations: They are not repeated future-time origins and do not alone validate operational forecasts.
+  - id: data-structure-01
+    statement: Kaggle's Data tab lists daily product-store sales history, calendar and price files, and separate validation and evaluation sales files for the two 28-day periods.
+    kind: source-reported
+    evidence:
+      - source_id: source-m5-data
+        locator: Dataset Description; Files
+        support_summary: The Data tab describes the two 28-day forecast periods and lists calendar.csv, sales_train_validation.csv, sales_train_evaluation.csv, sell_prices.csv, and sample_submission.csv.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This describes the files and task framing on the historical Kaggle Data tab.
+    limitations: The files were not downloaded or independently analyzed for this evidence map.
+  - id: rules-data-01
+    statement: The M5 rules limited Competition Data to non-commercial use and allowed external data only if it was free to all participants and posted to the official competition forum before the entry deadline.
+    kind: source-reported
+    evidence:
+      - source_id: source-m5-rules
+        locator: Competition Data; Data Access and Use; External Data
+        support_summary: The rules state non-commercial use terms and require eligible external data to be available to all participants at no cost and posted to the official forum before the deadline.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These are the historical M5 competition rules.
+    limitations: This does not establish licensing or access terms for data redistributed outside the competition.
+  - id: rules-participation-01
+    statement: The rules capped teams at five members, allowed five daily submissions, and one final submission for judging.
+    kind: source-reported
+    evidence:
+      - source_id: source-m5-rules
+        locator: Rules summary; Team Limits; Submission Limits
+        support_summary: The official rules summary states the team-size and submission limits.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These limits apply to the historical competition.
+    limitations: This does not summarize every eligibility condition or deadline in the linked rules.
+  - id: rules-amlt-01
+    statement: M5's specific rules permitted automated machine-learning tools subject to license and competition-rule obligations, including the stated winner-license requirements.
+    kind: source-reported
+    evidence:
+      - source_id: source-m5-rules
+        locator: Competition-Specific Rules; Winner License; Automated Machine Learning Tools
+        support_summary: The specific terms allow AMLT use while retaining license and winner obligations for a qualifying submission.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This summarizes the historical M5-specific terms.
+    limitations: It is not legal advice or a conclusion about any particular tool's license.
   - id: approach-2nd-01
     statement: "Matthias describes separate hierarchy-level modeling streams: N-BEATS for the top five levels and multiple bottom-level LightGBM forecasts aligned and ensembled with them."
     kind: source-reported
@@ -129,6 +175,17 @@ claims:
     reproduction_ids: []
     conditions: This records the label displayed on the write-up.
     limitations: The source audit did not independently match the author to the final leaderboard row.
+  - id: metric-priority-01
+    statement: The fourth-place author says they did not optimize for official WRMSSE, which they considered not always reasonable for practical use, and chose not to build a custom loss.
+    kind: source-reported
+    evidence:
+      - source_id: source-m5-4th
+        locator: Strategy commentary; Trust CV but Not care about official evaluation metrics (WRMSSE)
+        support_summary: The author says they trusted CV rather than the organizer's WRMSSE metric, described that metric as not always reasonable in practice, and did not make a custom loss.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This is the author's rationale for the described solution, not a general metric recommendation.
+    limitations: The author-reported fourth-place label is not evidence that the system was tuned to optimize WRMSSE or that it transfers to other objectives.
   - id: failed-reconciliation-01
     statement: Matthias reports an unsuccessful MinT/OLS/WLS reconciliation attempt involving an overnight run on a rented 128 GB AWS instance.
     kind: source-reported
@@ -183,17 +240,21 @@ This Level 2 evidence map is for readers comparing documented approaches to hier
 
 The two linked reports describe different design choices: one aligns bottom-level LightGBM forecasts with a top-level N-BEATS stream; the other uses a single store/week-partitioned LightGBM model and several dated holdouts. [claim:approach-2nd-01] [claim:approach-4th-01] Neither record contains comparable numeric validation results or measured final-pipeline compute. [claim:gaps-01]
 
-**Coverage:** Level 2 / Evidence map. The official competition overview and two independently authored solution write-ups are registered. Rank labels on both write-ups remain author-reported in these records; neither system has been reproduced.
+**Coverage:** Level 2 / Evidence map. The official overview, data description, rules page, and two independently authored solution write-ups are registered. Rank labels on both write-ups remain author-reported in these records; neither system has been reproduced. Human editorial sign-off remains pending.
 
 ## Problem, data, and evaluation
 
-The task was to forecast daily unit sales of Walmart products for the next 28 days. The competition used Weighted Root Mean Squared Scaled Error (WRMSSE), which is minimized and weights error across the sales hierarchy. [claim:task-01] The official submission description distinguishes the public validation days d_1914–d_1941 from private evaluation days d_1942–d_1969. [claim:horizon-01] These fixed windows are not repeated rolling-origin validation.
+The task was to forecast daily unit sales of Walmart products for the next 28 days. The competition used Weighted Root Mean Squared Scaled Error (WRMSSE), which is minimized and weights error across the sales hierarchy. [claim:task-01] The official Data tab lists daily item/store sales, calendar and price files, and separate validation/evaluation sales files; the overview distinguishes public validation days d_1914–d_1941 from private evaluation days d_1942–d_1969. [claim:data-structure-01] [claim:horizon-01] These fixed windows are not repeated rolling-origin validation.
+
+## Rules and participation
+
+The historical rules limited Competition Data to non-commercial use. External data had to be available to every participant at no cost and posted to the competition forum before the entry deadline. [claim:rules-data-01] Teams were capped at five, with five daily submissions and one final submission for judging; M5 also permitted AMLT subject to the stated license and winner obligations. [claim:rules-participation-01] [claim:rules-amlt-01] These are historical contest terms, not current legal advice; consult the linked rules for the complete text.
 
 ## Approaches
 
 Matthias describes two modeling streams: N-BEATS for the top five hierarchy levels and multiple bottom-level LightGBM variants, followed by alignment and ensembling. [claim:approach-2nd-01] The inspected report does not give a full validation recipe, numeric score, or resource profile. Its second-place label is retained as author-reported. [claim:rank-2nd-01]
 
-monsaraida describes a single LightGBM model with a Tweedie objective, partitioned by store and by four consecutive seven-day forecast blocks. [claim:approach-4th-01] The report lists five dated holdout windows and says it avoided post-processing and recursive features, but gives no numeric validation results or measured hardware/runtime. [claim:validation-4th-01] The fourth-place label also remains author-reported. [claim:rank-4th-01]
+monsaraida describes a single LightGBM model with a Tweedie objective, partitioned by store and by four consecutive seven-day forecast blocks. [claim:approach-4th-01] The report lists five dated holdout windows and says it avoided post-processing and recursive features, but gives no numeric validation results or measured hardware/runtime. [claim:validation-4th-01] The author also says they did not optimize for official WRMSSE, preferring a practical solution and no metric-specific custom loss; the fourth-place label remains author-reported and does not show the approach was tuned for WRMSSE. [claim:metric-priority-01] [claim:rank-4th-01]
 
 ## Validation strategy
 
@@ -231,7 +292,7 @@ Both solution records leave final-pipeline resources unknown and mark reproducti
 
 ## Sources, gaps, and corrections
 
-The task, dates, horizons, and official metric are linked to Kaggle's competition overview. The model descriptions and holdout windows are from independent participant write-ups. Rank labels remain author-reported because no final-row match was established in the source audit. No score, hardware capacity, or reproduction claim is inferred from rankings. [claim:task-01] [claim:horizon-01] [claim:approach-2nd-01] [claim:approach-4th-01] [claim:rank-2nd-01] [claim:rank-4th-01]
+The task, data files, metric, horizons, and rules are linked to Kaggle's overview, Data, and Rules pages. The model descriptions, metric-prioritization decision, and holdout windows are from independent participant write-ups. Rank labels remain author-reported because no final-row match was established in the source audit. No score, hardware capacity, or reproduction claim is inferred from rankings. [claim:task-01] [claim:data-structure-01] [claim:rules-data-01] [claim:rules-participation-01] [claim:rules-amlt-01] [claim:horizon-01] [claim:approach-2nd-01] [claim:approach-4th-01] [claim:metric-priority-01] [claim:rank-2nd-01] [claim:rank-4th-01]
 
 ## Unresolved questions
 

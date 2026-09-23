@@ -1,0 +1,16 @@
+schema_version: 1
+id: source-home-credit-rules
+title: Home Credit Default Risk official competition rules
+url: https://www.kaggle.com/competitions/home-credit-default-risk/rules
+kind: official-competition
+authors:
+  - Kaggle
+  - Home Credit International a.s.
+published_at: null
+accessed_at: '2026-09-23'
+revision: null
+locator_notes: Competition-Specific Terms; Competition Data Access Use and Restriction; External Data; Rules summary submission limits and timeline.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Official Kaggle Rules tab inspected directly on 2026-09-23. This records historical contest terms, not current legal advice; human editorial sign-off remains pending.
