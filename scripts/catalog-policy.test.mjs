@@ -28,8 +28,11 @@ test('Level 2 and Level 3 appear only for published entries with a guide route',
 			completeness_level: '2',
 			editorial_status: 'published',
 			guide_slug: 'home-credit-default-risk',
-			reviewed_by: 'Editorial reviewer',
+			reviewed_by: 'GPT-6 Luna Max',
 			reviewed_at: '2026-09-23',
+			editorial_approval_type: 'human',
+			editorial_approved_by: 'Independent editor',
+			editorial_approved_at: '2026-09-23',
 		}),
 		{
 			completenessLevel: '2',
@@ -42,8 +45,11 @@ test('Level 2 and Level 3 appear only for published entries with a guide route',
 			completeness_level: '3',
 			editorial_status: 'published',
 			guide_slug: 'm5-forecasting-accuracy',
-			reviewed_by: 'Editorial reviewer',
+			reviewed_by: 'GPT-6 Luna Max',
 			reviewed_at: '2026-09-23',
+			editorial_approval_type: 'human',
+			editorial_approved_by: 'Independent editor',
+			editorial_approved_at: '2026-09-23',
 		}),
 		{
 			completenessLevel: '3',
@@ -64,12 +70,14 @@ test('missing guide route keeps even a published Level 2 entry at Guide pending'
 	);
 });
 
-test('published evidence levels require a real review receipt', () => {
+test('model review metadata alone cannot publish an evidence guide in the catalog', () => {
 	for (const receipt of [
 		{},
-		{ reviewed_by: ' ', reviewed_at: '2026-09-23' },
-		{ reviewed_by: 'Editor', reviewed_at: '2026-02-30' },
-		{ reviewed_by: 'Editor', reviewed_at: '2026-09-23T00:00:00Z' },
+		{ reviewed_by: 'GPT-6 Luna Max', reviewed_at: '2026-09-23' },
+		{ editorial_approval_type: 'model', editorial_approved_by: 'GPT-6 Luna Max', editorial_approved_at: '2026-09-23' },
+		{ editorial_approval_type: 'human', editorial_approved_by: ' ', editorial_approved_at: '2026-09-23' },
+		{ editorial_approval_type: 'human', editorial_approved_by: 'Editor', editorial_approved_at: '2026-02-30' },
+		{ editorial_approval_type: 'human', editorial_approved_by: 'Editor', editorial_approved_at: '2026-09-23T00:00:00Z' },
 	]) {
 		assert.deepEqual(
 			getCatalogCardPresentation({

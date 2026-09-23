@@ -10,13 +10,15 @@ Prioritize candidates with two independently authored detailed solutions, a usef
 
 ## Extract, synthesize, and review
 
+Keep evidence/model review separate from publication approval. The common reviewed_by and reviewed_at fields record evidence/content review and may identify an AI reviewer. Publication additionally requires editorial_approval_type set to human, a named editorial_approved_by, and a valid editorial_approved_at. A GPT-6 Luna Max ticket review is not this publication receipt. Never copy a model reviewer into the human editorial approval fields.
+
 1. **Register sources.** Use the source template. Record author, access date, revision when available, exact relevant location, and whether the content was inspected. A blocked page stays a research lead until someone can inspect it.
 2. **Extract atomic claims.** Preserve the author's split, model configuration, conditions, resource scope, and limitations. Separate official rank verification from author attribution. Make missing information explicit.
 3. **Write solution records.** Capture scores and training/inference resources separately. Link each numerical result or proposed decisive technique to its supporting claim. Distinguish a component's presence from an isolated improvement.
 4. **Write competition synthesis.** Compare compatible evidence, explain disagreements, and identify transferable hypotheses. Mark synthesis as editorial inference and link the exact supporting claims. Avoid attributing an ensemble score to its simplest component.
 5. **Connect practices.** Add or amend conditional guidance with backlinks to specific competition evidence. Single-case observations do not become universal rules.
 6. **Review.** A named human editor checks sources, factual claims, missing information, applicability, and the rendered result. A contributor may author and self-review a draft, but publication should receive another person's review; one-maintainer projects can recruit a guest reviewer for release batches.
-7. **Publish.** Move `draft` to `in-review` to `published` after content checks and review. Keep source/reproduction records distinct from page workflow status. Record reviewer and date. Templates and drafts never enter public search.
+7. **Publish.** Move `draft` to `in-review` to `published` only after content checks, evidence review, and a separate human editorial decision. The common `reviewed_by` and `reviewed_at` fields record evidence/content review and may identify an AI reviewer. Record publication approval separately with `editorial_approval_type: human`, a named `editorial_approved_by`, and a valid `editorial_approved_at`. Do not copy a model reviewer into these fields. Templates and drafts never enter public routes or search.
 
 AI can propose extractions and prose with citations, but cannot silently upgrade an author report into a reproduction or substitute a confident summary for inaccessible evidence. Every generated draft follows the same publication gate.
 

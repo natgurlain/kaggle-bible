@@ -28,7 +28,7 @@ metrics:
     name: Weighted Root Mean Squared Scaled Error
     direction: minimize
     aggregation: Kaggle's weighted error across the sales hierarchy
-    source_id: source-m5-official
+    source_id: source-m5-official-guide
 solution_ids:
   - solution-m5-2nd
   - solution-m5-4th
@@ -37,6 +37,7 @@ practice_ids:
   - practice-compute-planning
 source_ids:
   - source-m5-official
+  - source-m5-official-guide
   - source-m5-data
   - source-m5-rules
   - source-m5-leaderboard
@@ -48,8 +49,11 @@ claims:
     kind: source-reported
     evidence:
       - source_id: source-m5-official
-        locator: Overview; competition description and evaluation
-        support_summary: Kaggle describes the 28-day retail sales forecast and names Weighted Root Mean Squared Scaled Error as the evaluation metric.
+        locator: Overview; competition description
+        support_summary: Kaggle describes the 28-day daily retail sales forecast.
+      - source_id: source-m5-official-guide
+        locator: Evaluation → Weighting, printed p. 7; WRMSSE weighting example across the hierarchy
+        support_summary: The official guide says participating methods are ranked using Weighted RMSSE (WRMSSE), explains weighting across the hierarchy, and states lower WRMSSE is better.
     supports_claim_refs: []
     reproduction_ids: []
     conditions: This is the historical Kaggle Accuracy competition, not the companion Uncertainty task.

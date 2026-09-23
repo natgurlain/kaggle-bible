@@ -62,6 +62,9 @@ OUTPUT_FIELDS = [
     "reviewed_by",
     "reviewed_at",
     "notes",
+    "editorial_approval_type",
+    "editorial_approved_by",
+    "editorial_approved_at",
 ]
 
 CATALOG_FIELDS = [
@@ -86,6 +89,9 @@ CATALOG_FIELDS = [
     "guide_slug",
     "reviewed_by",
     "reviewed_at",
+    "editorial_approval_type",
+    "editorial_approved_by",
+    "editorial_approved_at",
 ]
 
 EDITORIAL_FIELDS = [
@@ -98,6 +104,9 @@ EDITORIAL_FIELDS = [
     "reviewed_by",
     "reviewed_at",
     "notes",
+    "editorial_approval_type",
+    "editorial_approved_by",
+    "editorial_approved_at",
 ]
 EDITORIAL_STATUSES = {"unstarted", "queued", "in-progress", "blocked", "in-review", "published"}
 
@@ -180,6 +189,9 @@ def build_row(row: dict[str, str], snapshot_date: dt.date) -> dict[str, str]:
         "guide_slug": "",
         "reviewed_by": "",
         "reviewed_at": "",
+        "editorial_approval_type": "",
+        "editorial_approved_by": "",
+        "editorial_approved_at": "",
         "notes": "",
     }
 
