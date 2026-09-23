@@ -1,0 +1,15 @@
+schema_version: 1
+id: source-m5-2nd
+title: M5 Forecasting – Accuracy second-place solution
+url: https://www.kaggle.com/competitions/m5-forecasting-accuracy/writeups/matthias-2nd-place-solution
+kind: author-writeup
+authors:
+  - Matthias (matthiasanderer)
+published_at: '2020-07-08'
+accessed_at: '2026-09-22'
+revision: null
+locator_notes: 3. The bottom level lgb model; 5. Aligning with an independent top-level prediction; 6. What did not work.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Participant report. The displayed second-place label was not independently matched to an official final-leaderboard row in the source audit.

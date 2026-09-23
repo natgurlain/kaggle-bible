@@ -1,0 +1,15 @@
+schema_version: 1
+id: source-m5-leaderboard
+title: M5 Forecasting – Accuracy official leaderboard
+url: https://www.kaggle.com/competitions/m5-forecasting-accuracy/leaderboard
+kind: official-competition
+authors:
+  - Kaggle
+published_at: null
+accessed_at: '2026-09-22'
+revision: null
+locator_notes: Competition completion state; final standings; private-leaderboard split description.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Official leaderboard inspected in the dated source-qualification audit. Named M5 write-up authors were not reliably matched to extracted final standings.
