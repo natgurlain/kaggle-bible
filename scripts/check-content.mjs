@@ -3,6 +3,7 @@ import { constants } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
+import { catalogGuideMatchesRecord } from '../src/content/catalog-policy.js';
 import {
 	isPubliclyPublishable,
 	validateLevel2Readiness,
@@ -418,6 +419,11 @@ function validateCatalogRows(catalog, errors) {
 	const recordStates = new Set(['active', 'upcoming', 'closed', 'undated']);
 	const editorialStatuses = new Set(['unstarted', 'queued', 'in-progress', 'blocked', 'in-review', 'published']);
 	const learningStages = new Set(['', 'beginner', 'intermediate', 'advanced']);
+	const validReviewDate = (value) => {
+		if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+		const date = new Date(value + 'T00:00:00Z');
+		return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === value;
+	};
 	const validDate = (value) => {
 		if (value === '') return true;
 		if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(value)) return false;
@@ -456,6 +462,14 @@ function validateCatalogRows(catalog, errors) {
 			errors.push(`${label} has an inconsistent completeness level and label`);
 		}
 		if (typeof row.editorial_status === 'string' && !editorialStatuses.has(row.editorial_status)) errors.push(`${label} has an invalid "editorial_status"`);
+		if (typeof row.reviewed_by !== 'undefined' && typeof row.reviewed_by !== 'string') errors.push(`${label} has an invalid "reviewed_by"`);
+		if (typeof row.reviewed_at !== 'undefined' && typeof row.reviewed_at !== 'string') errors.push(`${label} has an invalid "reviewed_at"`);
+		if (typeof row.reviewed_at === 'string' && row.reviewed_at !== '' && !validReviewDate(row.reviewed_at)) errors.push(`${label} has an invalid "reviewed_at" date`);
+		if (row.editorial_status === 'published' && ['2', '3'].includes(row.completeness_level)) {
+			if (typeof row.reviewed_by !== 'string' || !row.reviewed_by.trim()) errors.push(`${label} requires a reviewer receipt for a published evidence guide`);
+			if (!validReviewDate(row.reviewed_at)) errors.push(`${label} requires a valid review date for a published evidence guide`);
+			if (typeof row.guide_slug !== 'string' || !row.guide_slug.trim()) errors.push(`${label} requires a guide_slug for a published evidence guide`);
+		}
 		if (typeof row.learning_path_stage === 'string' && !learningStages.has(row.learning_path_stage)) errors.push(`${label} has an invalid "learning_path_stage"`);
 	}
 }
@@ -511,6 +525,10 @@ async function validateBuildOutput(root, entries, collections, allEntries, error
 		const guide = competitions.get(row.guide_slug);
 		if (!guide || !isPubliclyPublishable(guide, policyContext)) {
 			errors.push(`dist/data/competition-catalog.json: guide_slug "${row.guide_slug}" does not point to a published, reviewed guide`);
+			continue;
+		}
+		if (!catalogGuideMatchesRecord(row, guide.data)) {
+			errors.push(`dist/data/competition-catalog.json: guide_slug "${row.guide_slug}" does not match catalog competition "${row.id}" / "${row.slug}"`);
 		}
 	}
 
