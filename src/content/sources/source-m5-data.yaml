@@ -1,0 +1,16 @@
+schema_version: 1
+id: source-m5-data
+title: M5 Forecasting - Accuracy official data description
+url: https://www.kaggle.com/competitions/m5-forecasting-accuracy/data
+kind: official-competition
+authors:
+  - Kaggle
+  - University of Nicosia
+published_at: null
+accessed_at: '2026-09-23'
+revision: null
+locator_notes: Dataset Description; calendar.csv, sales_train_validation.csv, sales_train_evaluation.csv, sell_prices.csv, sample_submission.csv.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Official Kaggle Data tab inspected directly on 2026-09-23; dataset files were not downloaded or independently analyzed.

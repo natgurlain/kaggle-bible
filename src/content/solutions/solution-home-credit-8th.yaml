@@ -1,10 +1,10 @@
 schema_version: 1
 id: solution-home-credit-8th
-status: draft
+status: in-review
 title: Eighth-place Home Credit solution
 summary: A team approach combining relational aggregation, diverse LightGBM models, and rank-based blending.
-reviewed_by: null
-reviewed_at: null
+reviewed_by: GPT-6 Luna Max
+reviewed_at: '2026-09-23'
 competition_id: competition-home-credit-default-risk
 team: 七上八下
 authors:

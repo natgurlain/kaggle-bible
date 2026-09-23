@@ -1,10 +1,10 @@
 schema_version: 1
 id: solution-home-credit-12th
-status: draft
+status: in-review
 title: Author-reported 12th-place Home Credit solution
 summary: A reported ensemble of relational aggregates, model-derived history features, and diverse model stacking.
-reviewed_by: null
-reviewed_at: null
+reviewed_by: GPT-6 Luna Max
+reviewed_at: '2026-09-23'
 competition_id: competition-home-credit-default-risk
 team: Unknown
 authors:

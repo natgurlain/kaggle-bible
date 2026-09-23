@@ -1,0 +1,16 @@
+schema_version: 1
+id: source-home-credit-data
+title: Home Credit Default Risk official data description
+url: https://www.kaggle.com/competitions/home-credit-default-risk/data
+kind: official-competition
+authors:
+  - Kaggle
+  - Home Credit Group
+published_at: null
+accessed_at: '2026-09-23'
+revision: null
+locator_notes: Dataset Description; application_{train|test}.csv, bureau.csv, bureau_balance.csv, previous_application.csv, installments_payments.csv.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Official Kaggle Data tab inspected directly on 2026-09-23; dataset files were not downloaded or independently analyzed.
