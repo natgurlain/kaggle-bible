@@ -170,6 +170,7 @@ test('guide body omits a matching leading title but retains other content headin
 		removeMatchingLeadingTitle('# Different heading\n\n## At a glance', 'Home Credit Default Risk'),
 		'# Different heading\n\n## At a glance',
 	);
+	assert.equal(removeMatchingLeadingTitle('# C#\n\n## Overview', 'C#'), '\n## Overview');
 });
 
 test('external content URLs accept only HTTP and HTTPS schemes', () => {
