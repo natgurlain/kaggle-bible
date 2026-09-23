@@ -468,6 +468,27 @@ test('built catalog rejects published evidence guides without a human editorial 
 	}
 });
 
+test('legacy Level 1 catalog rows may omit the optional editorial approval receipt', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-legacy-catalog-receipt-'));
+	try {
+		const dist = path.join(root, 'dist');
+		await mkdir(path.join(dist, 'data'), { recursive: true });
+		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
+		const row = { ...validCatalogRow() };
+		delete row.editorial_approval_type;
+		delete row.editorial_approved_by;
+		delete row.editorial_approved_at;
+		await writeCatalog(dist, [row]);
+		const entries = { competitions: [], solutions: [], sources: [], practices: [], reproductions: [] };
+		const collections = Object.fromEntries(Object.keys(entries).map((name) => [name, new Map()]));
+		const errors = [];
+		await validateBuildOutput(root, entries, collections, [], errors);
+		assert.deepEqual(errors, []);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
 test('built practice pages exist only for publicly publishable practice records', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-built-practice-route-'));
 	try {

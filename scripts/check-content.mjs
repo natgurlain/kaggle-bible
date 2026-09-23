@@ -468,7 +468,6 @@ function validateCatalogRows(catalog, errors) {
 		'id', 'slug', 'title', 'subtitle', 'competition_url', 'category', 'enabled_at', 'deadline_at',
 		'record_state', 'metric_abbreviation', 'metric_name', 'metric_direction', 'completeness_level',
 		'completeness_label', 'editorial_status', 'priority', 'work_order', 'learning_path_stage', 'guide_slug',
-		'editorial_approval_type', 'editorial_approved_by', 'editorial_approved_at',
 	];
 	const completenessLabels = { '1': 'catalog', '2': 'evidence-map', '3': 'full-guide' };
 	const recordStates = new Set(['active', 'upcoming', 'closed', 'undated']);
