@@ -43,7 +43,7 @@ Required:
 - At least two reviewed solution records that can be compared on validation, techniques, reported results, and resource scope. A guide can remain Level 2 when the second source is too thin for a fair comparison.
 - Clear separation of source-reported results, reproduced results, and editorial inference.
 - Metric and validation explanation, top-solution comparison, decisive versus merely present techniques, documented unsuccessful attempts where available, compute/reproducibility status, transfer limits, and a suggested first experiment.
-- Links to the relevant practice pages and evidence-backed explanation of when the lesson does and does not transfer.
+- At least one linked practice page that has passed its publication review, plus an evidence-backed explanation of when the lesson does and does not transfer.
 - Human publication review, complete references, passing structural checks, and a current review date.
 
 Reproduction is strongly preferred for a Level 3 guide when it can change the reader’s decision, but it is not a universal requirement. A Level 3 guide may say “not reproduced” or “blocked” when that is the documented state. A reproduction of one component does not upgrade the full solution or validate a leaderboard rank.

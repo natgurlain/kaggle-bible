@@ -311,7 +311,7 @@ function validateGuideClaimReferences(errors, entries, collections) {
 }
 
 function validatePublicationStates(errors, entries, collections, allById) {
-	const policyContext = { sources: collections.sources, solutions: collections.solutions };
+	const policyContext = { sources: collections.sources, solutions: collections.solutions, practices: collections.practices };
 	const sourcesFor = (entry) => (entry.data.source_ids ?? [])
 		.map(referenceId)
 		.map((id) => collections.sources.get(id))
@@ -557,7 +557,7 @@ export async function validateBuildOutput(root, entries, collections, allEntries
 		}
 	}
 
-	const policyContext = { sources: collections.sources, solutions: collections.solutions };
+	const policyContext = { sources: collections.sources, solutions: collections.solutions, practices: collections.practices };
 	const competitions = new Map(entries.competitions.map((entry) => [entry.data.slug, entry]));
 	const publicGuideIds = new Set(filterPublicGuides(entries.competitions, policyContext).map((entry) => entry.data.id));
 	for (const row of catalog) {

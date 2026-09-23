@@ -111,12 +111,15 @@ export function validateLevel2Readiness(record, { sources, solutions }) {
 	return errors;
 }
 
-export function validateLevel3Readiness(record, { solutions }) {
+export function validateLevel3Readiness(record, { solutions, practices, sources }) {
 	const errors = [];
 	const { data, body = '' } = record;
 	const solutionEntries = (data.solution_ids ?? []).map(referenceId).map((id) => solutions.get(id)).filter(Boolean);
+	const practiceEntries = (data.practice_ids ?? []).map(referenceId).map((id) => practices?.get(id)).filter(Boolean);
 	if (solutionEntries.length < 2) errors.push('Level 3 requires at least two comparable solution records');
-	if (!(data.practice_ids ?? []).length) errors.push('Level 3 requires at least one linked practice');
+	if (!practiceEntries.some((practice) => isPubliclyPublishable(practice, { solutions, sources }))) {
+		errors.push('Level 3 requires at least one linked, publicly publishable practice');
+	}
 	for (const solution of solutionEntries) {
 		if (!solution.data.reviewed_by || !isRealDate(solution.data.reviewed_at)
 			|| !['in-review', 'published'].includes(solution.data.status)) {

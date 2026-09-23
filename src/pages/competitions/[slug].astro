@@ -21,14 +21,16 @@ function resolveReferences<Entry extends { id: string }>(references: unknown[], 
 }
 
 export async function getStaticPaths() {
-	const [competitions, solutions, sources] = await Promise.all([
+	const [competitions, solutions, sources, practices] = await Promise.all([
 		getCollection('competitions'),
 		getCollection('solutions'),
 		getCollection('sources'),
+		getCollection('practices'),
 	]);
 	const context = {
 		solutions: new Map(solutions.map((entry) => [entry.id, entry])),
 		sources: new Map(sources.map((entry) => [entry.id, entry])),
+		practices: new Map(practices.map((entry) => [entry.id, entry])),
 	};
 	return filterPublicGuides(competitions, context).map((entry: CollectionEntry<'competitions'>) => ({
 		params: { slug: entry.data.slug },
@@ -51,7 +53,7 @@ const solutionsById = new Map(solutions.map((entry) => [entry.id, entry]));
 const sourcesById = new Map(sources.map((entry) => [entry.id, entry]));
 const practicesById = new Map(practices.map((entry) => [entry.id, entry]));
 const reproductionsById = new Map(reproductions.map((entry) => [entry.id, entry]));
-const publicationContext = { solutions: solutionsById, sources: sourcesById };
+const publicationContext = { solutions: solutionsById, sources: sourcesById, practices: practicesById };
 if (!isPubliclyPublishable(competition, publicationContext)) {
 	throw new Error(`Competition "${competition.data.id}" is not complete and reviewed for publication.`);
 }

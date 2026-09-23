@@ -10,6 +10,7 @@ import {
 	filterPublicGuides,
 	isPubliclyPublishable,
 	validateLevel2Readiness,
+	validateLevel3Readiness,
 } from '../src/content/publication-policy.js';
 import { normalizeCatalogTitles } from './normalize-built-catalog.mjs';
 import claimReferenceLinks from '../src/markdown/claim-reference-links.js';
@@ -61,6 +62,53 @@ function level2Fixture() {
 	return { record, sources, solutions };
 }
 
+function level3Fixture() {
+	const fixture = level2Fixture();
+	fixture.record.data.kaggle_bible_completeness_level = 3;
+	fixture.record.data.solution_ids = ['solution-example', 'solution-comparison'];
+	fixture.record.data.practice_ids = ['practice-example'];
+	fixture.record.body += '\n\n' + [
+		'## Top-solution comparison',
+		'Compare source-backed validation, reported results, and methods across the reviewed solutions.',
+		'## Validation and results',
+		'Describe the validation setup and retain the source-reported result provenance.',
+		'## Compute and reproduction',
+		'Record the available compute scope and whether any component was reproduced.',
+		'## Transfer limits',
+		'State which conditions limit transfer of each lesson to a new experiment.',
+		'## Next experiment',
+		'Propose a bounded experiment that can be completed with explicitly stated resources.',
+		'## Techniques',
+		'Distinguish decisive techniques from methods that are merely present in a solution.',
+	].join('\n\n');
+	const firstSolution = fixture.solutions.get('solution-example');
+	Object.assign(firstSolution.data, {
+		reviewed_by: 'Editorial reviewer',
+		reviewed_at: '2026-09-23',
+		transfer_limits: ['The source used a different validation split.'],
+	});
+	fixture.solutions.set('solution-comparison', {
+		data: {
+			...firstSolution.data,
+			id: 'solution-comparison',
+			source_ids: ['source-author-b'],
+			transfer_limits: ['The reported result uses a different compute budget.'],
+		},
+	});
+	const practices = new Map([
+		['practice-example', {
+			data: {
+				id: 'practice-example',
+				status: 'published',
+				reviewed_by: 'Editorial reviewer',
+				reviewed_at: '2026-09-23',
+				editorial_status: 'published',
+			},
+		}],
+	]);
+	return { ...fixture, practices };
+}
+
 function validCatalogRow() {
 	return {
 		id: '123',
@@ -95,6 +143,19 @@ test('complete Level 2 evidence map passes readiness checks', () => {
 	fixture.record.data.status = 'published';
 	fixture.record.data.editorial_status = 'published';
 	assert.equal(isPubliclyPublishable(fixture.record, fixture), true);
+});
+
+test('Level 3 requires a linked practice that is publicly publishable', () => {
+	const fixture = level3Fixture();
+	assert.deepEqual(validateLevel3Readiness(fixture.record, fixture), []);
+	fixture.record.data.status = 'published';
+	fixture.record.data.editorial_status = 'published';
+	assert.equal(isPubliclyPublishable(fixture.record, fixture), true);
+
+	fixture.practices.get('practice-example').data.status = 'in-review';
+	assert.ok(validateLevel3Readiness(fixture.record, fixture)
+		.some((error) => error.includes('publicly publishable practice')));
+	assert.equal(isPubliclyPublishable(fixture.record, fixture), false);
 });
 
 test('only reviewed Level 2+ content receives public guide routes', () => {
