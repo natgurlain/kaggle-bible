@@ -31,7 +31,9 @@ metrics:
 solution_ids:
   - solution-m5-2nd
   - solution-m5-4th
-practice_ids: []
+practice_ids:
+  - practice-validation-checks
+  - practice-compute-planning
 source_ids:
   - source-m5-official
   - source-m5-data
