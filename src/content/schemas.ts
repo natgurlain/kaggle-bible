@@ -176,7 +176,12 @@ export const reproductionSchema = z.object({
 	claim_ids: z.array(idString),
 	status: z.enum(['planned', 'running', 'completed', 'failed', 'blocked']),
 	scope: z.string().min(1),
-	code: z.object({ url: nullableUrl, revision: z.string().nullable(), local_changes: z.string().nullable() }),
+	code: z.object({
+		url: nullableUrl,
+		revision: z.string().nullable(),
+		local_changes: z.string().nullable(),
+		snapshot_ref: z.string().trim().min(1).nullable().default(null),
+	}),
 	data: z.object({
 		source_url: nullableUrl,
 		version_or_fingerprint: z.string().nullable(),

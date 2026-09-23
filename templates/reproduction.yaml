@@ -8,6 +8,7 @@ code:
   url: null
   revision: null
   local_changes: null
+  snapshot_ref: null # Durable local code snapshot reference; list the same ref under artifacts.
 data:
   source_url: null
   version_or_fingerprint: null

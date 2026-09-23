@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/normalize-built-catalog.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "check-content": "node scripts/check-content.mjs",

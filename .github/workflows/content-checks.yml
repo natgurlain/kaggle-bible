@@ -21,6 +21,7 @@ jobs:
           node-version: 22.12.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: python3 -m unittest scripts.test_build_competition_inventory
       - run: pnpm test:content
       - run: pnpm check-content
       - run: pnpm check

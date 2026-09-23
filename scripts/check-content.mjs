@@ -130,6 +130,12 @@ function validateCompletedReproduction(errors, entry) {
 			errors.push(`${entry.file} (${data.id}): completed reproduction requires ${field}`);
 		}
 	}
+	const codeUrl = data.code?.url;
+	const hasCodeUrl = typeof codeUrl === 'string' && /^https?:\/\//i.test(codeUrl.trim());
+	const snapshotRef = data.code?.snapshot_ref;
+	if (!hasCodeUrl && (typeof snapshotRef !== 'string' || !snapshotRef.trim() || !artifacts.includes(snapshotRef))) {
+		errors.push(`${entry.file} (${data.id}): completed reproduction requires an HTTP(S) code.url or a code.snapshot_ref included in artifacts`);
+	}
 	for (const field of ['expected.value', 'expected.tolerance', 'observed.value']) {
 		const [section, key] = field.split('.');
 		const value = data[section]?.[key];
@@ -429,7 +435,7 @@ function validateCatalogRows(catalog, errors) {
 		for (const field of requiredStrings) {
 			if (typeof row[field] !== 'string') errors.push(`${label} is missing required string "${field}"`);
 		}
-		for (const field of ['id', 'slug', 'competition_url']) {
+		for (const field of ['id', 'slug', 'title', 'competition_url']) {
 			if (typeof row[field] === 'string' && !row[field].trim()) errors.push(`${label} requires a non-empty "${field}"`);
 		}
 		if (typeof row.competition_url === 'string' && row.competition_url.trim()) {

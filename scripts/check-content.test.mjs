@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -9,6 +9,7 @@ import {
 	isPubliclyPublishable,
 	validateLevel2Readiness,
 } from '../src/content/publication-policy.js';
+import { normalizeCatalogTitles } from './normalize-built-catalog.mjs';
 
 function level2Fixture() {
 	const sources = new Map([
@@ -274,6 +275,7 @@ test('completed reproductions require a run receipt and matching solution claim'
 			'  url: null',
 			'  revision: abc123',
 			'  local_changes: null',
+			'  snapshot_ref: artifacts/source-code-snapshot.tar.gz',
 			'data:',
 			'  source_url: null',
 			'  version_or_fingerprint: sha256:dataset123',
@@ -299,6 +301,7 @@ test('completed reproductions require a run receipt and matching solution claim'
 			'claim_ids:',
 			'  - observed-result',
 			'artifacts:',
+			'  - artifacts/source-code-snapshot.tar.gz',
 			'  - artifacts/observed-result.json',
 			'executed_by: test runner',
 			'executed_at: 2026-09-23',
@@ -306,6 +309,13 @@ test('completed reproductions require a run receipt and matching solution claim'
 		].join('\n'));
 		const matched = await checkContent(root, { report: false });
 		assert.equal(matched.ok, true, matched.errors.join('\n'));
+
+		const completeReceipt = await readFile(path.join(reproductions, 'reproduction-a.yaml'), 'utf8');
+		await writeFile(path.join(reproductions, 'reproduction-a.yaml'), completeReceipt
+			.replace('  snapshot_ref: artifacts/source-code-snapshot.tar.gz\n', '')
+			.replace('  - artifacts/source-code-snapshot.tar.gz\n', ''));
+		const untraceableCode = await checkContent(root, { report: false });
+		assert.ok(untraceableCode.errors.some((error) => error.includes('requires an HTTP(S) code.url or a code.snapshot_ref included in artifacts')));
 	} finally {
 		await rm(root, { recursive: true, force: true });
 	}
@@ -451,11 +461,24 @@ test('built catalog validation rejects rows missing the required schema', async 
 		const result = await checkContent(root, { report: false });
 		assert.ok(result.errors.some((error) => error.includes('row 1 is missing required string "id"')));
 		assert.ok(result.errors.some((error) => error.includes('row 1 is missing required string "record_state"')));
+
+		await writeCatalog(dist, [{ ...validCatalogRow(), title: '' }]);
+		const blankTitle = await checkContent(root, { report: false });
+		assert.ok(blankTitle.errors.some((error) => error.includes('row 1 requires a non-empty "title"')));
 	} finally {
 		if (previous === undefined) delete process.env.CHECK_BUILT_CONTENT;
 		else process.env.CHECK_BUILT_CONTENT = previous;
 		await rm(root, { recursive: true, force: true });
 	}
+});
+
+test('built catalog fills missing source titles from stable competition slugs', () => {
+	const rows = normalizeCatalogTitles([
+		{ id: '1', slug: 'untitled-competition', title: '' },
+		{ id: '2', slug: 'named-competition', title: 'Named Competition' },
+	]);
+	assert.equal(rows[0].title, 'untitled-competition');
+	assert.equal(rows[1].title, 'Named Competition');
 });
 
 test('built-output validation fails when the build or catalog asset is missing', async () => {
