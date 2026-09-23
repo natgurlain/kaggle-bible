@@ -18,7 +18,7 @@ rank:
 scores: []
 validation:
   strategy: temporal-holdout
-  details: The author lists five dated holdout windows (d_1578–d_1605, d_1830–d_1857, d_1858–d_1885, d_1886–d_1913, and d_1914–d_1941); aggregate validation scores and a full tuning protocol are not reported in the audit.
+  details: The author lists five dated holdout windows (d_1578–d_1605, d_1830–d_1857, d_1858–d_1885, d_1886–d_1913, and d_1914–d_1941), but says validation scores varied significantly over time and they could not build a proper validation. Treat the windows as reported experiments, not evidence of stable or reliable validation; aggregate scores and a full tuning protocol are not reported.
   source_ids:
     - source-m5-4th
 techniques:
@@ -54,16 +54,16 @@ claims:
     conditions: This describes the author's M5 implementation.
     limitations: No numeric validation result or isolated component comparison is available in the inspected write-up.
   - id: validation-01
-    statement: The author reports evaluating across five dated holdout windows and says they did not use post-processing, recursive features, or large compute.
+    statement: The author lists five dated holdout windows but reports that scores varied significantly over time and that they could not build a proper validation; they also describe not using post-processing, recursive features, or large compute.
     kind: source-reported
     evidence:
       - source_id: source-m5-4th
         locator: Five dated holdout windows; strategy commentary
-        support_summary: The write-up lists the windows and qualitative design choices.
+        support_summary: The write-up lists the windows and later says validation scores varied significantly and a proper validation could not be built; it also describes the author's design choices.
     supports_claim_refs: []
     reproduction_ids: []
     conditions: These statements are specific to the author's report.
-    limitations: The phrase "not too much" compute is qualitative; no hardware, runtime, or WRMSSE optimization claim is implied.
+    limitations: These holdouts are not evidence of stable validation; the author's validation scores varied significantly and they could not build a proper validation. The phrase "not too much" compute is qualitative; no hardware, runtime, or WRMSSE optimization claim is implied.
   - id: rank-01
     statement: The Kaggle write-up displays a fourth-place label; this record treats the placement as author-reported.
     kind: source-reported
