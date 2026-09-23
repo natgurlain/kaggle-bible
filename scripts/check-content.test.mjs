@@ -3,7 +3,8 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { checkContent } from './check-content.mjs';
+import { satteri } from '@astrojs/markdown-satteri';
+import { checkContent, validateBuildOutput } from './check-content.mjs';
 import {
 	filterPublicContent,
 	filterPublicGuides,
@@ -138,6 +139,147 @@ test('claim markers become evidence links without rewriting code or existing lin
 	assert.equal(transformed.children[3].value, '[claim:code-example]');
 	assert.equal(transformed.children[4].url, '/existing');
 	assert.equal(transformed.children[5].children[0].url, '#evidence-lesson-02');
+});
+
+test('a claim marker inside an emphasized-only paragraph becomes an evidence link', () => {
+	const paragraph = {
+		type: 'paragraph',
+		children: [{ type: 'strong', children: [{ type: 'text', value: '[claim:gain-01]' }] }],
+	};
+	const transformed = claimReferenceLinks.paragraph(paragraph);
+	assert.equal(transformed.children[0].type, 'strong');
+	assert.equal(transformed.children[0].children[0].type, 'link');
+	assert.equal(transformed.children[0].children[0].url, '#evidence-gain-01');
+});
+
+test('the Markdown renderer links a claim marker when the whole phrase is bold', async () => {
+	const renderer = await satteri({ mdastPlugins: [claimReferenceLinks] }).createRenderer({});
+	const { code } = await renderer.render('**[claim:gain-01]**', { frontmatter: {} });
+	assert.match(code, /<strong><a[^>]*href="#evidence-gain-01"/);
+});
+
+test('guide evidence references must target claims rendered on that guide', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-guide-claim-target-'));
+	try {
+		const competitions = path.join(root, 'src/content/competitions');
+		const solutions = path.join(root, 'src/content/solutions');
+		const sources = path.join(root, 'src/content/sources');
+		await mkdir(competitions, { recursive: true });
+		await mkdir(solutions, { recursive: true });
+		await mkdir(sources, { recursive: true });
+		await writeFile(path.join(competitions, 'competition-sample.md'), [
+			'---',
+			'id: competition-sample',
+			'status: draft',
+			'slug: sample',
+			'kaggle_bible_completeness_level: 2',
+			'solution_ids:',
+			'  - solution-linked',
+			'claims:',
+			'  - id: guide-claim',
+			'    kind: editorial-inference',
+			'    evidence: []',
+			'    supports_claim_refs:',
+			'      - competition-other#other-claim',
+			'---',
+			'',
+			'# Sample guide',
+		].join('\n'));
+		await writeFile(path.join(competitions, 'competition-other.md'), [
+			'---',
+			'id: competition-other',
+			'status: draft',
+			'slug: other',
+			'source_ids:',
+			'  - source-claim',
+			'claims:',
+			'  - id: other-claim',
+			'    kind: source-reported',
+			'    evidence:',
+			'      - source_id: source-claim',
+			'        locator: Results section',
+			'        support_summary: The source reports this result.',
+			'    supports_claim_refs: []',
+			'---',
+			'',
+			'# Other guide',
+		].join('\n'));
+		await writeFile(path.join(solutions, 'solution-linked.yaml'), [
+			'id: solution-linked',
+			'competition_id: competition-sample',
+			'claims: []',
+		].join('\n'));
+		await writeFile(path.join(sources, 'source-claim.yaml'), 'id: source-claim\n');
+
+		const result = await checkContent(root, { report: false });
+		assert.ok(result.errors.some((error) => error.includes('target "competition-other#other-claim" is not rendered in the competition-sample guide')));
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test('built catalog guide links require an eligible Level 2+ record and an emitted route', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kaggle-bible-built-guide-route-'));
+	try {
+		const dist = path.join(root, 'dist');
+		await mkdir(path.join(dist, 'data'), { recursive: true });
+		await writeFile(path.join(dist, 'index.html'), '<main>built</main>');
+
+		const levelOne = level2Fixture();
+		levelOne.record.data.slug = 'catalog-only';
+		levelOne.record.data.kaggle_bible_completeness_level = 1;
+		levelOne.record.data.status = 'published';
+		levelOne.record.data.editorial_status = 'published';
+		await mkdir(path.join(dist, 'competitions/catalog-only'), { recursive: true });
+		await writeFile(path.join(dist, 'competitions/catalog-only/index.html'), '<main>not a guide</main>');
+		await writeCatalog(dist, [{
+			...validCatalogRow(),
+			completeness_level: '1',
+			completeness_label: 'catalog',
+			guide_slug: 'catalog-only',
+		}]);
+		const levelOneEntries = {
+			competitions: [levelOne.record],
+			solutions: [...levelOne.solutions.values()],
+			sources: [...levelOne.sources.values()],
+			practices: [],
+			reproductions: [],
+		};
+		const levelOneErrors = [];
+		await validateBuildOutput(root, levelOneEntries, levelOne, Object.values(levelOneEntries).flat(), levelOneErrors);
+		assert.ok(levelOneErrors.some((error) => error.includes('does not point to a published, reviewed Level 2+ guide')));
+		assert.ok(levelOneErrors.some((error) => error.includes('non-public competition has a guide route')));
+
+		const eligible = level2Fixture();
+		eligible.record.data.slug = 'evidence-map';
+		eligible.record.data.status = 'published';
+		eligible.record.data.editorial_status = 'published';
+		const eligibleEntries = {
+			competitions: [eligible.record],
+			solutions: [...eligible.solutions.values()],
+			sources: [...eligible.sources.values()],
+			practices: [],
+			reproductions: [],
+		};
+		await writeCatalog(dist, [{
+			...validCatalogRow(),
+			completeness_level: '2',
+			completeness_label: 'evidence-map',
+			editorial_status: 'published',
+			guide_slug: 'evidence-map',
+		}]);
+		const missingRouteErrors = [];
+		await validateBuildOutput(root, eligibleEntries, eligible, Object.values(eligibleEntries).flat(), missingRouteErrors);
+		assert.ok(missingRouteErrors.some((error) => error.includes('has no generated page at dist/competitions/evidence-map/index.html')));
+
+		await mkdir(path.join(dist, 'competitions/evidence-map'), { recursive: true });
+		await writeFile(path.join(dist, 'competitions/evidence-map/index.html'), '<main>published evidence map</main>');
+		const emittedRouteErrors = [];
+		await validateBuildOutput(root, eligibleEntries, eligible, Object.values(eligibleEntries).flat(), emittedRouteErrors);
+		assert.equal(emittedRouteErrors.some((error) => error.includes('has no generated page')), false);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
 });
 
 test('incomplete Level 2 evidence map fails readiness and cannot be published', () => {

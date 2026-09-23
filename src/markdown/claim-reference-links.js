@@ -1,4 +1,5 @@
 const marker = /\[claim:([a-z0-9]+(?:-[a-z0-9]+)*)\]/g;
+const markerText = /\[claim:[a-z0-9]+(?:-[a-z0-9]+)*\]/;
 
 function linkifyText(value) {
 	const nodes = [];
@@ -27,14 +28,16 @@ function transformInline(node) {
 	return [{ ...node, children: node.children.flatMap(transformInline) }];
 }
 
+function containsClaimMarker(node) {
+	if (node.type === 'link' || node.type === 'linkReference' || node.type === 'inlineCode') return false;
+	if (node.type === 'text') return markerText.test(node.value);
+	return Array.isArray(node.children) && node.children.some(containsClaimMarker);
+}
+
 export default {
 	name: 'claim-reference-links',
 	paragraph(node) {
-		if (!node.children.some((child) => child.type === 'text' && marker.test(child.value))) {
-			marker.lastIndex = 0;
-			return;
-		}
-		marker.lastIndex = 0;
+		if (!node.children.some(containsClaimMarker)) return;
 		return { ...node, children: node.children.flatMap(transformInline) };
 	},
 };
