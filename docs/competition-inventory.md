@@ -1,3 +1,4 @@
+/Users/bigcube/.zlogin:9: nice(5) failed: operation not permitted
 # Competition inventory
 
 The repository tracks the full public competition set represented by the official [Meta Kaggle](https://www.kaggle.com/datasets/kaggle/meta-kaggle) snapshot used to generate [data/competition-inventory.csv](../data/competition-inventory.csv). The snapshot is version `2322`, updated `2026-09-22`, and was generated from `Competitions.csv` on that date. The [manifest](../data/competition-inventory.manifest.json) records the row count and output checksum. The sparse editorial overlay is [data/competition-editorial.csv](../data/competition-editorial.csv); it marks the competitions queued for the learning path and preserves review progress across inventory refreshes.
@@ -33,14 +34,14 @@ The generator uses Python’s standard library, handles embedded newlines and NU
 For editorial-state changes against the current snapshot, do not download Meta Kaggle again. Reapply the overlay to the checked-in inventory and regenerate both derived outputs locally:
 
 ```bash
-python3 scripts/build_competition_inventory.py \\
-  --existing-inventory data/competition-inventory.csv \\
-  --snapshot-date 2026-09-22 \\
-  --editorial-overlay data/competition-editorial.csv \\
-  --source-version 2322 \\
-  --source-updated-at 2026-09-22T07:59:00.503Z \\
-  --manifest data/competition-inventory.manifest.json \\
-  --output data/competition-inventory.csv \\
+python3 scripts/build_competition_inventory.py \
+  --existing-inventory data/competition-inventory.csv \
+  --snapshot-date 2026-09-22 \
+  --editorial-overlay data/competition-editorial.csv \
+  --source-version 2322 \
+  --source-updated-at 2026-09-22T07:59:00.503Z \
+  --manifest data/competition-inventory.manifest.json \
+  --output data/competition-inventory.csv \
   --catalog-json-output public/data/competition-catalog.json
 ```
 
