@@ -161,16 +161,16 @@ claims:
     conditions: This describes the participant's reported Accuracy entry.
     limitations: No numeric validation score or isolated comparison is reported in the inspected source.
   - id: validation-4th-01
-    statement: The fourth-place write-up lists five dated holdout windows and says it used no post-processing, recursive features, or large compute, without quantifying resources.
+    statement: The fourth-place write-up lists five dated holdout windows, reports that scores varied significantly over time, and says the author could not establish a proper validation; it also says no post-processing, recursive features, or large compute were used, without quantifying resources.
     kind: source-reported
     evidence:
       - source_id: source-m5-4th
         locator: Validation; strategy commentary
-        support_summary: The author lists five holdout windows and qualitative design choices including no post-processing or recursive features.
+        support_summary: The author lists five windows, describes validation scores varying significantly and the inability to establish a proper setup, and notes selected design choices.
     supports_claim_refs: []
     reproduction_ids: []
     conditions: These are statements in the author's retrospective account.
-    limitations: “Not too much” compute is qualitative; it is not a runtime, hardware, or cost measurement.
+    limitations: These windows do not establish stable validation or comparable performance. “Not too much” compute is qualitative; it is not a runtime, hardware, or cost measurement.
   - id: rank-4th-01
     statement: The Kaggle write-up displays a fourth-place label; this evidence map preserves it as author-reported.
     kind: source-reported
@@ -287,7 +287,7 @@ On data the reader is authorized to use, create a simple weekly seasonal baselin
 
 ## Gaps
 
-The inspected sources do not provide comparable numeric validation scores, complete final-pipeline hardware/runtime, or a reproducible pinned code-and-data receipt. The write-up rank labels are not linked to official final rows in this source set. The “not too much compute” description is qualitative only. [claim:gaps-01] [claim:validation-4th-01]
+The inspected sources do not provide comparable numeric validation scores, complete final-pipeline hardware/runtime, or a reproducible pinned code-and-data receipt. [claim:gaps-01] The second- and fourth-place write-up labels are not independently matched to official final leaderboard rows in this source set. [claim:rank-2nd-01] [claim:rank-4th-01] The “not too much compute” description is qualitative only. [claim:validation-4th-01]
 
 ## Unsuccessful approaches
 
