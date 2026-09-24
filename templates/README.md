@@ -1,6 +1,6 @@
 # Authoring templates
 
-These are intentionally incomplete drafts, not publishable example guides. `REPLACE` values are placeholders; `null` means unknown. They use the [content contract](../docs/content-model.md). Astro validates record shapes and controlled values; `pnpm check-content` validates cross-record references and publication readiness. Claim-marker rendering remains future work.
+These are intentionally incomplete drafts, not publishable example guides. `REPLACE` values are placeholders; `null` means unknown. They use the [content contract](../docs/content-model.md). Astro validates record shapes and controlled values; `pnpm check-content` validates cross-record references and publication readiness. The guide renderer turns claim markers into links to their local evidence cards.
 
 Copy templates into these destinations when content authoring starts:
 
