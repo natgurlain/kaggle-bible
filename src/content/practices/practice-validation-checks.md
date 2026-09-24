@@ -2,11 +2,11 @@
 schema_version: 1
 id: practice-validation-checks
 slug: validation-checks
-status: in-review
+status: published
 title: Match validation to the prediction boundary
 summary: A conditional checklist for choosing folds or forecast origins that reflect what will be unseen at prediction time.
-reviewed_by: null
-reviewed_at: null
+reviewed_by: GPT-6 Luna Max
+reviewed_at: '2026-09-24'
 topic: validation
 evidence_scope: single-case
 modalities:
@@ -93,4 +93,4 @@ On data you are authorized to use, evaluate one simple M5 baseline at several ro
 
 ## Sources and review notes
 
-Primary solution reports and the official horizon record are linked above. The claims do not establish a consensus split strategy. This content remains in review pending the exact-head GPT-6 Luna Max content review.
+Primary solution reports and the official horizon record are linked above. The claims do not establish a consensus split strategy. Treat this checklist as guidance for designing a validation plan, not evidence that any specific split is correct.

@@ -1,10 +1,10 @@
 schema_version: 1
 id: solution-m5-4th
-status: in-review
+status: published
 title: Author-reported fourth-place M5 solution
 summary: A single LightGBM approach partitioned by store and forecast week, evaluated on several dated holdout windows.
 reviewed_by: GPT-6 Luna Max
-reviewed_at: '2026-09-23'
+reviewed_at: '2026-09-24'
 competition_id: competition-m5-forecasting-accuracy
 team: Unknown
 authors:

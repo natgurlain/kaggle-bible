@@ -2,11 +2,11 @@
 schema_version: 1
 id: practice-compute-planning
 slug: compute-resource-planning
-status: in-review
+status: published
 title: Plan compute from measured pilot runs
 summary: A cautious way to scope resource use when competition reports leave final-pipeline hardware, runtime, and memory unknown.
-reviewed_by: null
-reviewed_at: null
+reviewed_by: GPT-6 Luna Max
+reviewed_at: '2026-09-24'
 topic: compute-efficiency
 evidence_scope: single-case
 modalities:
@@ -89,4 +89,4 @@ For the M5 task, use an authorized data copy and one simple 28-day baseline orig
 
 ## Sources and review notes
 
-The linked reports distinguish one failed experiment from final-system evidence and leave important resource fields unknown. This practice does not give hardware or cost recommendations. It remains in review pending the exact-head GPT-6 Luna Max content review.
+The linked reports distinguish one failed experiment from final-system evidence and leave important resource fields unknown. This practice does not give hardware or cost recommendations; measure any proposed workflow on the actual intended hardware.
