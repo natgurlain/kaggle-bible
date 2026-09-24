@@ -10,6 +10,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'Kaggle Bible',
+			favicon: 'https://www.kaggle.com/static/images/favicon.ico',
 			social: [
 				{
 					icon: 'github',
