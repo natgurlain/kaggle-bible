@@ -1,0 +1,111 @@
+schema_version: 1
+id: solution-home-credit-12th
+status: published
+title: Author-reported 12th-place Home Credit solution
+summary: A reported ensemble of relational aggregates, model-derived history features, and diverse model stacking.
+reviewed_by: GPT-6 Luna Max
+reviewed_at: '2026-09-24'
+competition_id: competition-home-credit-default-risk
+team: Unknown
+authors:
+  - zr
+  - ouyangxuan
+  - cxlcc
+  - Yifan Xie
+  - Zhiqiang Zhong
+  - YL
+source_ids:
+  - source-home-credit-12th
+rank:
+  value: 12
+  basis: author-report
+  source_id: source-home-credit-12th
+scores:
+  - metric_id: auc
+    value: 0.8047
+    split: local-cv
+    configuration: Final blended/stacked system reported in the Model Ensemble section
+    fold_summary: null
+    claim_id: cv-result-01
+  - metric_id: auc
+    value: 0.803
+    split: public-lb
+    configuration: Author-reported public leaderboard score for the described final blend
+    fold_summary: null
+    claim_id: public-result-01
+validation:
+  strategy: null
+  details: The authors report final blended/stacked local-CV AUC 0.8047; the audited write-up does not specify fold construction, seeds, or a complete split recipe.
+  source_ids:
+    - source-home-credit-12th
+techniques:
+  - groupby-aggregation
+  - gradient-boosting
+  - stacking
+  - blending
+resources:
+  - id: final-pipeline
+    scope: full-pipeline
+    hardware_class: unknown
+    accelerator_model: null
+    accelerator_count: null
+    vram_gb_per_device: null
+    ram_gb: null
+    wall_hours: null
+    accelerator_hours: null
+    basis: unknown
+    claim_id: null
+reproducibility:
+  code_url: null
+  code_revision: null
+  status: not-assessed
+  reproduction_ids: []
+  notes: No matching code repository was established during the source audit; no reproduction was attempted.
+claims:
+  - id: approach-01
+    statement: The authors describe relational-table aggregates, model-derived history features, and a diverse LightGBM, XGBoost, random-forest, and linear-model ensemble.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-12th
+        locator: Feature Engineer; Model Ensemble
+        support_summary: The write-up describes relational aggregates and history features followed by an ensemble of the listed model families.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These are components reported for this team's Home Credit approach.
+    limitations: Their individual contributions are not isolated by the inspected source.
+  - id: rank-01
+    statement: The Kaggle write-up displays a 12th-place label; this record treats the placement as author-reported.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-12th
+        locator: Write-up title and placement label
+        support_summary: The Kaggle write-up is labeled 12th place.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This is the placement label shown with the participant write-up.
+    limitations: The source audit did not reliably match the authors to an official final private-leaderboard row.
+  - id: cv-result-01
+    statement: The authors report a final blended/stacked local-CV AUC of 0.8047.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-12th
+        locator: Model Ensemble
+        support_summary: The authors report 0.8047 for their final blended/stacked local CV.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This is the reported local-CV result for the described final ensemble.
+    limitations: Fold construction and seeds are not specified in the inspected account; the result was not reproduced.
+  - id: public-result-01
+    statement: The authors report a public leaderboard score of 0.803.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-12th
+        locator: Model Ensemble
+        support_summary: The write-up reports a public score of 0.803.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This is the author-reported public leaderboard result.
+    limitations: It is not a private leaderboard result and was not independently matched to the team's final submission.
+unsuccessful_attempts: []
+transfer_limits:
+  - The inspected account is one participant report; its features and ensemble do not establish a reliable validation or modeling recipe for another dataset.

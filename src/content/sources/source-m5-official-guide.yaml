@@ -1,0 +1,14 @@
+schema_version: 1
+id: source-m5-official-guide
+title: M5 Forecasting – Accuracy Competitors’ Guide
+url: https://storage.googleapis.com/kaggle-forum-message-attachments/772349/15032/M5-Competitors-Guide-Final-10-March-2020.pdf
+kind: official-competition
+authors: []
+published_at: null
+accessed_at: '2026-09-23'
+revision: null
+locator_notes: Evaluation → Point forecasts, printed p. 6 (WRMSSE formula and lower-is-better statement); Evaluation → Weighting, printed pp. 8–9 (hierarchy weighting example and aggregation).
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Official M5 competitors guide PDF inspected from a Kaggle forum attachment. The overview uses RMSSE wording; this guide describes the weighted WRMSSE used to rank point-forecast submissions.

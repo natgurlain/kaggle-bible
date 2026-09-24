@@ -106,6 +106,8 @@ The site is built with [Astro](https://astro.build/) and [Starlight](https://sta
 
 The project values useful evidence over impressive-sounding certainty. A strong contribution can be a full guide, a carefully scoped reproduction, a source review, a correction, or a clearly documented failed attempt.
 
+For the project roadmap and ticket-to-epic review flow, see the [delivery workflow](docs/delivery-workflow.md).
+
 Before writing, read:
 
 1. [Content model and validation contract](docs/content-model.md)

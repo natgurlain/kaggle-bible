@@ -123,7 +123,7 @@ A documentation theme is a reasonable shortcut if implementation capacity is ver
 
 Target six reviewed competition guides across tabular, forecasting, NLP, and vision; at least twelve documented solution records; eight practice guides; and the short starting path. The shortlist is provisional until source eligibility checks pass. Keep a separate discovery queue so the ambition of broad coverage does not turn into thousands of thin published pages.
 
-The complete competition inventory is maintained separately from editorial guides. Every imported competition begins at Level 1 (Catalog), which records identity and basic source metadata without claiming that the page or solutions were reviewed. Level 2 (Evidence map) adds a human-checked official source and documented solution evidence. Level 3 (Full guide) adds comparative, reviewed guidance for a next experiment. See [the exact completeness definitions](coverage-levels.md) and the [inventory boundary](competition-inventory.md). This lets us work through competitions one by one while keeping the full backlog visible.
+The complete competition inventory is maintained separately from editorial guides. Every imported competition begins at Level 1 (Catalog), which records identity and basic source metadata without claiming that the page or solutions were reviewed. Level 2 (Evidence map) adds a reviewed official source and documented solution evidence. Level 3 (Full guide) adds comparative, reviewed guidance for a next experiment. See [the exact completeness definitions](coverage-levels.md) and the [inventory boundary](competition-inventory.md). This lets us work through competitions one by one while keeping the full backlog visible.
 
 The reader-facing learning path is [beginner to advanced](learning-path.md). It recommends small, interpretable competitions before relational tabular, time-aware, composite-metric, and resource-intensive problems, and assigns completion gates based on skills rather than leaderboard position.
 
@@ -132,7 +132,7 @@ The reader-facing learning path is [beginner to advanced](learning-path.md). It 
 | 0: editorial pilot | Two competition drafts, four solution records, validation and compute practice drafts | Every substantive claim traceable; compare the templates against real sources; record missing fields and editing time |
 | 1: site foundation | Content schemas, page layouts, catalog, search, contribution checks | Pilot pages render; drafts excluded; references validated; query/facet URL behavior works |
 | 2: first release | Six guides, twelve or more solutions, eight practices, start path | Every guide has at least two reviewed solutions or is replaced with a more documentable candidate; all practices include evidence and transfer limits |
-| 3: useful coverage | Grow in batches of five guides driven by missing tasks and reader requests | Previous batch passes review; new entries add distinct learning value; maintenance queue remains manageable |
+| 3: useful coverage | Grow in batches of five guides driven by missing task coverage and source-qualified opportunities | Previous batch passes review; new entries add distinct learning value; maintenance queue remains manageable |
 
 Release gates also include:
 
@@ -141,9 +141,9 @@ Release gates also include:
 - Each practice links to at least one concrete competition claim; broad recurring advice cites two competitions or is narrowed/labeled as limited evidence.
 - All eight practice topics have usable guidance, even where the evidence is a process example rather than an ablated score improvement.
 - Internal links, schema rules, relation checks, and draft exclusion pass. External access failures are reviewed rather than mistaken for factual invalidity.
-- Five representative readers, including a beginner and a limited-compute participant, attempt discovery tasks. At least four find a relevant lesson, its source, and a feasible or explicitly uncertain next experiment within three minutes.
+- Run repeatable local checks on the built catalog and every published pilot route: catalog search/filter/share links, catalog-to-guide identity, claim-to-evidence and source links, keyboard operation, and desktop/narrow layout. Record the exact commit and outcomes; do not require recruited participants or report simulated user outcomes.
 - Mobile layout and keyboard access work for navigation, search, filters, and comparison content; evidence labels do not depend on color.
-- A contributor can produce a valid draft using the templates, and a reviewer can trace one randomly selected numerical claim in under two minutes.
+- A template-generated draft passes validation, and the exact-head GPT-6 Luna Max review can trace a sampled numerical claim to its evidence and locator.
 
 Start with the two candidates with the strongest accessible sources in [research notes](research.md), not necessarily the most famous competitions. Measure editorial hours in the pilot before promising a calendar deadline or throughput. With one maintainer, prioritize one complete guide at a time and keep the research queue short.
 
@@ -151,6 +151,6 @@ Start with the two candidates with the strongest accessible sources in [research
 
 Review new-competition suggestions monthly and existing sources quarterly. Re-review technical recipes when dependency changes or reproduction failures are reported. Preserve the difference between historical claims and currently runnable instructions. Show factual review dates separately from automated link-check dates.
 
-Expand coverage by task gaps, transferable lessons, source quality, and participant demand. Include accessible non-winning solutions where they expose cost/performance tradeoffs. Track how many entries are discovered, partial, and reviewed; avoid presenting "each competition" coverage until it exists.
+Expand coverage by task gaps, transferable lessons, and source quality. Include accessible non-winning solutions where they expose cost/performance tradeoffs. Track how many entries are cataloged, partial, and reviewed; avoid presenting "each competition" coverage until it exists.
 
 Defer mass scraping, automatic publication of generated summaries, full-solution reruns, hosted notebooks, leaderboards across incomparable tasks, accounts, comments, personalization, vector databases, and a chatbot. A future cited-answer assistant should wait until the content and retrieval can reliably distinguish reports from recommendations. Revisit features against measured reader failures, not feature counts.

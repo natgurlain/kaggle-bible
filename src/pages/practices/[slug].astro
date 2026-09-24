@@ -1,0 +1,174 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { satteri } from '@astrojs/markdown-satteri';
+import claimReferenceLinks from '../../markdown/claim-reference-links.js';
+import { removeMatchingLeadingTitle } from '../../markdown/guide-body.js';
+import { filterPublicContent, filterPublicGuides, isPubliclyPublishable } from '../../content/publication-policy.js';
+
+const idOf = (value: unknown): string | null => {
+	if (typeof value === 'string') return value;
+	if (value && typeof value === 'object' && 'id' in value && typeof value.id === 'string') return value.id;
+	if (value && typeof value === 'object' && 'slug' in value && typeof value.slug === 'string') return value.slug;
+	return null;
+};
+
+const claimParts = (reference: string, defaultOwner: string) => {
+	const separator = reference.indexOf('#');
+	return separator < 0
+		? { ownerId: defaultOwner, claimId: reference }
+		: { ownerId: reference.slice(0, separator), claimId: reference.slice(separator + 1) };
+};
+
+export async function getStaticPaths() {
+	const [practices, solutions, sources] = await Promise.all([
+		getCollection('practices'),
+		getCollection('solutions'),
+		getCollection('sources'),
+	]);
+	const context = {
+		solutions: new Map(solutions.map((entry) => [entry.id, entry])),
+		sources: new Map(sources.map((entry) => [entry.id, entry])),
+	};
+	return filterPublicContent(practices, context).map((entry: CollectionEntry<'practices'>) => ({
+		params: { slug: entry.data.slug },
+	}));
+}
+
+const [practices, solutions, sources, competitions] = await Promise.all([
+	getCollection('practices'),
+	getCollection('solutions'),
+	getCollection('sources'),
+	getCollection('competitions'),
+]);
+const routeParams = Astro.params as Record<string, string | undefined>;
+const slug = routeParams.slug;
+const practice = practices.find((entry) => entry.data.slug === slug);
+if (!practice) throw new Error(`No practice page found for slug "${slug ?? 'unknown'}".`);
+
+const solutionsById = new Map(solutions.map((entry) => [entry.id, entry]));
+const sourcesById = new Map(sources.map((entry) => [entry.id, entry]));
+const competitionsById = new Map(competitions.map((entry) => [entry.data.id, entry]));
+const publicationContext = { solutions: solutionsById, sources: sourcesById };
+if (!isPubliclyPublishable(practice, publicationContext)) {
+	throw new Error(`Practice "${practice.data.id}" is not reviewed and published.`);
+}
+
+const publicGuideIds = new Set(filterPublicGuides(competitions, {
+	...publicationContext,
+	practices: new Map(practices.map((entry) => [entry.id, entry])),
+}).map((entry: CollectionEntry<'competitions'>) => entry.data.id));
+const evidenceLink = (reference: string) => {
+	const { ownerId, claimId } = claimParts(reference, practice.data.id);
+	if (ownerId === practice.data.id) return { href: `#evidence-${claimId}`, label: `Practice claim ${claimId}` };
+	const solution = solutionsById.get(ownerId);
+	const competitionId = idOf(solution?.data.competition_id);
+	const competition = solution
+		? competitionsById.get(competitionId ?? '')
+		: competitionsById.get(ownerId);
+	if (!competition || !publicGuideIds.has(competition.data.id)) return null;
+	const anchor = ownerId === competition.data.id ? `evidence-${claimId}` : `evidence-${ownerId}-${claimId}`;
+	return { href: `/competitions/${encodeURIComponent(competition.data.slug)}/#${anchor}`, label: `${competition.data.title} · ${claimId}` };
+};
+const markdown = await satteri({ mdastPlugins: [claimReferenceLinks] }).createRenderer({});
+const practiceBody = removeMatchingLeadingTitle(practice.body ?? '', practice.data.title);
+const { code: practiceBodyHTML } = await markdown.render(practiceBody, { frontmatter: practice.data });
+const citationSource = (reference: unknown) => {
+	const id = idOf(reference);
+	return id ? sourcesById.get(id) : undefined;
+};
+const reviewedDate = practice.data.reviewed_at ?? 'Not reported';
+const topicLabel = practice.data.topic.replaceAll('-', ' ');
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{practice.data.title} · Kaggle Bible</title>
+		<meta name="description" content={practice.data.summary} />
+	</head>
+	<body>
+		<main class="practice-shell">
+			<nav class="breadcrumbs" aria-label="Breadcrumb">
+				<a href="/">Kaggle Bible</a><span aria-hidden="true">/</span><a href="/practices/">Best practices</a><span aria-hidden="true">/</span><span aria-current="page">{practice.data.title}</span>
+			</nav>
+			<header class="practice-header">
+				<p class="eyebrow">Reviewed practice · {topicLabel}</p>
+				<h1>{practice.data.title}</h1>
+				<p class="lede">{practice.data.summary}</p>
+				<p class="review-note">Evidence reviewed by {practice.data.reviewed_by} on {reviewedDate} · Evidence scope: {practice.data.evidence_scope.replaceAll('-', ' ')}</p>
+			</header>
+
+			<article class="practice-content" aria-label="Practice guidance" set:html={practiceBodyHTML} />
+
+			{practice.data.evidence_claim_refs.length > 0 && (
+				<section class="content-section" aria-labelledby="linked-evidence-heading">
+					<h2 id="linked-evidence-heading">Linked competition evidence</h2>
+					<ul class="evidence-links">
+						{practice.data.evidence_claim_refs.map((reference) => {
+							const link = evidenceLink(reference);
+							return <li>{link ? <a href={link.href}>{link.label}</a> : <span>{reference} (not publicly available)</span>}</li>;
+						})}
+					</ul>
+				</section>
+			)}
+
+			{practice.data.claims.length > 0 && (
+				<section class="content-section evidence-section" aria-labelledby="evidence-heading">
+					<h2 id="evidence-heading">Evidence and sources</h2>
+					<div class="evidence-list">
+						{practice.data.claims.map((claim) => (
+							<article class="evidence-card" id={`evidence-${claim.id}`} tabindex="-1" aria-labelledby={`claim-${claim.id}`}>
+								<p class="claim-kind">Practice claim</p>
+								<h3 id={`claim-${claim.id}`}>{claim.statement}</h3>
+								{claim.evidence.length > 0 && <ul class="citations">{claim.evidence.map((item) => {
+									const source = citationSource(item.source_id);
+									return <li>{source ? <a href={source.data.url} target="_blank" rel="noreferrer">{source.data.title} ↗</a> : <span>Source not available</span>}<p>Locator: {item.locator}. {item.support_summary}</p></li>;
+								})}</ul>}
+								{claim.supports_claim_refs.length > 0 && <ul class="citations">{claim.supports_claim_refs.map((reference) => {
+									const link = evidenceLink(reference);
+									return <li>{link ? <a href={link.href}>Builds on {link.label}</a> : <span>{reference} (not publicly available)</span>}</li>;
+								})}</ul>}
+								<dl class="claim-conditions"><div><dt>Conditions</dt><dd>{claim.conditions || 'Not reported'}</dd></div><div><dt>Limitations</dt><dd>{claim.limitations || 'Not reported'}</dd></div></dl>
+							</article>
+						))}
+					</div>
+				</section>
+			)}
+
+			{practice.data.source_ids.length > 0 && (
+				<section class="content-section" aria-labelledby="sources-heading">
+					<h2 id="sources-heading">Sources</h2>
+					<ul class="evidence-links">{practice.data.source_ids.map((reference) => {
+						const source = citationSource(reference);
+						return <li>{source ? <a href={source.data.url} target="_blank" rel="noreferrer">{source.data.title} ↗</a> : <span>Source not available</span>}</li>;
+					})}</ul>
+				</section>
+			)}
+		</main>
+	</body>
+</html>
+
+<style is:global>
+	:root { color: #1c1b22; background: #f7f7f8; font-family: system-ui, sans-serif; }
+	body { margin: 0; }
+	.practice-shell { max-width: 980px; margin: 0 auto; padding: 1.5rem 1.25rem 5rem; }
+	.breadcrumbs { display: flex; flex-wrap: wrap; gap: .55rem; color: #625e6b; font-size: .9rem; }
+	a { color: #5b21b6; }
+	.practice-header { max-width: 760px; padding: 2.5rem 0 1.5rem; }
+	.eyebrow { color: #6b21a8; font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+	h1 { margin: 0; font-size: clamp(2.5rem, 6vw, 4.5rem); letter-spacing: -.05em; line-height: 1; }
+	.lede { color: #55525f; font-size: 1.15rem; line-height: 1.6; }
+	.review-note { color: #625e6b; font-size: .9rem; }
+	.practice-content, .content-section { margin-top: 1.5rem; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid #e4e0ea; border-radius: 1rem; background: #fff; line-height: 1.65; }
+	.practice-content :is(h2,h3,h4) { line-height: 1.25; }
+	.practice-content h2, .content-section h2 { margin-top: 0; }
+	.evidence-links, .citations { display: grid; gap: .75rem; padding-left: 1.25rem; }
+	.evidence-card { padding: 1.25rem; border: 1px solid #e4e0ea; border-radius: .8rem; }
+	.claim-kind { color: #625e6b; font-size: .8rem; font-weight: 700; text-transform: uppercase; }
+	.claim-conditions { display: grid; gap: .75rem; }
+	dt { color: #625e6b; font-size: .82rem; font-weight: 700; }
+	dd { margin: .2rem 0 0; }
+	@media (max-width: 520px) { .practice-shell { padding-inline: .9rem; } .breadcrumbs { gap: .35rem; font-size: .82rem; } }
+</style>

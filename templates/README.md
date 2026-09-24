@@ -1,20 +1,20 @@
 # Authoring templates
 
-These are intentionally incomplete drafts, not publishable example guides. `REPLACE` values are placeholders; `null` means unknown. They use the proposed [content contract](../docs/content-model.md); automated validation and claim-marker rendering are not implemented yet.
+These are intentionally incomplete drafts, not publishable example guides. `REPLACE` values are placeholders; `null` means unknown. They use the [content contract](../docs/content-model.md). Astro validates record shapes and controlled values; `pnpm check-content` validates cross-record references and publication readiness. The guide renderer turns claim markers into links to their local evidence cards.
 
 Copy templates into these destinations when content authoring starts:
 
 | Template | Destination |
 | --- | --- |
-| [Competition](competition.md) | `content/competitions/<slug>.md` |
-| [Solution](solution.yaml) | `content/solutions/<id>.yaml` |
-| [Practice](practice.md) | `content/practices/<slug>.md` |
-| [Source](source.yaml) | `content/sources/<id>.yaml` |
-| [Reproduction](reproduction.yaml) | `content/reproductions/<id>.yaml` |
+| [Competition](competition.md) | `src/content/competitions/competition-<slug>.md` |
+| [Solution](solution.yaml) | `src/content/solutions/solution-<id>.yaml` |
+| [Practice](practice.md) | `src/content/practices/practice-<slug>.md` |
+| [Source](source.yaml) | `src/content/sources/source-<id>.yaml` |
+| [Reproduction](reproduction.yaml) | `src/content/reproductions/reproduction-<id>.yaml` |
 
 Start with sources, then solutions, then competition synthesis and linked practices. Replace all IDs consistently. Repeat solution/source records as needed. Keep unknown fields null and explain consequential gaps in prose. Remove example array entries that are not supported; do not fill them with invented data. Reproduction records are optional until a run is planned.
 
-Competition/practice files combine YAML frontmatter with Markdown; the other templates are YAML records. Body markers such as `[claim:lesson-01]` refer to local claims in frontmatter. These markers will become evidence links in the future site; for now they are explicit authoring references. Source locators belong in each claim's evidence, not only in the source registry.
+Competition/practice files combine YAML frontmatter with Markdown; the other templates are YAML records. Keep the entry filename ID and the record's prefixed `id` field identical. Body markers such as `[claim:lesson-01]` link to local evidence cards and are checked against the record's claims. Source locators belong in each claim's evidence, not only in the source registry.
 
 Before publication, follow the [editorial workflow](../docs/editorial-workflow.md). These templates have no automatic publication effect.
 

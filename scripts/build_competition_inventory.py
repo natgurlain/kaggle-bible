@@ -84,6 +84,8 @@ CATALOG_FIELDS = [
     "work_order",
     "learning_path_stage",
     "guide_slug",
+    "reviewed_by",
+    "reviewed_at",
 ]
 
 EDITORIAL_FIELDS = [
@@ -147,7 +149,7 @@ def build_row(row: dict[str, str], snapshot_date: dt.date) -> dict[str, str]:
     return {
         "id": competition_id,
         "slug": slug,
-        "title": value_or_empty(row, "Title"),
+        "title": value_or_empty(row, "Title") or slug,
         "subtitle": value_or_empty(row, "Subtitle"),
         "competition_url": f"https://www.kaggle.com/competitions/{slug}",
         "category": value_or_empty(row, "HostSegmentTitle"),
@@ -248,6 +250,52 @@ def read_rows(
     return rows
 
 
+def read_existing_inventory(
+    inventory: pathlib.Path,
+    editorial_overlay: dict[str, dict[str, str]],
+) -> list[dict[str, str]]:
+    """Refresh editorial metadata from the tracked snapshot without downloading Meta Kaggle."""
+
+    if not inventory.is_file():
+        raise ValueError(f"Existing inventory does not exist: {inventory}")
+    reader = csv.DictReader(source_lines(inventory))
+    missing = set(OUTPUT_FIELDS).difference(reader.fieldnames or [])
+    if missing:
+        raise ValueError(f"Existing inventory is missing columns: {sorted(missing)}")
+
+    rows: list[dict[str, str]] = []
+    seen_ids: set[str] = set()
+    seen_slugs: set[str] = set()
+    defaults = {
+        "completeness_level": "1",
+        "completeness_label": LEVEL_LABELS["1"],
+        "editorial_status": "unstarted",
+        "priority": "",
+        "work_order": "",
+        "learning_path_stage": "",
+        "guide_slug": "",
+        "reviewed_by": "",
+        "reviewed_at": "",
+        "notes": "",
+    }
+    for source_row in reader:
+        row = {field: (source_row.get(field) or "") for field in OUTPUT_FIELDS}
+        if not row["id"] or not row["slug"]:
+            raise ValueError("Every existing inventory record needs Id and Slug")
+        if row["id"] in seen_ids:
+            raise ValueError(f"Duplicate competition Id: {row['id']}")
+        if row["slug"] in seen_slugs:
+            raise ValueError(f"Duplicate competition Slug: {row['slug']}")
+        row.update(defaults)
+        if row["id"] in editorial_overlay:
+            row.update(editorial_overlay[row["id"]])
+            row["completeness_label"] = LEVEL_LABELS[row["completeness_level"]]
+        seen_ids.add(row["id"])
+        seen_slugs.add(row["slug"])
+        rows.append(row)
+    return rows
+
+
 def write_inventory(output: pathlib.Path, rows: list[dict[str, str]]) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", newline="", encoding="utf-8") as handle:
@@ -293,7 +341,9 @@ def write_manifest(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", type=pathlib.Path, required=True, help="Meta Kaggle Competitions.csv")
+    source_group = parser.add_mutually_exclusive_group(required=True)
+    source_group.add_argument("--source", type=pathlib.Path, help="Meta Kaggle Competitions.csv")
+    source_group.add_argument("--existing-inventory", type=pathlib.Path, help="Refresh overlay using the checked-in normalized inventory")
     parser.add_argument("--output", type=pathlib.Path, required=True, help="Normalized inventory CSV")
     parser.add_argument("--snapshot-date", type=dt.date.fromisoformat, required=True)
     parser.add_argument("--editorial-overlay", type=pathlib.Path, help="Sparse editorial state CSV")
@@ -306,11 +356,14 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    if not args.source.is_file():
-        print(f"Source does not exist: {args.source}", file=sys.stderr)
-        return 2
     editorial_overlay = read_editorial_overlay(args.editorial_overlay)
-    rows = read_rows(args.source, args.snapshot_date, editorial_overlay)
+    if args.source:
+        if not args.source.is_file():
+            print(f"Source does not exist: {args.source}", file=sys.stderr)
+            return 2
+        rows = read_rows(args.source, args.snapshot_date, editorial_overlay)
+    else:
+        rows = read_existing_inventory(args.existing_inventory, editorial_overlay)
     inventory_ids = {row["id"] for row in rows}
     unknown_ids = sorted(set(editorial_overlay).difference(inventory_ids))
     if unknown_ids:
