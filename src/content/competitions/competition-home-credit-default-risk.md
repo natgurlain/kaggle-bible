@@ -3,14 +3,14 @@ schema_version: 1
 id: competition-home-credit-default-risk
 meta_kaggle_id: '9120'
 slug: home-credit-default-risk
-status: in-review
+status: published
 title: Home Credit Default Risk
 summary: An evidence map of relational feature engineering and model diversity for applicant-level credit-risk ranking, with validation and leaderboard uncertainty kept explicit.
 reviewed_by: GPT-6 Luna Max
-reviewed_at: '2026-09-23'
+reviewed_at: '2026-09-24'
 kaggle_bible_completeness_level: 2
 kaggle_bible_completeness_label: evidence-map
-editorial_status: in-review
+editorial_status: published
 kaggle_slug: home-credit-default-risk
 competition_url: https://www.kaggle.com/competitions/home-credit-default-risk
 end_date: '2018-08-29'
@@ -193,7 +193,7 @@ This Level 2 evidence map is for participants deciding whether relational aggreg
 
 The competition asked for applicant repayment-risk ranking and scored predictions with AUC. [claim:task-01] [claim:metric-01] Both documented approaches turn linked histories into applicant-level features and combine model diversity, but their CV protocols and reported scores are not directly comparable. [claim:approach-8th-01] [claim:approach-12th-01]
 
-**Coverage:** Level 2 / Evidence map. The official overview, data description, rules page, and two independent solution write-ups are registered. The eighth-place private rank is matched to Kaggle's final leaderboard; the twelfth-place label remains author-reported. Neither pipeline has been reproduced. Publication awaits the exact-head GPT-6 Luna Max content review and passing local checks.
+**Coverage:** Level 2 / Evidence map. The official overview, data description, rules page, and two independent solution write-ups are registered. The eighth-place private rank is matched to Kaggle's final leaderboard; the twelfth-place label remains author-reported. Neither pipeline has been reproduced. This summarizes reported approaches; it is not an independently run model comparison.
 
 ## Problem, data, and evaluation
 

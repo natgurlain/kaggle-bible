@@ -4,8 +4,8 @@ id,completeness_level,editorial_status,priority,work_order,learning_path_stage,g
 3004,1,queued,path,3,beginner,,,,Suggested vision introduction: small neural model and compute budgeting.
 17777,1,queued,path,4,beginner,,,,Suggested text introduction: representation comparison and error inspection.
 7082,1,queued,path,5,intermediate,,,,Suggested imbalanced tabular practice: AUC and anonymized features.
-9120,2,in-review,path,6,intermediate,,,,Evidence map drafted; route remains unlinked pending exact-head PR review and local acceptance.
-18599,2,in-review,path,7,intermediate,,,,Evidence map drafted; route remains unlinked pending exact-head PR review and local acceptance.
+9120,2,published,path,6,intermediate,home-credit-default-risk,GPT-6 Luna Max,2026-09-24,Reviewed Level 2 evidence map.
+18599,2,published,path,7,intermediate,m5-forecasting-accuracy,GPT-6 Luna Max,2026-09-24,Reviewed Level 2 evidence map.
 14242,1,queued,path,8,advanced,,,,Advanced tabular case: temporal behavior, sparse identifiers, and distribution shift.
 12500,1,queued,path,9,advanced,,,,Advanced text case: composite metric and subgroup diagnostics.
 20270,1,queued,path,10,advanced,,,,Advanced vision case: imbalance, external data, and rank averaging.

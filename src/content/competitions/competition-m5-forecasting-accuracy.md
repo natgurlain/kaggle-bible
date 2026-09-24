@@ -2,14 +2,14 @@
 schema_version: 1
 id: competition-m5-forecasting-accuracy
 meta_kaggle_id: '18599'
-status: in-review
+status: published
 title: M5 Forecasting – Accuracy
 summary: An evidence map comparing a hierarchical LightGBM/N-BEATS ensemble report with a single-model, multi-window validation report, without inventing comparable scores or compute costs.
 reviewed_by: GPT-6 Luna Max
-reviewed_at: '2026-09-23'
+reviewed_at: '2026-09-24'
 kaggle_bible_completeness_level: 2
 kaggle_bible_completeness_label: evidence-map
-editorial_status: in-review
+editorial_status: published
 slug: m5-forecasting-accuracy
 kaggle_slug: m5-forecasting-accuracy
 competition_url: https://www.kaggle.com/competitions/m5-forecasting-accuracy
@@ -247,7 +247,7 @@ This Level 2 evidence map is for readers comparing documented approaches to hier
 
 The two linked reports describe different design choices: one aligns bottom-level LightGBM forecasts with a top-level N-BEATS stream; the other uses a single store/week-partitioned LightGBM model and several dated holdouts. [claim:approach-2nd-01] [claim:approach-4th-01] Neither record contains comparable numeric validation results or measured final-pipeline compute. [claim:gaps-01]
 
-**Coverage:** Level 2 / Evidence map. The official overview, data description, rules page, and two independently authored solution write-ups are registered. Rank labels on both write-ups remain author-reported in these records; neither system has been reproduced. Publication awaits the exact-head GPT-6 Luna Max content review and passing local checks.
+**Coverage:** Level 2 / Evidence map. The official overview, data description, rules page, and two independently authored solution write-ups are registered. Rank labels on both write-ups remain author-reported; neither system has been reproduced. This compares reported methods and validation limitations, not results from a shared benchmark.
 
 ## Problem, data, and evaluation
 
