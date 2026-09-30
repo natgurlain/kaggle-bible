@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "exercise": "m5-rolling-origin",
+  "executed_at": "2026-09-30",
+  "data_scope": "generated-teaching-fixture",
+  "data_sha256": "b45d0daaeb65e7b45fd9a8f16e87862faa84908a7987f43d86b0ac3ad2f1bb7f",
+  "script_sha256": "eb6c90b7a6f629e172107f7e74f41d777cd50bb29508c9b585c0941a9353543f",
+  "seed": 17,
+  "split_definition": "Three fixed rolling origins: days 1\u201384, 1\u2013112 and 1\u2013140 train; next 28 days validate for each series.",
+  "python": "3.12.14",
+  "platform": "Darwin arm64",
+  "dependencies": "Python standard library only",
+  "hardware_scope": "local CPU; accelerator not used",
+  "wall_seconds": 0.03236549999564886,
+  "memory_scope": "traced-python-allocations",
+  "peak_memory_bytes": 25543,
+  "limitations": [
+    "No historical solution reproduction or leaderboard submission.",
+    "Unweighted MAE on two teaching series omits M5 hierarchy, weights and scale normalization.",
+    "Memory measures traced Python allocations, not total process RSS."
+  ],
+  "metric": "mean absolute error (unweighted; not M5 WRMSSE)",
+  "direction": "minimize",
+  "fold_results": [
+    {
+      "split": "declining origin 84",
+      "series": "declining",
+      "origin_day": 84,
+      "train_days": [
+        1,
+        84
+      ],
+      "validation_days": [
+        85,
+        112
+      ],
+      "train_size": 84,
+      "validation_size": 28,
+      "metrics": {
+        "seasonal-naive": 2.7224642857142856,
+        "four-week-mean": 2.2934999999999994
+      }
+    },
+    {
+      "split": "growing origin 84",
+      "series": "growing",
+      "origin_day": 84,
+      "train_days": [
+        1,
+        84
+      ],
+      "validation_days": [
+        85,
+        112
+      ],
+      "train_size": 84,
+      "validation_size": 28,
+      "metrics": {
+        "seasonal-naive": 2.0304642857142854,
+        "four-week-mean": 1.7996785714285708
+      }
+    },
+    {
+      "split": "declining origin 112",
+      "series": "declining",
+      "origin_day": 112,
+      "train_days": [
+        1,
+        112
+      ],
+      "validation_days": [
+        113,
+        140
+      ],
+      "train_size": 112,
+      "validation_size": 28,
+      "metrics": {
+        "seasonal-naive": 2.319107142857143,
+        "four-week-mean": 2.462803571428572
+      }
+    },
+    {
+      "split": "growing origin 112",
+      "series": "growing",
+      "origin_day": 112,
+      "train_days": [
+        1,
+        112
+      ],
+      "validation_days": [
+        113,
+        140
+      ],
+      "train_size": 112,
+      "validation_size": 28,
+      "metrics": {
+        "seasonal-naive": 2.1522142857142863,
+        "four-week-mean": 2.5174464285714295
+      }
+    },
+    {
+      "split": "declining origin 140",
+      "series": "declining",
+      "origin_day": 140,
+      "train_days": [
+        1,
+        140
+      ],
+      "validation_days": [
+        141,
+        168
+      ],
+      "train_size": 140,
+      "validation_size": 28,
+      "metrics": {
+        "seasonal-naive": 2.2779285714285713,
+        "four-week-mean": 2.0894464285714283
+      }
+    },
+    {
+      "split": "growing origin 140",
+      "series": "growing",
+      "origin_day": 140,
+      "train_days": [
+        1,
+        140
+      ],
+      "validation_days": [
+        141,
+        168
+      ],
+      "train_size": 140,
+      "validation_size": 28,
+      "metrics": {
+        "seasonal-naive": 2.3853571428571434,
+        "four-week-mean": 2.724982142857143
+      }
+    }
+  ],
+  "aggregate": {
+    "seasonal-naive": 2.314589285714286,
+    "four-week-mean": 2.3146428571428572
+  }
+}

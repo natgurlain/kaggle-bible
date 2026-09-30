@@ -287,6 +287,9 @@ The safest takeaway is methodological: establish whether a candidate strategy is
 
 ## Suggested first experiment
 
+Start with the [executed rolling-origin teaching lab](/exercises/#exercise-m5-rolling-origin). Its generated data and unweighted MAE demonstrate a workflow; they do not reproduce M5 data, WRMSSE, or either historical solution.
+
+
 On data the reader is authorized to use, create a simple weekly seasonal baseline and score it on several rolling 28-day origins with the official WRMSSE implementation. Then add one store/week-partitioned model or one separately forecast hierarchy level, keeping origins and aggregation fixed. Record every origin; do not infer compute requirements or expected gains from these write-ups. [claim:experiment-01]
 
 ## Gaps
