@@ -203,7 +203,7 @@ const catalogAsset = '/data/competition-discovery.json';
 					const guide = presentation.guideHref
 						? `<a class="guide-link" href="${escapeHtml(presentation.guideHref)}">Read guide</a>`
 						: '<span class="pending">Guide pending</span>';
-					const metric = competition.metric_name || competition.metric_abbreviation || 'Metric not recorded';
+					const metric = (competition.metric_name || competition.metric_abbreviation || 'Metric not recorded').replace(/([a-z])([A-Z])/g, '$1 $2');
 					return `<article class="card">
 						<div class="card-topline">
 							<span class="pill">Level ${escapeHtml(presentation.completenessLevel)} · ${escapeHtml(presentation.completenessLabel)}</span>
@@ -300,7 +300,7 @@ const catalogAsset = '/data/competition-discovery.json';
 	dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; margin: auto 0 1rem; }
 	dl > div { min-width: 0; }
 	dt { color: #8b8495; font-size: .72rem; }
-	dd { min-width: 0; margin: .2rem 0 0; overflow: hidden; font-size: .82rem; text-overflow: ellipsis; white-space: nowrap; }
+	dd { min-width: 0; margin: .2rem 0 0; font-size: .82rem; overflow-wrap:anywhere; }
 	.card-links { justify-content: flex-start; font-size: .86rem; font-weight: 700; }
 	.guide-link { margin-left: auto; }
 	.pending { color: #8b8495; font-size: .82rem; font-weight: 600; }
