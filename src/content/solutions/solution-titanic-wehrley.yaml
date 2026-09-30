@@ -29,7 +29,9 @@
   },
   "techniques": [
     "logistic-regression",
-    "random-forest"
+    "adaptive-boosting",
+    "random-forest",
+    "support-vector-machine"
   ],
   "resources": [
     {
