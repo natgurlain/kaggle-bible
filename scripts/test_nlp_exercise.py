@@ -29,5 +29,5 @@ class NLPExerciseTests(unittest.TestCase):
             with self.assertRaises(ValueError):lab.load_csv(path)
     def test_word_pairs_and_recorded_result(self):
         self.assertEqual(lab.features('Not a fire','unigrams-and-pairs'),['not','a','fire','pair:not_a','pair:a_fire'])
-        path=SCRIPT.with_name('nlp-word-pairs-receipt.json');r=json.loads(path.read_text());rows=json.loads(path.with_name(path.stem+'-data.json').read_text());self.assertEqual(lab.run(rows)['aggregate'],r['aggregate'])
+        path=SCRIPT.with_name('nlp-word-pairs-receipt.json');r=json.loads(path.read_text());rows=json.loads(path.with_name(path.stem+'-data.json').read_text());result=lab.run(rows);self.assertEqual(result['aggregate'],r['aggregate']);self.assertEqual(result['fold_results'],r['fold_results'])
 if __name__=='__main__':unittest.main()
