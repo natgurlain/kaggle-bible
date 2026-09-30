@@ -1,7 +1,7 @@
 ---
-const { skipTarget = 'main-content' } = Astro.props;
+const { skipTarget = 'main-content', showSkip = true } = Astro.props;
 ---
-<a class="skip-link" href={`#${skipTarget}`}>Skip to content</a>
+{showSkip && <a class="skip-link" href={`#${skipTarget}`}>Skip to content</a>}
 <header class="site-nav" data-pagefind-ignore>
   <a class="site-brand" href="/">Kaggle Bible</a>
   <nav aria-label="Main">
@@ -47,6 +47,7 @@ const { skipTarget = 'main-content' } = Astro.props;
   :root[data-theme="dark"] .resource-block li > strong { color:#e8e5ed; }
   :root[data-theme="dark"] :is(.claim-kind,.pill,.state) { background:#302c3a; color:#e8e5ed; }
   :root[data-theme="dark"] :is(a,.official-link) { color:#c4b5fd; }
+  :root[data-theme="dark"] .sidebar-pane a[aria-current="page"] { color:var(--sl-color-text-invert); }
   :root[data-theme="dark"] :is(input,select,.unknown-note,.rank,.evidence-section,.level-badge) { background:#302c3a; color:#e8e5ed; border-color:#635775; }
   :root[data-theme="dark"] .site-nav a:hover { color:#e4dbff; }
   @media(max-width:520px) { .site-nav { gap:.75rem; } .site-nav nav { order:3; width:100%; font-size:.85rem; gap:.8rem; } }
