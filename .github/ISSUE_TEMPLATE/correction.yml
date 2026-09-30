@@ -1,0 +1,56 @@
+{
+  "name": "Correct a guide",
+  "description": "A precise sentence, missing condition or broken evidence link.",
+  "body": [
+    {
+      "type": "markdown",
+      "attributes": {
+        "value": "Please share public evidence only. Do not include credentials, personal information, private competition data, or material you cannot redistribute. A report is reviewed before any guide or execution milestone changes."
+      }
+    },
+    {
+      "type": "input",
+      "id": "page",
+      "attributes": {
+        "label": "Page URL",
+        "description": "Link to the Kaggle Bible page."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "change",
+      "attributes": {
+        "label": "Current claim and proposed correction",
+        "description": "Quote the short affected sentence and explain the change."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "input",
+      "id": "source",
+      "attributes": {
+        "label": "Supporting primary URL",
+        "description": "Original author report or official reference."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "locator",
+      "attributes": {
+        "label": "Locator and conditions",
+        "description": "Where the source supports the correction; include qualifications and unknowns."
+      },
+      "validations": {
+        "required": true
+      }
+    }
+  ]
+}

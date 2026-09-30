@@ -1,0 +1,92 @@
+{
+  "name": "Report an exercise run",
+  "description": "A voluntary execution report with environment and receipt.",
+  "body": [
+    {
+      "type": "markdown",
+      "attributes": {
+        "value": "Please share public evidence only. Do not include credentials, personal information, private competition data, or material you cannot redistribute. A report is reviewed before any guide or execution milestone changes."
+      }
+    },
+    {
+      "type": "input",
+      "id": "exercise",
+      "attributes": {
+        "label": "Exercise slug",
+        "description": "For example: m5-rolling-origin."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "input",
+      "id": "revision",
+      "attributes": {
+        "label": "Script revision or SHA-256",
+        "description": "Identify the exact script executed."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "environment",
+      "attributes": {
+        "label": "Environment and command",
+        "description": "Python, dependencies, OS, hardware and the exact command."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "dropdown",
+      "id": "scope",
+      "attributes": {
+        "label": "Data scope",
+        "options": [
+          "Published generated teaching fixture",
+          "Other authorized data (describe below)"
+        ]
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "data",
+      "attributes": {
+        "label": "Data identity and sampling",
+        "description": "Published artifact hash, or a non-sensitive description and hash. Do not upload competition data."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "receipt",
+      "attributes": {
+        "label": "Receipt and observed result",
+        "description": "Paste the non-sensitive receipt or link a public one. Include folds, metrics, wall time and memory scope; failures and ties are useful too."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "limits",
+      "attributes": {
+        "label": "Limitations and interpretation",
+        "description": "What this run establishes and what remains untested. This is a self-reported run, not proof of learning or historical reproduction."
+      },
+      "validations": {
+        "required": true
+      }
+    }
+  ]
+}
