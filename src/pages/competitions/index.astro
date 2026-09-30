@@ -87,6 +87,7 @@ const catalogAsset = '/data/competition-discovery.json';
 				getCatalogCardPresentation,
 				readCatalogFilters,
 				serializeCatalogFilters,
+				usesArchiveView,
 			} from '../../content/catalog-policy.js';
 
 			type CatalogCompetition = {
@@ -227,8 +228,7 @@ const catalogAsset = '/data/competition-discovery.json';
 			};
 
 			const filters = readCatalogFilters(window.location.search);
-			const params = new URLSearchParams(window.location.search);
-			let archiveView = params.get('view') === 'all' || Boolean(filters.query || filters.category || filters.state || filters.level === '1');
+			let archiveView = usesArchiveView(window.location.search);
 			query.value = filters.query;
 			category.value = filters.category;
 			state.value = filters.state;
