@@ -1,4 +1,5 @@
 ---
+import SiteNav from '../../components/SiteNav.astro';
 const catalogAsset = '/data/competition-catalog.json';
 ---
 
@@ -15,6 +16,7 @@ const catalogAsset = '/data/competition-catalog.json';
 		/>
 	</head>
 	<body>
+		<SiteNav />
 		<main class="catalog-shell" data-catalog-asset={catalogAsset}>
 			<header class="catalog-header">
 				<a class="back-link" href="/">← Kaggle Bible</a>

@@ -6,6 +6,10 @@ slug: home-credit-default-risk
 status: published
 title: Home Credit Default Risk
 summary: An evidence map of relational feature engineering and model diversity for applicant-level credit-risk ranking, with validation and leaderboard uncertainty kept explicit.
+learning_goals:
+  - Build applicant-level aggregates without crossing the prediction boundary.
+  - Compare validation protocols before interpreting reported AUC.
+  - Test one feature family on frozen folds before adding ensemble complexity.
 reviewed_by: GPT-6 Luna Max
 reviewed_at: '2026-09-24'
 kaggle_bible_completeness_level: 2
@@ -215,7 +219,7 @@ The eighth-place authors name stratified 10-fold CV but do not give fold assignm
 
 ## Top-solution comparison
 
-The route renders the two linked solution records with their rank basis, metric split, validation notes, techniques, resource unknowns, and source links. The rank evidence differs: #8 is official-final-private, while #12 is author-report. The #12 local-CV and public values are not the same split as #8's official private score. No numeric head-to-head claim is made.
+Compare the approaches in the table and detailed records below. Preserve each score’s split and rank attribution; the reports do not provide a shared benchmark.
 
 ## Decisive techniques and evidence
 

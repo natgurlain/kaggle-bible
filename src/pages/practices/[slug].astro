@@ -1,4 +1,6 @@
 ---
+import SiteNav from '../../components/SiteNav.astro';
+import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { satteri } from '@astrojs/markdown-satteri';
 import claimReferenceLinks from '../../markdown/claim-reference-links.js';
@@ -90,6 +92,7 @@ const topicLabel = practice.data.topic.replaceAll('-', ' ');
 		<meta name="description" content={practice.data.summary} />
 	</head>
 	<body>
+		<SiteNav />
 		<main class="practice-shell" data-pagefind-body>
 			<nav class="breadcrumbs" aria-label="Breadcrumb">
 				<a href="/">Kaggle Bible</a><span aria-hidden="true">/</span><a href="/practices/">Best practices</a><span aria-hidden="true">/</span><span aria-current="page">{practice.data.title}</span>
@@ -123,6 +126,7 @@ const topicLabel = practice.data.topic.replaceAll('-', ' ');
 							<article class="evidence-card" id={`evidence-${claim.id}`} tabindex="-1" aria-labelledby={`claim-${claim.id}`}>
 								<p class="claim-kind">Practice claim</p>
 								<h3 id={`claim-${claim.id}`}>{claim.statement}</h3>
+<p><strong>Limit:</strong> {claim.limitations || "Not reported"}</p><details><summary>Sources and conditions</summary>
 								{claim.evidence.length > 0 && <ul class="citations">{claim.evidence.map((item) => {
 									const source = citationSource(item.source_id);
 									return <li>{source ? <a href={source.data.url} target="_blank" rel="noreferrer">{source.data.title} ↗</a> : <span>Source not available</span>}<p>Locator: {item.locator}. {item.support_summary}</p></li>;
@@ -132,6 +136,7 @@ const topicLabel = practice.data.topic.replaceAll('-', ' ');
 									return <li>{link ? <a href={link.href}>Builds on {link.label}</a> : <span>{reference} (not publicly available)</span>}</li>;
 								})}</ul>}
 								<dl class="claim-conditions"><div><dt>Conditions</dt><dd>{claim.conditions || 'Not reported'}</dd></div><div><dt>Limitations</dt><dd>{claim.limitations || 'Not reported'}</dd></div></dl>
+</details>
 							</article>
 						))}
 					</div>
@@ -148,10 +153,12 @@ const topicLabel = practice.data.topic.replaceAll('-', ' ');
 				</section>
 			)}
 		</main>
+		<EvidenceDisclosure />
 	</body>
 </html>
 
 <style is:global>
+summary { cursor:pointer; font-weight:700; padding:.4rem 0; }
 	:root { color: #1c1b22; background: #f7f7f8; font-family: system-ui, sans-serif; }
 	body { margin: 0; }
 	.practice-shell { max-width: 980px; margin: 0 auto; padding: 1.5rem 1.25rem 5rem; }

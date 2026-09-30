@@ -1,0 +1,16 @@
+<script>
+  const revealEvidence = () => {
+    let id: string;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+    const target = document.getElementById(id);
+    if (!target) return;
+    let ancestor: HTMLElement | null = target;
+    while (ancestor) {
+      if (ancestor instanceof HTMLDetailsElement) ancestor.open = true;
+      ancestor = ancestor.parentElement;
+    }
+    target.querySelectorAll('details').forEach(details => details.open = true);
+  };
+  window.addEventListener('hashchange', revealEvidence);
+  revealEvidence();
+</script>

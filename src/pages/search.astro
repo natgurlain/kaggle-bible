@@ -1,0 +1,39 @@
+---
+import SiteNav from '../components/SiteNav.astro';
+---
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width"/><title>Search · Kaggle Bible</title><meta name="robots" content="noindex"/></head>
+<body><SiteNav/><main><h1>Search the learning library</h1><label for="library-query">Find a guide, practice, or lesson</label><input id="library-query" type="search" autocomplete="off"/><p id="search-status" role="status">Enter a topic to search.</p><ul id="search-results"></ul></main></body></html>
+<script>
+  const input = document.querySelector<HTMLInputElement>('#library-query')!;
+  const status = document.querySelector<HTMLElement>('#search-status')!;
+  const results = document.querySelector<HTMLElement>('#search-results')!;
+  let request = 0;
+  async function search() {
+    const current = ++request;
+    const query = input.value.trim();
+    history.replaceState({}, '', query ? `?q=${encodeURIComponent(query)}` : location.pathname);
+    results.replaceChildren();
+    if (!query) { status.textContent = 'Enter a topic to search.'; return; }
+    status.textContent = 'Searching…';
+    try {
+      const moduleUrl = '/pagefind/pagefind.js';
+      const pagefind = await import(/* @vite-ignore */ moduleUrl);
+      const found = await pagefind.search(query);
+      const pages = await Promise.all(found.results.slice(0, 20).map((result: { data: () => Promise<{url:string; meta:{title:string}; excerpt:string}> }) => result.data()));
+      if (current !== request) return;
+      status.textContent = `${found.results.length} results${found.results.length > 20 ? '; showing the first 20. Refine your search for more.' : '.'}`;
+      for (const page of pages) {
+        const item = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = page.url; link.textContent = page.meta.title;
+        const excerpt = document.createElement('p'); excerpt.textContent = page.excerpt.replace(/<[^>]*>/g, '');
+        item.append(link, excerpt); results.append(item);
+      }
+    } catch { if (current === request) status.textContent = 'Search is unavailable. Browse the guides or try again.'; }
+  }
+  input.value = new URLSearchParams(location.search).get('q') || '';
+  let timer: ReturnType<typeof setTimeout>;
+  input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(search, 150); });
+  search();
+</script>
+<style>main{max-width:850px;margin:2rem auto;padding:0 1.2rem;font-family:system-ui;line-height:1.6}input{display:block;width:100%;padding:.8rem;margin:.6rem 0;font:inherit}li{padding:1rem 0}a{color:#56309d}</style>
