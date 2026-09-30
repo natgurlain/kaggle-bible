@@ -58,6 +58,10 @@ export function readCatalogFilters(search) {
 		level: params.get('level') ?? '',
 	};
 }
+export function usesArchiveView(search) {
+	const params = new URLSearchParams(search);
+	return params.get('view') === 'all' || Object.values(readCatalogFilters(search)).some(Boolean);
+}
 
 export function serializeCatalogFilters(filters) {
 	const params = new URLSearchParams();
