@@ -67,7 +67,7 @@
       "supports_claim_refs": [],
       "reproduction_ids": [],
       "conditions": "Official Getting Started task; price predictions must be positive to take logarithms.",
-      "limitations": "log1p transforms in author notebooks are not exactly the same as the official log definition."
+      "limitations": "The metric alone does not verify any author implementation or fitting protocol."
     },
     {
       "id": "experiment-01",
@@ -96,7 +96,7 @@ Build a trustworthy log-price baseline before combining many models. The officia
 
 ## Problem, data, and evaluation
 
-Predict a positive sale price and measure log-price RMSE. [claim:task-01] Author notebooks use log1p targets; that is a related transformation, rather than the exact official logarithm. The exercise uses natural logarithms, reads Id, Neighborhood and SalePrice from an authorized CSV, and generates its own small fixture. It does not download or redistribute competition data. Review current official access and participation rules before obtaining it.
+Predict a positive sale price and measure log-price RMSE. [claim:task-01] thinkrunner uses a log1p target, which is related to but differs from the official logarithm. [View evidence](#evidence-solution-house-thinkrunner-validation-01) massquantity uses the natural logarithm of SalePrice. [View evidence](#evidence-solution-house-massquantity-validation-01) The exercise uses natural logarithms, reads Id, Neighborhood and SalePrice from an authorized CSV, and generates its own small fixture. It does not download or redistribute competition data. Review current official access and participation rules before obtaining it.
 
 ## Approaches
 

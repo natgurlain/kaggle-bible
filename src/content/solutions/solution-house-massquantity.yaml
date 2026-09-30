@@ -22,7 +22,7 @@
   "scores": [],
   "validation": {
     "strategy": "custom",
-    "details": "massquantity fits a feature pipeline and PCA before its cv=5 model scoring; the stacking block separately creates shuffled five-fold out-of-fold predictions with seed 42. Fold-trained base models do not make earlier preprocessing fold-isolated. No historical numeric results are reproduced.",
+    "details": "massquantity uses the natural logarithm of SalePrice, fits a feature pipeline and PCA before cv=5 model scoring, and separately creates shuffled five-fold out-of-fold stacking predictions with seed 42. Fold-trained base models do not make earlier preprocessing fold-isolated. No historical numeric results are reproduced.",
     "source_ids": [
       "source-house-massquantity"
     ]
@@ -73,13 +73,13 @@
     },
     {
       "id": "validation-01",
-      "statement": "massquantity fits a feature pipeline and PCA before its cv=5 model scoring; the stacking block separately creates shuffled five-fold out-of-fold predictions with seed 42.",
+      "statement": "massquantity uses the natural logarithm of SalePrice, fits a feature pipeline and PCA before cv=5 model scoring, and separately creates shuffled five-fold out-of-fold stacking predictions with seed 42.",
       "kind": "source-reported",
       "evidence": [
         {
           "source_id": "source-house-massquantity",
-          "locator": "pipe.fit_transform(full); pca.fit_transform; rmse_cv; stacking.KFold and fit",
-          "support_summary": "Preprocessing precedes model CV, while the stacking class clones base models inside KFold loops."
+          "locator": "y_log=np.log(train.SalePrice); pipe.fit_transform(full); pca.fit_transform; rmse_cv; stacking.KFold and fit",
+          "support_summary": "The target is np.log(SalePrice); preprocessing precedes model CV, while the stacking class clones base models inside KFold loops."
         }
       ],
       "supports_claim_refs": [],
