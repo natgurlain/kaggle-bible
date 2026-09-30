@@ -28,6 +28,7 @@ const catalogAsset = '/data/competition-catalog.json';
 			</header>
 
 			<section class="controls" aria-labelledby="filter-heading">
+				<nav aria-label="Catalog view"><a href="/competitions/">Available guides</a> · <a href="/competitions/?view=all">All competitions</a></nav>
 				<h2 id="filter-heading">Filter the catalog</h2>
 				<div class="control-grid">
 					<label>
@@ -139,8 +140,9 @@ const catalogAsset = '/data/competition-catalog.json';
 					state: state.value,
 					level: level.value,
 				});
-				const next = search
-					? `?${search}${window.location.hash}`
+				const effectiveSearch = archiveView ? `view=all${search ? '&' + search : ''}` : search;
+				const next = effectiveSearch
+					? `?${effectiveSearch}${window.location.hash}`
 					: `${window.location.pathname}${window.location.hash}`;
 				window.history.replaceState({}, '', next);
 			};
@@ -156,7 +158,8 @@ const catalogAsset = '/data/competition-catalog.json';
 						competition.metric_abbreviation,
 						competition.metric_name,
 					].join(' ').toLowerCase();
-					return (!needle || searchable.includes(needle))
+					return (archiveView || presentation.guideHref !== null)
+						&& (!needle || searchable.includes(needle))
 						&& (!category.value || competition.category === category.value)
 						&& (!state.value || competition.record_state === state.value)
 						&& (!level.value || presentation.completenessLevel === level.value);
@@ -202,6 +205,8 @@ const catalogAsset = '/data/competition-catalog.json';
 			};
 
 			const filters = readCatalogFilters(window.location.search);
+			const params = new URLSearchParams(window.location.search);
+			const archiveView = params.get('view') === 'all' || Boolean(filters.query || filters.category || filters.state || filters.level === '1');
 			query.value = filters.query;
 			state.value = filters.state;
 			level.value = filters.level;

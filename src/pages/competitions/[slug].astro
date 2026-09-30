@@ -125,7 +125,7 @@ const citationSource = (reference: unknown) => {
 		<title>{competition.data.title} · Kaggle Bible</title>
 	</head>
 	<body>
-		<main class="guide-shell">
+		<main class="guide-shell" data-pagefind-body>
 			<nav class="breadcrumbs" aria-label="Breadcrumb">
 				<a href="/">Kaggle Bible</a>
 				<span aria-hidden="true">/</span>
@@ -137,7 +137,7 @@ const citationSource = (reference: unknown) => {
 			<header class="guide-header">
 				<p class="eyebrow">Reviewed competition guide</p>
 				<div class="title-row">
-					<h1>{competition.data.title}</h1>
+					<h1 data-pagefind-meta="title">{competition.data.title}</h1>
 					<span class="level-badge">Level {competition.data.kaggle_bible_completeness_level} · {levelLabel}</span>
 				</div>
 				<p class="lede">{competition.data.summary}</p>
