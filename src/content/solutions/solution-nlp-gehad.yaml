@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "id": "solution-nlp-gehad",
+  "status": "published",
+  "title": "TF-IDF and pretrained transformer tutorial",
+  "summary": "gehad-abdulaziz presents TF-IDF logistic regression and a DistilBERT sequence classifier fine-tuned for three epochs.",
+  "reviewed_by": "GPT-6 Luna Max",
+  "reviewed_at": "2026-09-30",
+  "competition_id": "competition-nlp-getting-started",
+  "team": "Independent approach author",
+  "authors": [
+    "gehad-abdulaziz"
+  ],
+  "source_ids": [
+    "source-nlp-gehad"
+  ],
+  "rank": {
+    "value": null,
+    "basis": "unknown",
+    "source_id": null
+  },
+  "scores": [],
+  "validation": {
+    "strategy": "custom",
+    "details": "gehad-abdulaziz uses an 80/20 target-stratified split with seed 42 and a five-fold F1 GridSearchCV over its TF-IDF/logistic-regression Pipeline. This does not establish duplicate-group isolation or an untouched final comparison with DistilBERT; reported scores were not reproduced.",
+    "source_ids": [
+      "source-nlp-gehad"
+    ]
+  },
+  "techniques": [
+    "tf-idf",
+    "linear-classifier",
+    "transformer"
+  ],
+  "resources": [
+    {
+      "id": "full-pipeline",
+      "scope": "full-pipeline",
+      "hardware_class": "unknown",
+      "accelerator_model": null,
+      "accelerator_count": null,
+      "vram_gb_per_device": null,
+      "ram_gb": null,
+      "wall_hours": null,
+      "accelerator_hours": null,
+      "basis": "unknown",
+      "claim_id": null
+    }
+  ],
+  "reproducibility": {
+    "code_url": "https://github.com/gehad-abdulaziz/Natural-Language-Processing-with-Disaster-Tweets",
+    "code_revision": "c931353741066cfc5edfb49bd90f0662584c99e5",
+    "status": "code-available",
+    "reproduction_ids": [],
+    "notes": "Pinned implementation inspected as text; not executed. No competition data, pretrained weights or foreign dependencies were downloaded for this guide."
+  },
+  "claims": [
+    {
+      "id": "approach-01",
+      "statement": "gehad-abdulaziz presents TF-IDF logistic regression and a DistilBERT sequence classifier fine-tuned for three epochs.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-nlp-gehad",
+          "locator": "Creating Pipeline; from_pretrained(distilbert-base-uncased); TrainingArguments num_train_epochs=3",
+          "support_summary": "Notebook shows both representation families and the epoch setting."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Original author workflow at the pinned revision.",
+      "limitations": "Transformer presence is not evidence of a controlled improvement; hardware, total time and comparable tuning budgets are unknown."
+    },
+    {
+      "id": "validation-01",
+      "statement": "gehad-abdulaziz uses an 80/20 target-stratified split with seed 42 and a five-fold F1 GridSearchCV over its TF-IDF/logistic-regression Pipeline.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-nlp-gehad",
+          "locator": "Train-Validation Split; pipeline.fit(X_train); GridSearchCV scoring=f1 cv=5",
+          "support_summary": "The vectorizer/model Pipeline fits training text and is searched under the declared CV."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "This describes the classical baseline protocol.",
+      "limitations": "This does not establish duplicate-group isolation or an untouched final comparison with DistilBERT; reported scores were not reproduced."
+    }
+  ],
+  "unsuccessful_attempts": [],
+  "transfer_limits": [
+    "Model or preprocessing presence does not establish its isolated gain on a common split.",
+    "No independent leaderboard or full-pipeline resource verification; no historical reproduction."
+  ]
+}

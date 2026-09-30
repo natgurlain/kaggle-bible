@@ -54,6 +54,9 @@ export const taxonomy = {
 		{ id: 'submissions', label: 'Submissions', aliases: [], definition: 'Prepare, validate, and submit prediction files.' },
 	],
 	techniques: [
+		{ id: 'tf-idf', label: 'TF-IDF', aliases: [], definition: 'Weight text terms by document-level frequency fitted on training data.' },
+		{ id: 'linear-classifier', label: 'Linear classifier', aliases: [], definition: 'Classify a vector using learned linear scores.' },
+		{ id: 'transformer', label: 'Transformer', aliases: [], definition: 'Use attention-based token representations; pretrained-data scope and tuning conditions matter.' },
 		{ id: 'regularized-linear-regression', label: 'Regularized linear regression', aliases: [], definition: 'Fit a linear numeric predictor with a penalty on its coefficients.' },
 		{ id: 'pca', label: 'Principal component analysis', aliases: [], definition: 'Project features onto orthogonal variance directions; fitting scope affects validation.' },
 		{ id: 'support-vector-machine', label: 'Support vector machine', aliases: ['SVM'], definition: 'Fit a separating margin using linear or kernel-based representations.' },
