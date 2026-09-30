@@ -242,7 +242,7 @@ const catalogAsset = '/data/competition-discovery.json';
                         return response.json();
                     }).then(data => {
                         competitions = expandCatalog(data) as CatalogCompetition[];
-                        const priority: Record<string,number> = {GettingStarted:0, Featured:1, Research:2};
+                        const priority: Record<string,number> = {'Getting Started':0, Featured:1, Research:2};
                         competitions.sort((a,b) => (priority[a.category] ?? 3) - (priority[b.category] ?? 3) || b.deadline_at.localeCompare(a.deadline_at) || Number(a.id) - Number(b.id));
                     }).catch(error => {
                         summary.textContent = 'The archive could not be loaded. The available guides still work.';
