@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-nlp-official",
+  "title": "Disaster Tweets official evaluation",
+  "url": "https://www.kaggle.com/competitions/nlp-getting-started/overview/evaluation",
+  "kind": "official-competition",
+  "authors": [
+    "Kaggle"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": null,
+  "locator_notes": "Evaluation; target and submission fields",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": null,
+  "notes": "Official binary disaster task and positive-class F1 inspected. No current final standings, full rules audit, competition-data execution or submission."
+}

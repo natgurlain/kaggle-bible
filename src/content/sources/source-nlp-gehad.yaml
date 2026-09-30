@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-nlp-gehad",
+  "title": "gehad-abdulaziz TF-IDF and DistilBERT workflow",
+  "url": "https://github.com/gehad-abdulaziz/Natural-Language-Processing-with-Disaster-Tweets/blob/c931353741066cfc5edfb49bd90f0662584c99e5/natural-language-processing-with-disaster-tweets%20-With%20Gradio.ipynb",
+  "kind": "author-writeup",
+  "authors": [
+    "gehad-abdulaziz"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": "c931353741066cfc5edfb49bd90f0662584c99e5",
+  "locator_notes": "Creating Pipeline; Train-Validation Split; GridSearch; Advanced Model DistilBERT; TrainingArguments",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": null,
+  "notes": "Pinned original notebook inspected as text. Foreign dependencies, pretrained weights and competition data were not downloaded or executed; no repository license detected."
+}

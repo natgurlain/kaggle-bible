@@ -16,6 +16,7 @@ const entries: Array<CollectionEntry<'practices'> | CollectionEntry<'competition
   {entries.map(entry => <article class="library-card">
     <h3><a href={`/${kind === 'practices' ? 'practices' : 'competitions'}/${entry.data.slug}/`}>{entry.data.title}</a></h3>
     <p>{entry.data.summary}</p>
+    {"metrics" in entry.data && <p><strong>Official metric:</strong> {entry.data.metrics.map(metric => metric.name).join(", ")}</p>}
     <a href={`/${kind === 'practices' ? 'practices' : 'competitions'}/${entry.data.slug}/`}>Read {kind === 'practices' ? 'practice' : 'guide'} →</a>
   </article>)}
 </div>

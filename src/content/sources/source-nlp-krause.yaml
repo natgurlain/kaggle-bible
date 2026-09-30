@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-nlp-krause",
+  "title": "krauseannelize TF-IDF disaster tweet workflow",
+  "url": "https://github.com/krauseannelize/nlp-disaster-tweets/blob/ef6f3cc32f4707b57f5bdee2c1183eaf6fd52834/notebooks/01-disaster-tweets.ipynb",
+  "kind": "author-writeup",
+  "authors": [
+    "krauseannelize"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": "ef6f3cc32f4707b57f5bdee2c1183eaf6fd52834",
+  "locator_notes": "Train/Test Split; TF-IDF; Logistic Regression and LinearSVC; Pipeline/GridSearchCV; errors",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": null,
+  "notes": "Pinned original notebook inspected as text. No license detected. Scores are not imported as independently verified Kaggle results."
+}
