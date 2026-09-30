@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "id": "exercise-m5-rolling-origin",
+  "status": "published",
+  "slug": "m5-rolling-origin",
+  "title": "Compare seasonal forecasts across three origins",
+  "competition_id": "competition-m5-forecasting-accuracy",
+  "summary": "Run a seasonal-naive forecast and one four-week averaging change on identical 28-day windows. This small original teaching lab demonstrates the workflow; it does not reproduce an M5 entry.",
+  "data_scope": "generated-teaching-fixture",
+  "script_path": "/exercises/m5-rolling-origin.py",
+  "receipt_path": "/exercises/m5-rolling-origin-receipt.json",
+  "command": "python3 m5-rolling-origin.py --fixture --output my-m5-receipt.json",
+  "environment": "Recorded with Python 3.12.14 and its standard library only on Darwin arm64. This local CPU run is the recorded environment; other environments are not covered by this receipt.",
+  "steps": [
+    "Download the script. Use Python 3.12.14; no packages, account or data download are needed for the fixture.",
+    "Run the command and compare the per-series results at each of the three origins. Freeze those windows before interpreting the aggregate.",
+    "Explain why the methods differ and which series/origin changes your conclusion. Keep an underperforming change in the receipt.",
+    "To use authorized daily data, replace --fixture with --csv your-data.csv. Required columns: series,day,sales; each series has unique contiguous days starting at 1 and at least 168 rows. This optional mode was tested on a generated CSV fixture, not M5 data."
+  ],
+  "limitations": [
+    "The generated two-series fixture is not M5 competition data.",
+    "Unweighted MAE excludes M5 WRMSSE weights, hierarchy and scaling. It cannot be compared to a competition score.",
+    "This run establishes neither historical solution reproduction nor reader learning.",
+    "Elapsed time and traced Python memory cover this local script run, not a final competition pipeline."
+  ],
+  "data_path": "/exercises/m5-rolling-origin-receipt-data.json",
+  "python_version": "3.12.14",
+  "dependencies": "Python standard library only",
+  "seed": 17,
+  "split_definition": "Three fixed rolling origins: days 1\u201384, 1\u2013112 and 1\u2013140 train; next 28 days validate for each series.",
+  "metric": "mean absolute error (unweighted; not M5 WRMSSE)",
+  "direction": "minimize",
+  "memory_scope": "traced-python-allocations",
+  "platform": "Darwin arm64",
+  "expected_splits": [
+    "declining origin 84",
+    "growing origin 84",
+    "declining origin 112",
+    "growing origin 112",
+    "declining origin 140",
+    "growing origin 140"
+  ]
+}

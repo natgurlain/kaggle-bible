@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "exercise": "nlp-word-pairs",
+  "executed_at": "2026-09-30",
+  "data_scope": "generated-teaching-fixture",
+  "data_sha256": "3e10916e4c04f1a7ca6038d4932c0a9506394a9b3f7c03ec52330f40ef22818b",
+  "script_sha256": "75ccbf247a955f3f06d08444c87fc79cf5eb3f46abae106204314bd5a278d599",
+  "seed": 17,
+  "split_definition": "Five target-stratified folds with seed 17; exact normalized duplicate texts rejected; vocabulary and class counts fit training rows only.",
+  "python": "3.12.14",
+  "platform": "Darwin arm64",
+  "dependencies": "Python standard library only",
+  "hardware_scope": "local CPU; accelerator not used",
+  "wall_seconds": 0.07125016674399376,
+  "memory_scope": "traced-python-allocations",
+  "peak_memory_bytes": 157413,
+  "limitations": [
+    "Generated template texts are not competition tweets; no leaderboard submission or historical reproduction.",
+    "Repeated templates make fixture scores unsuitable for real NLP quality; near-duplicate, entity and temporal transfer are not established.",
+    "Aggregate is mean fold positive-class F1, not pooled F1 or a competition score. Exact normalized duplicates are rejected; no silent row removal.",
+    "Memory measures traced Python allocations, not process RSS."
+  ],
+  "metric": "positive-class F1 (zero when denominator is zero)",
+  "direction": "maximize",
+  "fold_results": [
+    {
+      "split": "stratified fold 1",
+      "train_size": 143,
+      "validation_size": 37,
+      "metrics": {
+        "unigrams": 0.8780487804878049,
+        "unigrams-and-pairs": 0.8780487804878049
+      },
+      "diagnostics": {
+        "unigrams": {
+          "true_positives": 18,
+          "false_positives": 3,
+          "false_negatives": 2,
+          "error_ids": [
+            "124",
+            "104",
+            "78",
+            "39",
+            "169"
+          ]
+        },
+        "unigrams-and-pairs": {
+          "true_positives": 18,
+          "false_positives": 3,
+          "false_negatives": 2,
+          "error_ids": [
+            "124",
+            "104",
+            "78",
+            "39",
+            "169"
+          ]
+        }
+      }
+    },
+    {
+      "split": "stratified fold 2",
+      "train_size": 144,
+      "validation_size": 36,
+      "metrics": {
+        "unigrams": 0.9473684210526315,
+        "unigrams-and-pairs": 0.9473684210526315
+      },
+      "diagnostics": {
+        "unigrams": {
+          "true_positives": 18,
+          "false_positives": 1,
+          "false_negatives": 1,
+          "error_ids": [
+            "98",
+            "41"
+          ]
+        },
+        "unigrams-and-pairs": {
+          "true_positives": 18,
+          "false_positives": 1,
+          "false_negatives": 1,
+          "error_ids": [
+            "98",
+            "41"
+          ]
+        }
+      }
+    },
+    {
+      "split": "stratified fold 3",
+      "train_size": 144,
+      "validation_size": 36,
+      "metrics": {
+        "unigrams": 1.0,
+        "unigrams-and-pairs": 1.0
+      },
+      "diagnostics": {
+        "unigrams": {
+          "true_positives": 19,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "error_ids": []
+        },
+        "unigrams-and-pairs": {
+          "true_positives": 19,
+          "false_positives": 0,
+          "false_negatives": 0,
+          "error_ids": []
+        }
+      }
+    },
+    {
+      "split": "stratified fold 4",
+      "train_size": 144,
+      "validation_size": 36,
+      "metrics": {
+        "unigrams": 0.7647058823529411,
+        "unigrams-and-pairs": 0.7647058823529411
+      },
+      "diagnostics": {
+        "unigrams": {
+          "true_positives": 13,
+          "false_positives": 2,
+          "false_negatives": 6,
+          "error_ids": [
+            "96",
+            "166",
+            "177",
+            "67",
+            "9",
+            "161",
+            "19",
+            "31"
+          ]
+        },
+        "unigrams-and-pairs": {
+          "true_positives": 13,
+          "false_positives": 2,
+          "false_negatives": 6,
+          "error_ids": [
+            "96",
+            "166",
+            "177",
+            "67",
+            "9",
+            "161",
+            "19",
+            "31"
+          ]
+        }
+      }
+    },
+    {
+      "split": "stratified fold 5",
+      "train_size": 145,
+      "validation_size": 35,
+      "metrics": {
+        "unigrams": 0.9142857142857143,
+        "unigrams-and-pairs": 0.9142857142857143
+      },
+      "diagnostics": {
+        "unigrams": {
+          "true_positives": 16,
+          "false_positives": 0,
+          "false_negatives": 3,
+          "error_ids": [
+            "75",
+            "151",
+            "103"
+          ]
+        },
+        "unigrams-and-pairs": {
+          "true_positives": 16,
+          "false_positives": 0,
+          "false_negatives": 3,
+          "error_ids": [
+            "75",
+            "151",
+            "103"
+          ]
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "unigrams": 0.9008817596358184,
+    "unigrams-and-pairs": 0.9008817596358184
+  }
+}

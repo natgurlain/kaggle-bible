@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "status": "published",
+  "reviewed_by": "GPT-6 Luna Max",
+  "reviewed_at": "2026-09-30",
+  "id": "solution-titanic-agconti",
+  "title": "Python model-family tutorial",
+  "summary": "Conti illustrates logistic regression, three SVM kernels and a random forest in a Python notebook.",
+  "competition_id": "competition-titanic",
+  "team": "Independent tutorial author",
+  "authors": [
+    "Anthony Conti"
+  ],
+  "source_ids": [
+    "source-titanic-agconti"
+  ],
+  "rank": {
+    "value": null,
+    "basis": "unknown",
+    "source_id": null
+  },
+  "scores": [],
+  "validation": {
+    "strategy": "custom",
+    "details": "The inspected SVM block uses a shuffled 90/10 holdout with seed 0, even though the README describes K-fold evaluation. Cleaning/design-matrix work precedes this split; a fold-isolated end-to-end protocol and untouched model-selection test are not established.",
+    "source_ids": [
+      "source-titanic-agconti"
+    ]
+  },
+  "techniques": [
+    "logistic-regression",
+    "support-vector-machine",
+    "random-forest"
+  ],
+  "resources": [
+    {
+      "id": "full-pipeline",
+      "scope": "full-pipeline",
+      "hardware_class": "unknown",
+      "accelerator_model": null,
+      "accelerator_count": null,
+      "vram_gb_per_device": null,
+      "ram_gb": null,
+      "wall_hours": null,
+      "accelerator_hours": null,
+      "basis": "unknown",
+      "claim_id": null
+    }
+  ],
+  "reproducibility": {
+    "code_url": "https://github.com/agconti/kaggle-titanic",
+    "code_revision": "a7bbe5952178c669bf0c0d590b72036c0174c19f",
+    "status": "code-available",
+    "reproduction_ids": [],
+    "notes": "Source availability was checked; this historical tutorial was not run. Dependency compatibility, original data rights and exact outputs are unverified."
+  },
+  "claims": [
+    {
+      "id": "approach-01",
+      "statement": "Conti illustrates logistic regression, three SVM kernels and a random forest in a Python notebook.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-titanic-agconti",
+          "locator": "Notebook logistic regression, types_of_kernels and RandomForestClassifier; README Data Analysis",
+          "support_summary": "The inspected implementation includes the listed model families."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Pinned tutorial, not a final winning solution.",
+      "limitations": "Model presence does not isolate its gain or establish a comparable final score."
+    },
+    {
+      "id": "validation-01",
+      "statement": "The inspected SVM block uses a shuffled 90/10 holdout with seed 0, even though the README describes K-fold evaluation.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-titanic-agconti",
+          "locator": "Notebook np.random.seed(0), order permutation and nighty_precent_of_sample; README Valuation",
+          "support_summary": "Code partitions the permuted array at 90 percent for the SVM demonstration."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "This locator describes the SVM block, not every model in the notebook.",
+      "limitations": "Cleaning/design-matrix work precedes this split; a fold-isolated end-to-end protocol and untouched model-selection test are not established."
+    }
+  ],
+  "unsuccessful_attempts": [],
+  "transfer_limits": [
+    "Source model families are hypotheses for a fixed split, not demonstrated gains on other data.",
+    "Passenger relations may constrain a transferable split; random-row performance does not establish family-held-out behavior."
+  ]
+}

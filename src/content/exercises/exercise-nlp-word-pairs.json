@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "id": "exercise-nlp-word-pairs",
+  "status": "published",
+  "slug": "nlp-word-pairs",
+  "title": "Fit vocabulary inside each fold before adding word pairs",
+  "competition_id": "competition-nlp-getting-started",
+  "summary": "Compare unigram Naive Bayes with one adjacent-word-pair change on the same stratified folds. Original generated template texts demonstrate the fitting workflow rather than real tweet quality.",
+  "data_scope": "generated-teaching-fixture",
+  "script_path": "/exercises/nlp-word-pairs.py",
+  "receipt_path": "/exercises/nlp-word-pairs-receipt.json",
+  "command": "python3 nlp-word-pairs.py --fixture --output my-nlp-receipt.json",
+  "environment": "Recorded with Python 3.12.14 and its standard library only on Darwin arm64. This local CPU run is the recorded environment; other environments are not covered by this receipt.",
+  "steps": [
+    "Download and run the script with Python 3.12.14. No packages, weights or account are needed for the fixture.",
+    "Compare unigrams with unigrams plus adjacent word pairs; train vocabulary and class counts inside each fold. Both models use fixed Laplace smoothing.",
+    "Inspect per-fold positive-class F1 and the printed false-positive/negative counts. Use the receipt’s error IDs to inspect those texts in the recorded input. Retain a worse result and explain whether template overlap limits interpretation.",
+    "Optional: --csv authorized-train.csv reads unique id,text,target rows. Empty texts and exact normalized duplicates are rejected; choose and document any grouping/deduplication policy first. Generated CSV mode is tested; competition tweets were not run."
+  ],
+  "limitations": [
+    "Generated template texts are not competition tweets; no leaderboard submission or historical reproduction.",
+    "Repeated templates make fixture scores unsuitable for real NLP quality; near-duplicate, entity and temporal transfer are not established.",
+    "Aggregate is mean fold positive-class F1, not pooled F1 or a competition score. Exact normalized duplicates are rejected; no silent row removal.",
+    "Memory measures traced Python allocations, not process RSS."
+  ],
+  "data_path": "/exercises/nlp-word-pairs-receipt-data.json",
+  "python_version": "3.12.14",
+  "dependencies": "Python standard library only",
+  "seed": 17,
+  "split_definition": "Five target-stratified folds with seed 17; exact normalized duplicate texts rejected; vocabulary and class counts fit training rows only.",
+  "metric": "positive-class F1 (zero when denominator is zero)",
+  "direction": "maximize",
+  "memory_scope": "traced-python-allocations",
+  "platform": "Darwin arm64",
+  "expected_splits": [
+    "stratified fold 1",
+    "stratified fold 2",
+    "stratified fold 3",
+    "stratified fold 4",
+    "stratified fold 5"
+  ]
+}

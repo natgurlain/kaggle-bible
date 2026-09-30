@@ -4,6 +4,7 @@ import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
 import {
 	competitionSchema,
+	exerciseSchema,
 	practiceSchema,
 	reproductionSchema,
 	solutionSchema,
@@ -11,6 +12,10 @@ import {
 } from './content/schemas';
 
 export const collections = {
+	exercises: defineCollection({
+		loader: glob({ base: './src/content/exercises', pattern: '**/*.json' }),
+		schema: exerciseSchema,
+	}),
 	docs: defineCollection({ loader: docsLoader(), schema: docsSchema() }),
 	competitions: defineCollection({
 		loader: glob({

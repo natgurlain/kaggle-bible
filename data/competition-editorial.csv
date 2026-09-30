@@ -1,8 +1,8 @@
 id,completeness_level,editorial_status,priority,work_order,learning_path_stage,guide_slug,reviewed_by,reviewed_at,notes
-3136,1,queued,path,1,beginner,,,,Suggested starting competition: first valid submission and binary classification loop.
-5407,1,queued,path,2,beginner,,,,Suggested regression practice: feature types, transformations, and cross-validation.
-3004,1,queued,path,3,beginner,,,,Suggested vision introduction: small neural model and compute budgeting.
-17777,1,queued,path,4,beginner,,,,Suggested text introduction: representation comparison and error inspection.
+3136,2,published,path,1,beginner,titanic,GPT-6 Luna Max,2026-09-30,Reviewed educational Level 2 evidence map; ongoing task with no final rank. Original fixture exercise is separate.
+5407,2,published,path,2,beginner,house-prices-advanced-regression-techniques,GPT-6 Luna Max,2026-09-30,Reviewed Level 2 educational guide; original generated exercise is separate.
+3004,2,published,path,3,beginner,digit-recognizer,GPT-6 Luna Max,2026-09-30,Reviewed two pinned image approaches with source limitations and an original bounded centroid exercise.
+17777,2,published,path,4,beginner,nlp-getting-started,GPT-6 Luna Max,2026-09-30,Reviewed Level 2 educational text guide; generated exercise is separate.
 7082,1,queued,path,5,intermediate,,,,Suggested imbalanced tabular practice: AUC and anonymized features.
 9120,2,published,path,6,intermediate,home-credit-default-risk,GPT-6 Luna Max,2026-09-24,Reviewed Level 2 evidence map.
 18599,2,published,path,7,intermediate,m5-forecasting-accuracy,GPT-6 Luna Max,2026-09-24,Reviewed Level 2 evidence map.

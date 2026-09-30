@@ -19,3 +19,7 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# Python exercise runtime artifacts
+__pycache__/
+*.pyc

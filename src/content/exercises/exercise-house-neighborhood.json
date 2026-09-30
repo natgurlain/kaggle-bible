@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "id": "exercise-house-neighborhood",
+  "status": "published",
+  "slug": "house-neighborhood",
+  "title": "Fit neighborhood price means inside each fold",
+  "competition_id": "competition-house-prices-advanced-regression-techniques",
+  "summary": "Compare a global training log-price mean with one fixed neighborhood smoothing change on identical random folds. The original generated homes are separate from Ames competition data.",
+  "data_scope": "generated-teaching-fixture",
+  "script_path": "/exercises/house-neighborhood.py",
+  "receipt_path": "/exercises/house-neighborhood-receipt.json",
+  "command": "python3 house-neighborhood.py --fixture --output my-house-receipt.json",
+  "environment": "Recorded with Python 3.12.14 and its standard library only on Darwin arm64. This local CPU run is the recorded environment; other environments are not covered by this receipt.",
+  "steps": [
+    "Download and run the script with Python3.12.14. The default generated fixture needs no packages or account.",
+    "Compare the global log-price mean with the neighborhood mean smoothed using five pseudo-examples from the training global mean. Fit both inside the same five training folds.",
+    "Inspect each fold and explain errors on unseen neighborhoods. Keep the smoothing weight fixed during this experiment.",
+    "Optional: --csv authorized-train.csv reads Id,Neighborhood,SalePrice with finite positive prices. This mode is tested on generated rows; Ames competition data has not been executed."
+  ],
+  "limitations": [
+    "Generated homes are not Ames competition data; no submission or historical reproduction.",
+    "Random folds do not establish spatial or temporal transfer; the neighborhood smoothing weight was fixed before evaluation.",
+    "Aggregate is mean fold log-RMSE, rather than pooled test RMSE or a competition score.",
+    "Memory measures traced Python allocations, not process RSS."
+  ],
+  "data_path": "/exercises/house-neighborhood-receipt-data.json",
+  "python_version": "3.12.14",
+  "dependencies": "Python standard library only",
+  "seed": 17,
+  "split_definition": "Five shuffled random folds with seed 17; each row validates once; all log-price category means fit training rows only.",
+  "metric": "RMSE of natural log prices",
+  "direction": "minimize",
+  "memory_scope": "traced-python-allocations",
+  "platform": "Darwin arm64",
+  "expected_splits": [
+    "random fold 1",
+    "random fold 2",
+    "random fold 3",
+    "random fold 4",
+    "random fold 5"
+  ]
+}

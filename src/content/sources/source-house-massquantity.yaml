@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-house-massquantity",
+  "title": "massquantity House Prices PCA and ensembles",
+  "url": "https://github.com/massquantity/Kaggle-HousePrices/blob/d6d0b8a96d189b323688e221ab8eb505ff178cce/HousePrices%20Kernel.ipynb",
+  "kind": "author-writeup",
+  "authors": [
+    "massquantity"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": "d6d0b8a96d189b323688e221ab8eb505ff178cce",
+  "locator_notes": "Pipeline; PCA; rmse_cv; Weight Average; stacking.fit/get_oof",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": null,
+  "notes": "Pinned original notebook inspected. No repository license detected; summarize and link rather than copy foreign code. No execution or ranking verification."
+}

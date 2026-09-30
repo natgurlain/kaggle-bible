@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-digits-land",
+  "title": "John Land dense and convolutional digit models",
+  "url": "https://github.com/John-Land/Digit-Recognizer-ML-competition-Kaggle-with-deep-learning-tensorflow/blob/64796ba0304b3bce306f780206f4d25f339676d1/index.md",
+  "kind": "author-writeup",
+  "authors": [
+    "John Land"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": "64796ba0304b3bce306f780206f4d25f339676d1",
+  "locator_notes": "Prepare data MinMaxScaler; fully connected model; convolutional model; process_time timers",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": null,
+  "notes": "Original author page and pinned Markdown inspected. Model budgets differ; MinMaxScaler is fit before validation_split. No author code/data was executed and no repository license detected."
+}

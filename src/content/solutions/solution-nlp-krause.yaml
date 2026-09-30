@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "id": "solution-nlp-krause",
+  "status": "published",
+  "title": "TF-IDF linear baselines and error inspection",
+  "summary": "krauseannelize compares TF-IDF logistic regression and LinearSVC, then tunes vectorizer and logistic-regression parameters through a Pipeline.",
+  "reviewed_by": "GPT-6 Luna Max",
+  "reviewed_at": "2026-09-30",
+  "competition_id": "competition-nlp-getting-started",
+  "team": "Independent approach author",
+  "authors": [
+    "krauseannelize"
+  ],
+  "source_ids": [
+    "source-nlp-krause"
+  ],
+  "rank": {
+    "value": null,
+    "basis": "unknown",
+    "source_id": null
+  },
+  "scores": [],
+  "validation": {
+    "strategy": "custom",
+    "details": "krauseannelize splits 80/20 with target stratification and seed 42 before fitting TF-IDF; its Pipeline grid search uses five-fold F1 scoring on training data. No entity/near-duplicate grouping is established by these locators, and repeated holdout interpretation can influence selection.",
+    "source_ids": [
+      "source-nlp-krause"
+    ]
+  },
+  "techniques": [
+    "tf-idf",
+    "linear-classifier"
+  ],
+  "resources": [
+    {
+      "id": "full-pipeline",
+      "scope": "full-pipeline",
+      "hardware_class": "unknown",
+      "accelerator_model": null,
+      "accelerator_count": null,
+      "vram_gb_per_device": null,
+      "ram_gb": null,
+      "wall_hours": null,
+      "accelerator_hours": null,
+      "basis": "unknown",
+      "claim_id": null
+    }
+  ],
+  "reproducibility": {
+    "code_url": "https://github.com/krauseannelize/nlp-disaster-tweets",
+    "code_revision": "ef6f3cc32f4707b57f5bdee2c1183eaf6fd52834",
+    "status": "code-available",
+    "reproduction_ids": [],
+    "notes": "Pinned implementation inspected as text; not executed. No competition data, pretrained weights or foreign dependencies were downloaded for this guide."
+  },
+  "claims": [
+    {
+      "id": "approach-01",
+      "statement": "krauseannelize compares TF-IDF logistic regression and LinearSVC, then tunes vectorizer and logistic-regression parameters through a Pipeline.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-nlp-krause",
+          "locator": "Train Logistic Regression and LinearSVC; Hyperparameter Tuning Pipeline",
+          "support_summary": "Both linear classifiers and a TF-IDF/model search are shown."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Pinned tutorial implementation.",
+      "limitations": "Feature/model presence does not establish a representation ceiling or isolated accuracy/F1 gain."
+    },
+    {
+      "id": "validation-01",
+      "statement": "krauseannelize splits 80/20 with target stratification and seed 42 before fitting TF-IDF; its Pipeline grid search uses five-fold F1 scoring on training data.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-nlp-krause",
+          "locator": "train_test_split(test_size=.2,stratify,random_state=42); tfidf.fit_transform(X_train); GridSearchCV scoring=f1 cv=5",
+          "support_summary": "Vocabulary fitting occurs after holdout creation and inside the search Pipeline."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Observed code order, not execution.",
+      "limitations": "No entity/near-duplicate grouping is established by these locators, and repeated holdout interpretation can influence selection."
+    }
+  ],
+  "unsuccessful_attempts": [],
+  "transfer_limits": [
+    "Model or preprocessing presence does not establish its isolated gain on a common split.",
+    "No independent leaderboard or full-pipeline resource verification; no historical reproduction."
+  ]
+}

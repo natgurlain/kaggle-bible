@@ -1,0 +1,67 @@
+{
+  "name": "Suggest a primary source",
+  "description": "An original author report, notebook or official competition reference.",
+  "body": [
+    {
+      "type": "markdown",
+      "attributes": {
+        "value": "Please share public evidence only. Do not include credentials, personal information, private competition data, or material you cannot redistribute. A report is reviewed before any guide or execution milestone changes."
+      }
+    },
+    {
+      "type": "input",
+      "id": "competition",
+      "attributes": {
+        "label": "Competition slug",
+        "description": "For example: home-credit-default-risk."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "input",
+      "id": "url",
+      "attributes": {
+        "label": "Primary source URL",
+        "description": "Link to the original author or official page; a pinned revision is preferred."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "input",
+      "id": "locator",
+      "attributes": {
+        "label": "Exact locator",
+        "description": "Section, notebook cell, file and lines, or a short searchable quotation."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "claim",
+      "attributes": {
+        "label": "What does it support?",
+        "description": "State one claim and distinguish author-reported evidence from your interpretation."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "limits",
+      "attributes": {
+        "label": "Conditions and gaps",
+        "description": "Split, metric, data, execution or resource limits; mark unknowns explicitly."
+      },
+      "validations": {
+        "required": true
+      }
+    }
+  ]
+}

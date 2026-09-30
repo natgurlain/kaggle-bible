@@ -98,6 +98,7 @@ const solutionScoreSchema = z.object({
 export const competitionSchema = contentSchema.extend({
 	id: z.string().regex(/^competition-[a-z0-9]+(?:-[a-z0-9]+)*$/),
 	slug: idString,
+	learning_goals: z.array(z.string().min(1)).max(5).default([]),
 	meta_kaggle_id: z.string().regex(/^\d+$/).optional(),
 	kaggle_slug: idString,
 	competition_url: webUrl,
@@ -215,4 +216,32 @@ export const reproductionSchema = z.object({
 	executed_by: z.string().nullable(),
 	executed_at: dateString.nullable(),
 	limitations: z.array(z.string()),
+});
+
+// Learning exercises are independent of historical solution reproductions.
+export const exerciseSchema = z.object({
+	schema_version: z.literal(1),
+	id: z.string().regex(/^exercise-[a-z0-9]+(?:-[a-z0-9]+)*$/),
+	status: z.enum(['draft', 'published']),
+	slug: idString,
+	title: z.string().min(1),
+	competition_id: reference('competitions'),
+	summary: z.string().min(1),
+	data_scope: z.enum(['generated-teaching-fixture', 'open-teaching-data', 'competition-data']),
+	script_path: z.string().regex(/^\/exercises\/[a-z0-9-]+\.py$/),
+	receipt_path: z.string().regex(/^\/exercises\/[a-z0-9-]+-receipt\.json$/),
+	data_path: z.string().regex(/^\/exercises\/[a-z0-9-]+-data\.json$/),
+	platform: z.string().min(1),
+	expected_splits: z.array(z.string().min(1)).min(1).refine(values => new Set(values).size === values.length, 'Expected unique split identifiers'),
+	python_version: z.string().regex(/^\d+\.\d+\.\d+$/),
+	dependencies: z.string().min(1),
+	seed: z.number().int(),
+	split_definition: z.string().min(1),
+	metric: z.string().min(1),
+	direction: z.enum(['minimize', 'maximize']),
+	memory_scope: z.enum(['traced-python-allocations', 'process-peak-rss']),
+	command: z.string().min(1),
+	environment: z.string().min(1),
+	steps: z.array(z.string().min(1)).min(2),
+	limitations: z.array(z.string().min(1)).min(1),
 });

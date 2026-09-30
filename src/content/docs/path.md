@@ -9,19 +9,21 @@ The path is a sequence of decisions to learn, not a ranking of competitions. Mov
 
 Suggested starting points:
 
-- **Titanic – Machine Learning from Disaster**: tabular classification, a simple submission, and the basic train/test workflow.
-- **House Prices – Advanced Regression Techniques**: regression metrics, missing values, categorical features, and a reproducible notebook.
-- **Digit Recognizer**: image tensors, a clear benchmark, and the difference between a model improvement and data preparation.
+- **[Titanic – Machine Learning from Disaster](/competitions/titanic/)**: tabular classification, train-only passenger rules, and fixed validation folds.
+- **[House Prices – Advanced Regression Techniques](/competitions/house-prices-advanced-regression-techniques/)**: log-price error, fold-isolated target statistics, and one fixed neighborhood comparison.
+- **[Digit Recognizer](/competitions/digit-recognizer/)**: pixel shape checks, training-only centroids, and a bounded image workflow.
 
 Gate: you can describe the target, metric, split, baseline, and one measured improvement without relying on the public leaderboard.
+
+- **[NLP Getting Started](/competitions/nlp-getting-started/)**: train-only vocabulary fitting, word-pair features, and positive-class F1.
 
 ## Intermediate: learn validation and iteration
 
 Suggested next steps:
 
-- **Porto Seguro’s Safe Driver Prediction**: imbalanced classification, anonymized features, AUC, and feature selection.
-- **Home Credit Default Risk**: relational-table joins, aggregation windows, entity leakage checks, and out-of-fold predictions.
-- **M5 Forecasting — Accuracy**: time-aware validation, hierarchy, multi-horizon forecasts, and compute tradeoffs.
+- **[Porto Seguro’s Safe Driver Prediction](/competitions/?view=all&q=porto-seguro-safe-driver-prediction)** (guide pending): imbalanced classification, anonymized features, AUC, and feature selection.
+- **[Home Credit Default Risk](/competitions/home-credit-default-risk/)**: relational-table joins, aggregation windows, entity leakage checks, and out-of-fold predictions.
+- **[M5 Forecasting — Accuracy](/competitions/m5-forecasting-accuracy/)**: time-aware validation, hierarchy, multi-horizon forecasts, and compute tradeoffs.
 
 Gate: you can choose a split that matches how test data is generated, detect an implausible jump, and keep an experiment record that another person can rerun.
 
@@ -29,10 +31,10 @@ Gate: you can choose a split that matches how test data is generated, detect an 
 
 Suggested challenges:
 
-- **IEEE-CIS Fraud Detection**: entity reconstruction, temporal behavior, sparse identifiers, leakage, and distribution shift.
-- **Jigsaw Unintended Bias in Toxicity Classification**: composite metrics, subgroup diagnostics, auxiliary targets, and model diversity.
-- **SIIM-ISIC Melanoma Classification**: small imbalanced vision data, leak-free folds, external data, and rank averaging.
-- **Cassava Leaf Disease Classification**: domain-specific pretraining, augmentation, model diversity, and ensemble selection.
+- **[IEEE-CIS Fraud Detection](/competitions/?view=all&q=ieee-fraud-detection)** (guide pending): entity reconstruction, temporal behavior, sparse identifiers, leakage, and distribution shift.
+- **[Jigsaw Unintended Bias in Toxicity Classification](/competitions/?view=all&q=jigsaw-unintended-bias-in-toxicity-classification)** (guide pending): composite metrics, subgroup diagnostics, auxiliary targets, and model diversity.
+- **[SIIM-ISIC Melanoma Classification](/competitions/?view=all&q=siim-isic-melanoma-classification)** (guide pending): small imbalanced vision data, leak-free folds, external data, and rank averaging.
+- **[Cassava Leaf Disease Classification](/competitions/?view=all&q=cassava-leaf-disease-classification)** (guide pending): domain-specific pretraining, augmentation, model diversity, and ensemble selection.
 
 For advanced entries, select a competition with multiple public solution reports and enough compute notes to compare approaches. The catalog’s metric, category, and completeness filters help narrow the choice.
 

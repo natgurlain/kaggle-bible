@@ -5,6 +5,10 @@ meta_kaggle_id: '18599'
 status: published
 title: M5 Forecasting – Accuracy
 summary: An evidence map comparing a hierarchical LightGBM/N-BEATS ensemble report with a single-model, multi-window validation report, without inventing comparable scores or compute costs.
+learning_goals:
+  - Distinguish fixed competition windows from rolling forecast origins.
+  - Compare hierarchy streams and store/week partitions as hypotheses.
+  - Measure a seasonal baseline before adding model or hierarchy complexity.
 reviewed_by: GPT-6 Luna Max
 reviewed_at: '2026-09-24'
 kaggle_bible_completeness_level: 2
@@ -271,7 +275,7 @@ These reports do not support a numeric head-to-head comparison. A later reproduc
 
 ## Top-solution comparison
 
-The route renders both solution records, including author-reported rank basis, techniques, validation details, unknown resources, and source links. The reports differ in architecture and validation description, but there is no score table to compare: neither record has a supported numeric validation score. The rank labels do not establish a transferable model ranking. [claim:lesson-01]
+Compare the documented architecture and validation choices below. Neither report supplies comparable numeric validation results or measured final-system resources.
 
 ## Decisive techniques and evidence
 
@@ -282,6 +286,9 @@ The second-place account describes hierarchy-level forecasts that are aligned an
 The safest takeaway is methodological: establish whether a candidate strategy is stable across multiple forecast origins before adding a more complex hierarchy stream. The historical reports motivate that test but do not show which design wins on the same folds or under the same compute budget. [claim:lesson-01]
 
 ## Suggested first experiment
+
+Start with the [executed rolling-origin teaching lab](/exercises/#exercise-m5-rolling-origin). Its generated data and unweighted MAE demonstrate a workflow; they do not reproduce M5 data, WRMSSE, or either historical solution.
+
 
 On data the reader is authorized to use, create a simple weekly seasonal baseline and score it on several rolling 28-day origins with the official WRMSSE implementation. Then add one store/week-partitioned model or one separately forecast hierarchy level, keeping origins and aggregation fixed. Record every origin; do not infer compute requirements or expected gains from these write-ups. [claim:experiment-01]
 

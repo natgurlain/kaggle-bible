@@ -5,22 +5,32 @@ template: splash
 hero:
   tagline: Learn from what Kaggle competitors actually tried.
   actions:
+    - text: Explore the guides
+      link: /competitions/
+      icon: right-arrow
     - text: Start learning
       link: /start/
-      icon: right-arrow
-    - text: Browse competitions
-      link: /competitions/
       icon: external
       variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
+import PublishedLibrary from '../../components/PublishedLibrary.astro';
+import LibraryMilestones from '../../components/LibraryMilestones.astro';
+
+<LibraryMilestones />
 
 Kaggle Bible is a practical, searchable knowledge base for turning past competition evidence into better decisions in a new competition.
 
+## Available guides
+
+Start with a reviewed account of a real competition. Each guide explains the decisions, evidence, and a first experiment.
+
+<PublishedLibrary />
+
 <CardGrid stagger>
 	<Card title="Find the next competition" icon="open-book">
-		Filter the full catalog by task, metric, dates, and editorial completeness. Every row links back to the official Kaggle competition.
+		Search the archive by title or metric, then filter by category, snapshot state, and editorial completeness. Every row links back to the official Kaggle competition.
 	</Card>
 	<Card title="Study the decisions" icon="document">
 		Compare validation, features, models, ensembles, compute, and failure modes instead of collecting disconnected leaderboard tricks.

@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "exercise": "digit-centroids",
+  "executed_at": "2026-09-30",
+  "data_scope": "generated-teaching-fixture",
+  "data_sha256": "5eb08ca0aa775c5ae5cb57898d9deabbc8dd5eaca862c61e889f77054cd93464",
+  "script_sha256": "8de76e7ae614dc0aac32a82e97d446ae66d09394af6a67cb625eb4e0ef7201fd",
+  "seed": 17,
+  "split_definition": "Five label-stratified folds with seed 17; each sampled row validates once; centroids fit training rows only; CSV uses a declared prefix cap.",
+  "python": "3.12.14",
+  "platform": "Darwin arm64",
+  "dependencies": "Python standard library only",
+  "hardware_scope": "local CPU; accelerator not used",
+  "sample_scope": "all 200 generated patterns",
+  "row_count": 200,
+  "class_counts": {
+    "0": 20,
+    "1": 20,
+    "2": 20,
+    "3": 20,
+    "4": 20,
+    "5": 20,
+    "6": 20,
+    "7": 20,
+    "8": 20,
+    "9": 20
+  },
+  "wall_seconds": 28.066906416788697,
+  "memory_scope": "traced-python-allocations",
+  "peak_memory_bytes": 6220780,
+  "limitations": [
+    "Generated geometric patterns are not handwritten digits, MNIST or competition data.",
+    "A bounded prefix sample may be biased; no full competition dataset was run.",
+    "Per-image normalization and training-only centroids do not establish writer-held-out or shifted-image performance.",
+    "Mean fold accuracy is not a competition score or historical CNN reproduction.",
+    "Memory measures traced Python allocations, not process RSS."
+  ],
+  "metric": "accuracy",
+  "direction": "maximize",
+  "fold_results": [
+    {
+      "split": "stratified fold 1",
+      "train_size": 160,
+      "validation_size": 40,
+      "metrics": {
+        "raw-centroids": 1,
+        "image-l2-centroids": 1
+      }
+    },
+    {
+      "split": "stratified fold 2",
+      "train_size": 160,
+      "validation_size": 40,
+      "metrics": {
+        "raw-centroids": 1,
+        "image-l2-centroids": 1
+      }
+    },
+    {
+      "split": "stratified fold 3",
+      "train_size": 160,
+      "validation_size": 40,
+      "metrics": {
+        "raw-centroids": 1,
+        "image-l2-centroids": 1
+      }
+    },
+    {
+      "split": "stratified fold 4",
+      "train_size": 160,
+      "validation_size": 40,
+      "metrics": {
+        "raw-centroids": 1,
+        "image-l2-centroids": 1
+      }
+    },
+    {
+      "split": "stratified fold 5",
+      "train_size": 160,
+      "validation_size": 40,
+      "metrics": {
+        "raw-centroids": 1,
+        "image-l2-centroids": 1
+      }
+    }
+  ],
+  "aggregate": {
+    "raw-centroids": 1,
+    "image-l2-centroids": 1
+  }
+}

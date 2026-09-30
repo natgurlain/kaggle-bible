@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "id": "solution-house-massquantity",
+  "status": "published",
+  "title": "PCA and model-combination notebook",
+  "summary": "massquantity investigates feature engineering, PCA, weighted model averaging and stacking.",
+  "reviewed_by": "GPT-6 Luna Max",
+  "reviewed_at": "2026-09-30",
+  "competition_id": "competition-house-prices-advanced-regression-techniques",
+  "team": "Independent approach author",
+  "authors": [
+    "massquantity"
+  ],
+  "source_ids": [
+    "source-house-massquantity"
+  ],
+  "rank": {
+    "value": null,
+    "basis": "unknown",
+    "source_id": null
+  },
+  "scores": [],
+  "validation": {
+    "strategy": "custom",
+    "details": "massquantity uses the natural logarithm of SalePrice, fits a feature pipeline and PCA before cv=5 model scoring, and separately creates shuffled five-fold out-of-fold stacking predictions with seed 42. Fold-trained base models do not make earlier preprocessing fold-isolated. No historical numeric results are reproduced.",
+    "source_ids": [
+      "source-house-massquantity"
+    ]
+  },
+  "techniques": [
+    "pca",
+    "blending",
+    "stacking"
+  ],
+  "resources": [
+    {
+      "id": "full-pipeline",
+      "scope": "full-pipeline",
+      "hardware_class": "unknown",
+      "accelerator_model": null,
+      "accelerator_count": null,
+      "vram_gb_per_device": null,
+      "ram_gb": null,
+      "wall_hours": null,
+      "accelerator_hours": null,
+      "basis": "unknown",
+      "claim_id": null
+    }
+  ],
+  "reproducibility": {
+    "code_url": "https://github.com/massquantity/Kaggle-HousePrices",
+    "code_revision": "d6d0b8a96d189b323688e221ab8eb505ff178cce",
+    "status": "code-available",
+    "reproduction_ids": [],
+    "notes": "Pinned implementation inspected as text; not executed. No competition data, pretrained weights or foreign dependencies were downloaded for this guide."
+  },
+  "claims": [
+    {
+      "id": "approach-01",
+      "statement": "massquantity investigates feature engineering, PCA, weighted model averaging and stacking.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-house-massquantity",
+          "locator": "Feature Engineering; PCA; Weight Average; Stacking",
+          "support_summary": "The notebook implements those feature and ensemble variants."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Pinned author notebook.",
+      "limitations": "The author-reported PCA improvement is not a controlled common-split benchmark in this guide."
+    },
+    {
+      "id": "validation-01",
+      "statement": "massquantity uses the natural logarithm of SalePrice, fits a feature pipeline and PCA before cv=5 model scoring, and separately creates shuffled five-fold out-of-fold stacking predictions with seed 42.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-house-massquantity",
+          "locator": "y_log=np.log(train.SalePrice); pipe.fit_transform(full); pca.fit_transform; rmse_cv; stacking.KFold and fit",
+          "support_summary": "The target is np.log(SalePrice); preprocessing precedes model CV, while the stacking class clones base models inside KFold loops."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "These statements describe distinct stages in the inspected code.",
+      "limitations": "Fold-trained base models do not make earlier preprocessing fold-isolated. No historical numeric results are reproduced."
+    }
+  ],
+  "unsuccessful_attempts": [],
+  "transfer_limits": [
+    "Model or preprocessing presence does not establish its isolated gain on a common split.",
+    "No independent leaderboard or full-pipeline resource verification; no historical reproduction."
+  ]
+}

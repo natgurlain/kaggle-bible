@@ -10,6 +10,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'Kaggle Bible',
+			components: { Header: './src/components/DocsHeader.astro' },
 			favicon: 'https://www.kaggle.com/static/images/favicon.ico',
 			social: [
 				{

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-titanic-official",
+  "title": "Titanic official evaluation",
+  "url": "https://www.kaggle.com/competitions/titanic/overview/evaluation",
+  "kind": "official-competition",
+  "authors": [
+    "Kaggle"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": null,
+  "locator_notes": "Evaluation; submission description",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": null,
+  "notes": "Task and accuracy metric inspected. Rolling Getting Started task; no final standing or dataset execution asserted. Full participation rules are not summarized here."
+}

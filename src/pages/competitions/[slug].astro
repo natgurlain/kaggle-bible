@@ -1,5 +1,9 @@
 ---
+import LearningActivity from '../../components/LearningActivity.astro';
+import SiteNav from '../../components/SiteNav.astro';
+import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import LearningExercises from '../../components/LearningExercises.astro';
 import { satteri } from '@astrojs/markdown-satteri';
 import claimReferenceLinks from '../../markdown/claim-reference-links.js';
 import { removeMatchingLeadingTitle } from '../../markdown/guide-body.js';
@@ -72,9 +76,14 @@ const claims = [
 const metricById = new Map((competition.data.metrics ?? []).map((metric) => [metric.id, metric]));
 const guideMarkdown = await satteri({ mdastPlugins: [claimReferenceLinks] }).createRenderer({});
 const guideBody = removeMatchingLeadingTitle(competition.body ?? '', competition.data.title);
-const { code: guideBodyHTML } = await guideMarkdown.render(guideBody, {
+const { code: renderedGuideHTML } = await guideMarkdown.render(guideBody, {
 	frontmatter: competition.data,
 });
+
+const experimentMatch = renderedGuideHTML.match(/<h2[^>]*id="suggested-first-experiment"[^>]*>[\s\S]*?(?=<h2|$)/);
+const firstExperimentHTML = experimentMatch?.[0] ?? '';
+const guideBodyHTML = firstExperimentHTML ? renderedGuideHTML.replace(firstExperimentHTML, '') : renderedGuideHTML;
+const guideSections = [...guideBodyHTML.matchAll(/<h2[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)].map(match => ({ id: match[1], title: match[2].replace(/<[^>]*>/g, '') }));
 
 const levelLabel = {
 	1: 'Catalog',
@@ -125,7 +134,8 @@ const citationSource = (reference: unknown) => {
 		<title>{competition.data.title} · Kaggle Bible</title>
 	</head>
 	<body>
-		<main class="guide-shell">
+		<SiteNav />
+			<main data-learning-guide={competition.data.slug} id="main-content" tabindex="-1" class="guide-shell" data-pagefind-body>
 			<nav class="breadcrumbs" aria-label="Breadcrumb">
 				<a href="/">Kaggle Bible</a>
 				<span aria-hidden="true">/</span>
@@ -137,7 +147,7 @@ const citationSource = (reference: unknown) => {
 			<header class="guide-header">
 				<p class="eyebrow">Reviewed competition guide</p>
 				<div class="title-row">
-					<h1>{competition.data.title}</h1>
+					<h1 data-pagefind-meta="title">{competition.data.title}</h1>
 					<span class="level-badge">Level {competition.data.kaggle_bible_completeness_level} · {levelLabel}</span>
 				</div>
 				<p class="lede">{competition.data.summary}</p>
@@ -147,8 +157,27 @@ const citationSource = (reference: unknown) => {
 				</p>
 				<a class="official-link" href={competition.data.competition_url} target="_blank" rel="noreferrer">Open official Kaggle competition ↗</a>
 			</header>
+			<LearningExercises competitionId={competition.id} />
 
-			<section class="overview-grid" aria-label="Competition summary">
+			<section class="quick-start" aria-labelledby="learn-heading">
+        <h2 id="learn-heading">What you’ll learn</h2>
+        <ul>{competition.data.learning_goals.map(goal => <li>{goal}</li>)}</ul>
+        <p><a href="#suggested-first-experiment">Try the first experiment →</a> · <a href="#approach-table">Compare approaches</a></p>
+        {firstExperimentHTML && <div class="prose" set:html={firstExperimentHTML} />}
+      </section>
+      <nav class="section-nav" aria-label="On this page"><details><summary>On this page</summary><ul>
+        <li><a href="#suggested-first-experiment">First experiment</a></li><li><a href="#approach-table">Compare approaches</a></li>
+        {guideSections.map(section => <li><a href={`#${section.id}`}>{section.title}</a></li>)}
+        <li><a href="#solutions-heading">Detailed solution records</a></li><li><a href="#practices-heading">Related practices</a></li><li><a href="#evidence-heading">Evidence and sources</a></li>
+      </ul></details></nav>
+      <section class="content-section" aria-labelledby="approach-table">
+        <h2 id="approach-table">Compare approaches</h2>
+        <p>These reports use different evaluations. Their scores are not a shared benchmark.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Approach comparison"><table><thead><tr><th scope="col">Approach</th><th scope="col">Validation</th><th scope="col">Techniques</th><th scope="col">Resources / execution</th></tr></thead><tbody>
+          {linkedSolutions.map(solution => <tr><th scope="row"><a href={`#solution-${solution.id}-title`}>{solution.data.title}</a></th><td>{statusLabel(solution.data.validation.strategy)}<br/><a href={`#solution-${solution.id}-title`}>Read split details</a></td><td>{solution.data.techniques.map(statusLabel).join(', ')}</td><td>{solution.data.resources.every(resource => resource.basis === 'unknown') ? 'Final-system resources unknown' : 'See scoped resource records'} · {statusLabel(solution.data.reproducibility.status)}</td></tr>)}
+        </tbody></table></div>
+      </section>
+      <section class="overview-grid" aria-label="Competition summary">
 				<article class="panel">
 					<h2>Task and data</h2>
 					<dl>
@@ -283,6 +312,8 @@ const citationSource = (reference: unknown) => {
 								<span>{ownerId === competition.data.id ? 'Guide claim' : `Solution record · ${owner}`}</span>
 							</div>
 							<h3 id={`claim-${ownerId}-${claim.id}`}>{claim.statement}</h3>
+							<p class="visible-limit"><strong>Limit:</strong> {claim.limitations || "Not reported"}</p>
+							<details><summary>Sources and conditions</summary>
 							{claim.evidence.length > 0 ? (
 								<ul class="citations">
 									{claim.evidence.map((item) => {
@@ -316,8 +347,8 @@ const citationSource = (reference: unknown) => {
 							)}
 							<dl class="claim-conditions">
 								<div><dt>Conditions</dt><dd>{claim.conditions || 'Not reported'}</dd></div>
-								<div><dt>Limitations</dt><dd>{claim.limitations || 'Not reported'}</dd></div>
 							</dl>
+							</details>
 						</article>
 					))}
 				</div>
@@ -327,11 +358,22 @@ const citationSource = (reference: unknown) => {
 				<a href="/competitions/">← Back to the competition catalog</a>
 				<p>This is a Level {competition.data.kaggle_bible_completeness_level} · {levelLabel} guide; it does not imply that any approach has been reproduced.</p>
 			</footer>
+		<LearningActivity />
 		</main>
+		<EvidenceDisclosure />
 	</body>
 </html>
 
 <style>
+  .quick-start { margin:1rem 0 2rem; padding:1.5rem; border:1px solid #d8c9f0; border-radius:1rem; background:#fff; line-height:1.7; }
+  .section-nav { margin:1rem 0; padding:1rem; border:1px solid #d8c9f0; border-radius:.7rem; }
+  .section-nav ul { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:.6rem; padding-left:1.2rem; }
+  summary { cursor:pointer; font-weight:700; padding:.4rem 0; }
+  .table-scroll { overflow-x:auto; margin:1rem 0; }
+  table { border-collapse:collapse; width:100%; min-width:660px; font-size:.9rem; line-height:1.5; }
+  th,td { padding:.8rem; text-align:left; vertical-align:top; border:1px solid #d8d0e2; }
+  .visible-limit { line-height:1.5; }
+
 	:root { font-family: system-ui, sans-serif; color: #211b2b; background: #faf9fc; }
 	* { box-sizing: border-box; }
 	body { margin: 0; }

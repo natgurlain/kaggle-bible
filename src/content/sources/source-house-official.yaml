@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-house-official",
+  "title": "House Prices official task and evaluation",
+  "url": "https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/overview/evaluation",
+  "kind": "official-competition",
+  "authors": [
+    "Kaggle"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": null,
+  "locator_notes": "Evaluation: RMSE between logarithms; official overview Ames task",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": null,
+  "notes": "Official task and log-price error definition inspected. Current participation rules not fully inspected; no final standings, data download or submission asserted."
+}

@@ -48,6 +48,10 @@ Required:
 
 Reproduction is strongly preferred for a Level 3 guide when it can change the reader’s decision, but it is not a universal requirement. A Level 3 guide may say “not reproduced” or “blocked” when that is the documented state. A reproduction of one component does not upgrade the full solution or validate a leaderboard rank.
 
+## Independent exercise milestone
+
+Exercise availability is independent of Levels 1–3. A published exercise needs original downloadable code, a pinned recorded environment, explicit data access and scope, a fixed split and metric, a baseline plus one controlled change, and an actual execution receipt. Record data/script SHA-256, seed, per-split and aggregate results, elapsed time, measured memory scope, and limitations. A generated teaching-fixture run is a workflow demonstration; it establishes no competition performance, reader learning or historical reproduction. Never upgrade guide completeness or solution reproducibility because a fixture passes. After changing executable code, rerun it and replace the receipt before publishing.
+
 ## Status and downgrade rules
 
 `editorial_status` describes work state separately from `completeness_level`:

@@ -1,0 +1,28 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { filterPublicGuides, filterPublicContent } from '../content/publication-policy.js';
+const { kind = 'guides' } = Astro.props;
+const [competitions, solutions, sources, practices] = await Promise.all([
+  getCollection('competitions'), getCollection('solutions'), getCollection('sources'), getCollection('practices'),
+]);
+const context = {
+  solutions: new Map(solutions.map(entry => [entry.id, entry])),
+  sources: new Map(sources.map(entry => [entry.id, entry])),
+  practices: new Map(practices.map(entry => [entry.id, entry])),
+};
+const entries: Array<CollectionEntry<'practices'> | CollectionEntry<'competitions'>> = kind === 'practices' ? filterPublicContent(practices, context) : filterPublicGuides(competitions, context);
+---
+<div class="library-grid">
+  {entries.map(entry => <article class="library-card">
+    <h3><a href={`/${kind === 'practices' ? 'practices' : 'competitions'}/${entry.data.slug}/`}>{entry.data.title}</a></h3>
+    <p>{entry.data.summary}</p>
+    {"metrics" in entry.data && <p><strong>Official metric:</strong> {entry.data.metrics.map(metric => metric.name).join(", ")}</p>}
+    <a href={`/${kind === 'practices' ? 'practices' : 'competitions'}/${entry.data.slug}/`}>Read {kind === 'practices' ? 'practice' : 'guide'} →</a>
+  </article>)}
+</div>
+<style>
+  .library-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:1rem; }
+  .library-card { padding:1.25rem; border:1px solid var(--sl-color-gray-5, #cfc9d8); border-radius:.75rem; }
+  .library-card h3 { margin:0; font-size:1.15rem; }
+  .library-card p { margin:.75rem 0; }
+</style>
