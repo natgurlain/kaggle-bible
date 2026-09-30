@@ -5,6 +5,10 @@ meta_kaggle_id: '18599'
 status: published
 title: M5 Forecasting – Accuracy
 summary: An evidence map comparing a hierarchical LightGBM/N-BEATS ensemble report with a single-model, multi-window validation report, without inventing comparable scores or compute costs.
+learning_goals:
+  - Distinguish fixed competition windows from rolling forecast origins.
+  - Compare hierarchy streams and store/week partitions as hypotheses.
+  - Measure a seasonal baseline before adding model or hierarchy complexity.
 reviewed_by: GPT-6 Luna Max
 reviewed_at: '2026-09-24'
 kaggle_bible_completeness_level: 2
@@ -271,7 +275,7 @@ These reports do not support a numeric head-to-head comparison. A later reproduc
 
 ## Top-solution comparison
 
-The route renders both solution records, including author-reported rank basis, techniques, validation details, unknown resources, and source links. The reports differ in architecture and validation description, but there is no score table to compare: neither record has a supported numeric validation score. The rank labels do not establish a transferable model ranking. [claim:lesson-01]
+Compare the documented architecture and validation choices below. Neither report supplies comparable numeric validation results or measured final-system resources.
 
 ## Decisive techniques and evidence
 

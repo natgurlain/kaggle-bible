@@ -1,0 +1,9 @@
+---
+import SiteNav from './SiteNav.astro';
+---
+<SiteNav showSkip={false} />
+<style is:global>
+  :root { --sl-nav-height: 7rem; }
+  .header .site-nav { padding:.5rem 0; height:100%; align-content:center; border:0; }
+  @media(min-width:900px) { :root { --sl-nav-height: 5rem; } }
+</style>
