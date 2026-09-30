@@ -1,4 +1,5 @@
 ---
+import LearningActivity from '../../components/LearningActivity.astro';
 import SiteNav from '../../components/SiteNav.astro';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
@@ -134,7 +135,7 @@ const citationSource = (reference: unknown) => {
 	</head>
 	<body>
 		<SiteNav />
-			<main id="main-content" tabindex="-1" class="guide-shell" data-pagefind-body>
+			<main data-learning-guide={competition.data.slug} id="main-content" tabindex="-1" class="guide-shell" data-pagefind-body>
 			<nav class="breadcrumbs" aria-label="Breadcrumb">
 				<a href="/">Kaggle Bible</a>
 				<span aria-hidden="true">/</span>
@@ -357,6 +358,7 @@ const citationSource = (reference: unknown) => {
 				<a href="/competitions/">← Back to the competition catalog</a>
 				<p>This is a Level {competition.data.kaggle_bible_completeness_level} · {levelLabel} guide; it does not imply that any approach has been reproduced.</p>
 			</footer>
+		<LearningActivity />
 		</main>
 		<EvidenceDisclosure />
 	</body>

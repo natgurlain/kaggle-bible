@@ -1,4 +1,5 @@
 ---
+import LearningEvents from './LearningEvents.astro';
 const { skipTarget = 'main-content', showSkip = true } = Astro.props;
 ---
 {showSkip && <a class="skip-link" href={`#${skipTarget}`}>Skip to content</a>}
@@ -10,6 +11,7 @@ const { skipTarget = 'main-content', showSkip = true } = Astro.props;
   </nav>
   <label>Theme <select id="site-theme"><option value="">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
 </header>
+<LearningEvents />
 <script is:inline>
   (() => {
     const select = document.getElementById('site-theme');

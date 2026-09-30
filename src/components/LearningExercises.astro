@@ -13,6 +13,12 @@ const exercises = library.exercises.filter(x => !competitionId || x.entry.data.c
  <p><a data-exercise-start={entry.data.slug} href={entry.data.script_path} download>Download the experiment</a> · <a href={entry.data.receipt_path}>Inspect the executed run receipt</a> · <a href={entry.data.data_path}>Recorded input artifact</a></p>
  <pre><code>{entry.data.command}</code></pre>
  <ol>{entry.data.steps.map(step=><li>{step}</li>)}</ol>
+ <div data-exercise-progress={entry.data.slug} class="exercise-progress">
+ <p data-completion-status role="status">No run reported on this page.</p>
+ <button type="button" data-report-completion>I ran this exercise</button>
+ <button type="button" data-undo-completion hidden>Undo report</button>
+ <p>This voluntary report stays on this page and resets when you leave. <a href={`https://github.com/natgurlain/kaggle-bible/issues/new?template=exercise-result.yml&title=${encodeURIComponent(entry.data.slug + ' run report')}`}>Share a result on GitHub</a> if you want a reviewed public record.</p>
+ </div>
  <details><summary>Recorded run and limits</summary>
  <p>{receipt.executed_at} · Python {receipt.python} · {receipt.platform}. Metric: {receipt.metric}; {receipt.direction}.</p>
  <ul>{Object.entries(receipt.aggregate).map(([method,value])=><li>{method}: {String(value)}</li>)}</ul>
@@ -30,4 +36,6 @@ const exercises = library.exercises.filter(x => !competitionId || x.entry.data.c
 .exercise-scope { font-size:.85rem; font-weight:700; }
 pre { max-width:100%; overflow:auto; padding:1rem; border:1px solid #918698; }
 summary { cursor:pointer; }
+button { font:inherit; padding:.55rem .8rem; margin:.25rem; }
+button[hidden] { display:none; }
 </style>
