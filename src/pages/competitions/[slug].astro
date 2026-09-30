@@ -171,7 +171,7 @@ const citationSource = (reference: unknown) => {
         <h2 id="approach-table">Compare approaches</h2>
         <p>These reports use different evaluations. Their scores are not a shared benchmark.</p>
         <div class="table-scroll" tabindex="0" role="region" aria-label="Approach comparison"><table><thead><tr><th scope="col">Approach</th><th scope="col">Validation</th><th scope="col">Techniques</th><th scope="col">Resources / execution</th></tr></thead><tbody>
-          {linkedSolutions.map(solution => <tr><th scope="row"><a href={`#solution-${solution.id}-title`}>{solution.data.title}</a></th><td>{solution.data.validation.details ?? 'Not reported'}</td><td>{solution.data.techniques.map(statusLabel).join(', ')}</td><td>{solution.data.resources.every(resource => resource.basis === 'unknown') ? 'Final-system resources unknown' : 'See scoped resource records'} · {statusLabel(solution.data.reproducibility.status)}</td></tr>)}
+          {linkedSolutions.map(solution => <tr><th scope="row"><a href={`#solution-${solution.id}-title`}>{solution.data.title}</a></th><td>{statusLabel(solution.data.validation.strategy)}<br/><a href={`#solution-${solution.id}-title`}>Read split details</a></td><td>{solution.data.techniques.map(statusLabel).join(', ')}</td><td>{solution.data.resources.every(resource => resource.basis === 'unknown') ? 'Final-system resources unknown' : 'See scoped resource records'} · {statusLabel(solution.data.reproducibility.status)}</td></tr>)}
         </tbody></table></div>
       </section>
       <section class="overview-grid" aria-label="Competition summary">
