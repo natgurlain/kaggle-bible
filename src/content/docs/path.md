@@ -11,7 +11,7 @@ Suggested starting points:
 
 - **[Titanic – Machine Learning from Disaster](/competitions/titanic/)**: tabular classification, train-only passenger rules, and fixed validation folds.
 - **[House Prices – Advanced Regression Techniques](/competitions/house-prices-advanced-regression-techniques/)**: log-price error, fold-isolated target statistics, and one fixed neighborhood comparison.
-- **[Digit Recognizer](/competitions/?view=all&q=digit-recognizer)** (guide pending): image tensors, a clear benchmark, and the difference between a model improvement and data preparation.
+- **[Digit Recognizer](/competitions/digit-recognizer/)**: pixel shape checks, training-only centroids, and a bounded image workflow.
 
 Gate: you can describe the target, metric, split, baseline, and one measured improvement without relying on the public leaderboard.
 
