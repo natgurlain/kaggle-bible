@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-titanic-agconti",
+  "title": "Anthony Conti Titanic Python tutorial",
+  "url": "https://github.com/agconti/kaggle-titanic/blob/a7bbe5952178c669bf0c0d590b72036c0174c19f/Titanic.ipynb",
+  "kind": "author-writeup",
+  "authors": [
+    "Anthony Conti"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": "a7bbe5952178c669bf0c0d590b72036c0174c19f",
+  "locator_notes": "Notebook data cleaning, logistic regression, SVM validation and random forest; repository ReadMe.md",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": "Apache-2.0",
+  "notes": "Pinned notebook and README inspected as text. Foreign code and dependencies were not executed; code license is not permission to redistribute competition data."
+}

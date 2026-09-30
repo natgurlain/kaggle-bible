@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "id": "exercise-titanic-group-rules",
+  "status": "published",
+  "slug": "titanic-group-rules",
+  "title": "Fit passenger group rules inside each fold",
+  "competition_id": "competition-titanic",
+  "summary": "Compare a sex-group majority baseline with one passenger-class change on identical stratified folds. Generated teaching passengers make the train-only workflow runnable without distributing Titanic data.",
+  "data_scope": "generated-teaching-fixture",
+  "script_path": "/exercises/titanic-group-rules.py",
+  "receipt_path": "/exercises/titanic-group-rules-receipt.json",
+  "command": "python3 titanic-group-rules.py --fixture --output my-titanic-receipt.json",
+  "environment": "Recorded with Python 3.12.14 and its standard library only on Darwin arm64. This local CPU run is the recorded environment; other environments are not covered by this receipt.",
+  "steps": [
+    "Download the script and run with Python 3.12.14. The fixture needs no package installation or account.",
+    "Compare both rules on each of the five unchanged folds, then their unweighted average. Group decisions and unseen-group fallback use training labels only.",
+    "Explain which folds disagree and whether the class-group change helps consistently. Do not select by repeatedly looking at the same validation labels.",
+    "Optional: use --csv authorized-train.csv with PassengerId,Sex,Pclass,Survived. The generated CSV path is tested; actual Titanic data has not been run here."
+  ],
+  "limitations": [
+    "Generated fixture is not Titanic data; no leaderboard submission or historical reproduction.",
+    "Random stratification does not isolate passenger families.",
+    "Aggregate is an unweighted mean of folds, not Kaggle test accuracy.",
+    "Memory measures traced Python allocations, not process RSS."
+  ],
+  "data_path": "/exercises/titanic-group-rules-receipt-data.json",
+  "python_version": "3.12.14",
+  "dependencies": "Python standard library only",
+  "seed": 17,
+  "split_definition": "Five target-stratified folds with seed 17; each row validates once; group rules fit training rows only.",
+  "metric": "accuracy",
+  "direction": "maximize",
+  "memory_scope": "traced-python-allocations",
+  "platform": "Darwin arm64",
+  "expected_splits": [
+    "stratified fold 1",
+    "stratified fold 2",
+    "stratified fold 3",
+    "stratified fold 4",
+    "stratified fold 5"
+  ]
+}

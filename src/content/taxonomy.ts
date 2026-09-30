@@ -54,6 +54,10 @@ export const taxonomy = {
 		{ id: 'submissions', label: 'Submissions', aliases: [], definition: 'Prepare, validate, and submit prediction files.' },
 	],
 	techniques: [
+		{ id: 'support-vector-machine', label: 'Support vector machine', aliases: ['SVM'], definition: 'Fit a separating margin using linear or kernel-based representations.' },
+		{ id: 'adaptive-boosting', label: 'Adaptive boosting', aliases: ['AdaBoost'], definition: 'Combine weak learners while updating example weights across training rounds.' },
+		{ id: 'logistic-regression', label: 'Logistic regression', aliases: [], definition: 'Fit a linear score with a logistic probability link.' },
+		{ id: 'random-forest', label: 'Random forest', aliases: [], definition: 'Combine randomized decision trees.' },
 		{ id: 'out-of-fold', label: 'Out-of-fold predictions', aliases: ['OOF'], definition: 'Predictions for training rows generated without fitting on those rows.' },
 		{ id: 'gradient-boosting', label: 'Gradient boosting', aliases: [], definition: 'Sequentially fit weak learners to optimize a loss.' },
 		{ id: 'target-encoding', label: 'Target encoding', aliases: [], definition: 'Represent categories using target-derived statistics with leakage-safe fitting.' },

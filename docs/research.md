@@ -15,7 +15,7 @@ The Astro/Pagefind recommendation is a design judgment based on this project's s
 
 ## Selection method
 
-Eligibility comes before ranking: the competition must be closed, its official task/metric must be verifiable, and at least one substantive primary solution source must be readable. Before an MVP guide is commissioned, confirm a second independently authored solution and resolve enough provenance to compare them. A rank claimed in a repository remains an author report until checked against official final standings.
+Eligibility comes before ranking: historical competition studies must be closed, its official task/metric must be verifiable, and at least one substantive primary solution source must be readable. Before an MVP guide is commissioned, confirm a second independently authored solution and resolve enough provenance to compare them. A rank claimed in a repository remains an author report until checked against official final standings.
 
 Then assign editorial priority using this proposed 100-point rubric:
 
@@ -86,3 +86,7 @@ Both candidates meet the initial eligibility gate: they are closed competitions 
 The remaining four candidates broaden modality and validation coverage. This historical cohort is intentionally a starting point for source-rich lessons, not a survey of current winning architectures. Before expanding, select at least one more recent closed competition with good primary sources and an independently documented modest-compute solution. Add audio, retrieval, segmentation, and other missing tasks in later batches when evidence quality permits.
 
 Research limits: this is a source-qualification audit, not a full content audit or reproduction. "Sources inspected" is not "ready to publish." Do not attach a repository to a write-up without establishing common authorship, and resolve the applicable rules text before publishing rule-dependent claims.
+
+## Getting Started teaching exception (2026-09-30)
+
+Titanic, House Prices, NLP Getting Started and Digit Recognizer are selected as ongoing educational tasks rather than historical final-leaderboard case studies. They still require a verifiable official task and metric and two independently authored primary approaches. Keep end_date null, final ranks unknown and author tutorials distinct from winning solutions. Register precise validation gaps; an executed original teaching fixture does not reproduce those authors or the competition. Current data access and participation rules must be checked by the participant before downloading or submitting.

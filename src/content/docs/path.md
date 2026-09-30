@@ -9,7 +9,7 @@ The path is a sequence of decisions to learn, not a ranking of competitions. Mov
 
 Suggested starting points:
 
-- **[Titanic – Machine Learning from Disaster](/competitions/?view=all&q=titanic)** (guide pending): tabular classification, a simple submission, and the basic train/test workflow.
+- **[Titanic – Machine Learning from Disaster](/competitions/titanic/)**: tabular classification, train-only passenger rules, and fixed validation folds.
 - **[House Prices – Advanced Regression Techniques](/competitions/?view=all&q=house-prices-advanced-regression-techniques)** (guide pending): regression metrics, missing values, categorical features, and a reproducible notebook.
 - **[Digit Recognizer](/competitions/?view=all&q=digit-recognizer)** (guide pending): image tensors, a clear benchmark, and the difference between a model improvement and data preparation.
 
