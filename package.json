@@ -8,7 +8,7 @@
     "build": "astro build && node scripts/normalize-built-catalog.mjs",
     "preview": "astro preview",
     "check": "astro check",
-    "test:content": "node --test scripts/check-content.test.mjs scripts/catalog-policy.test.mjs scripts/discovery-index.test.mjs scripts/exercise-policy.test.mjs",
+    "test:content": "node --test scripts/check-content.test.mjs scripts/catalog-policy.test.mjs scripts/discovery-index.test.mjs scripts/exercise-policy.test.mjs scripts/learning-events.test.mjs",
     "astro": "astro",
     "check-content": "node scripts/check-content.mjs && node scripts/check-exercises.mjs"
   },

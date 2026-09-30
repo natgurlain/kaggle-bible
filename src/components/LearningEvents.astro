@@ -1,0 +1,47 @@
+---
+import { learningLibrary } from '../content/learning-library';
+const library = await learningLibrary();
+const known = { guides: library.guides.map(x => x.data.slug), exercises: library.exercises.map(x => x.entry.data.slug) };
+---
+<div id="learning-event-contract" data-guides={JSON.stringify(known.guides)} data-exercises={JSON.stringify(known.exercises)} hidden></div>
+<script>
+import { EVENT_NAME, learningEvent, completionTransition } from '../content/learning-events.js';
+const contract = document.querySelector<HTMLElement>('#learning-event-contract');
+if (contract) {
+  const known = { guides: JSON.parse(contract.dataset.guides || '[]') as string[], exercises: JSON.parse(contract.dataset.exercises || '[]') as string[] };
+  const logs = document.querySelectorAll<HTMLElement>('[data-learning-log]');
+  let sequence = 0;
+  const emit = (name: string, id: string) => {
+    const payload = learningEvent(name, id, known);
+    if (!payload) return;
+    sequence++;
+    logs.forEach(log => {
+      const row = document.createElement('li');
+      row.textContent = JSON.stringify(payload);
+      log.append(row);
+      while (log.children.length > 20) log.firstElementChild?.remove();
+    });
+    document.querySelectorAll('[data-learning-count]').forEach(node => node.textContent = String(sequence));
+    window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: payload }));
+  };
+  const guide = document.querySelector<HTMLElement>('[data-learning-guide]')?.dataset.learningGuide;
+  if (guide) emit('guide_discovery', guide);
+  document.querySelectorAll<HTMLElement>('[data-exercise-start]').forEach(link => link.addEventListener('click', () => emit('exercise_start', link.dataset.exerciseStart || '')));
+  document.querySelectorAll<HTMLElement>('[data-exercise-progress]').forEach(control => {
+    const id = control.dataset.exerciseProgress || '';
+    const report = control.querySelector<HTMLButtonElement>('[data-report-completion]')!;
+    const undo = control.querySelector<HTMLButtonElement>('[data-undo-completion]')!;
+    const status = control.querySelector<HTMLElement>('[data-completion-status]')!;
+    let completed = false;
+    const update = (action: string) => {
+      const next = completionTransition(completed, action);
+      completed = next.completed;
+      report.disabled = completed; undo.hidden = !completed;
+      status.textContent = completed ? 'You reported running this exercise on this page.' : 'No run reported on this page.';
+      if (next.event) emit(next.event, id);
+    };
+    report.addEventListener('click', () => update('report'));
+    undo.addEventListener('click', () => update('undo'));
+  });
+}
+</script>
