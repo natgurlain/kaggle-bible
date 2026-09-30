@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-digits-official",
+  "title": "Digit Recognizer official data and evaluation",
+  "url": "https://www.kaggle.com/competitions/digit-recognizer/data",
+  "kind": "official-competition",
+  "authors": [
+    "Kaggle"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": null,
+  "locator_notes": "Dataset Description; evaluation metric",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": null,
+  "notes": "The official description states 28\u00d728 grayscale images, labels0\u20139, pixel0..pixel783, integer0..255 values and accuracy. Data download requires agreement to current rules; no agreement, download or submission was performed here."
+}

@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "id": "solution-digits-juice",
+  "status": "published",
+  "title": "Convolutional model with training augmentation",
+  "summary": "juicebocks27 normalizes pixels by 255, reshapes to 28\u00d728\u00d71 and trains a convolutional network with training-image rotations, zoom and shifts.",
+  "reviewed_by": "GPT-6 Luna Max",
+  "reviewed_at": "2026-09-30",
+  "competition_id": "competition-digit-recognizer",
+  "team": "Independent approach author",
+  "authors": [
+    "juicebocks27"
+  ],
+  "source_ids": [
+    "source-digits-juice"
+  ],
+  "rank": {
+    "value": null,
+    "basis": "unknown",
+    "source_id": null
+  },
+  "scores": [],
+  "validation": {
+    "strategy": "custom",
+    "details": "juicebocks27 creates a random 10% holdout with seed 2, without explicit stratification, and passes it as validation data during ten training epochs. No multi-fold stability or independently untouched model-selection test is established; hardware and total resource use are unknown.",
+    "source_ids": [
+      "source-digits-juice"
+    ]
+  },
+  "techniques": [
+    "convolutional-network",
+    "training-augmentation"
+  ],
+  "resources": [
+    {
+      "id": "full-pipeline",
+      "scope": "full-pipeline",
+      "hardware_class": "unknown",
+      "accelerator_model": null,
+      "accelerator_count": null,
+      "vram_gb_per_device": null,
+      "ram_gb": null,
+      "wall_hours": null,
+      "accelerator_hours": null,
+      "basis": "unknown",
+      "claim_id": null
+    }
+  ],
+  "reproducibility": {
+    "code_url": "https://github.com/juicebocks27/digit-recognition-using-cnn",
+    "code_revision": "3d00c7518c11f6cde0b30d84d5a1661bbeefb74e",
+    "status": "code-available",
+    "reproduction_ids": [],
+    "notes": "Pinned implementation inspected as text; not executed. No competition data, pretrained weights or foreign dependencies were downloaded for this guide."
+  },
+  "claims": [
+    {
+      "id": "approach-01",
+      "statement": "juicebocks27 normalizes pixels by 255, reshapes to 28\u00d728\u00d71 and trains a convolutional network with training-image rotations, zoom and shifts.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-digits-juice",
+          "locator": "Normalization; reshape; CNN; ImageDataGenerator and datagen.flow",
+          "support_summary": "Notebook supplies these deterministic shape steps and training augmentation."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Pinned author implementation.",
+      "limitations": "Presence does not isolate augmentation benefit or establish the source model can be reproduced under a small budget."
+    },
+    {
+      "id": "validation-01",
+      "statement": "juicebocks27 creates a random 10% holdout with seed 2, without explicit stratification, and passes it as validation data during ten training epochs.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-digits-juice",
+          "locator": "random_seed=2; train_test_split(test_size=.1); epochs=10; model fitting",
+          "support_summary": "The code separates a holdout and training augmentation."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Inspected split and fitting blocks.",
+      "limitations": "No multi-fold stability or independently untouched model-selection test is established; hardware and total resource use are unknown."
+    }
+  ],
+  "unsuccessful_attempts": [],
+  "transfer_limits": [
+    "Model or preprocessing presence does not establish its isolated gain on a common split.",
+    "No independent leaderboard or full-pipeline resource verification; no historical reproduction."
+  ]
+}

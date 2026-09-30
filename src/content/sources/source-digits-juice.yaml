@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-digits-juice",
+  "title": "juicebocks27 convolutional digit workflow",
+  "url": "https://github.com/juicebocks27/digit-recognition-using-cnn/blob/3d00c7518c11f6cde0b30d84d5a1661bbeefb74e/digit-recognition-using-cnn.ipynb",
+  "kind": "author-writeup",
+  "authors": [
+    "juicebocks27"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": "3d00c7518c11f6cde0b30d84d5a1661bbeefb74e",
+  "locator_notes": "Normalization; reshape; train_test_split; CNN architecture; ImageDataGenerator; fitting",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": null,
+  "notes": "Original pinned notebook inspected as text, not executed. No repository license detected. No verified leaderboard rank or complete measured resource record."
+}

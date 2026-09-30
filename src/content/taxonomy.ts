@@ -54,6 +54,9 @@ export const taxonomy = {
 		{ id: 'submissions', label: 'Submissions', aliases: [], definition: 'Prepare, validate, and submit prediction files.' },
 	],
 	techniques: [
+		{ id: 'convolutional-network', label: 'Convolutional network', aliases: [], definition: 'Use learned spatial filters on images or other grid-like inputs.' },
+		{ id: 'dense-neural-network', label: 'Dense neural network', aliases: [], definition: 'Use fully connected learned layers to map input features to outputs.' },
+		{ id: 'training-augmentation', label: 'Training augmentation', aliases: [], definition: 'Transform training examples while preserving the intended target; keep validation scope distinct.' },
 		{ id: 'tf-idf', label: 'TF-IDF', aliases: [], definition: 'Weight text terms by document-level frequency fitted on training data.' },
 		{ id: 'linear-classifier', label: 'Linear classifier', aliases: [], definition: 'Classify a vector using learned linear scores.' },
 		{ id: 'transformer', label: 'Transformer', aliases: [], definition: 'Use attention-based token representations; pretrained-data scope and tuning conditions matter.' },
