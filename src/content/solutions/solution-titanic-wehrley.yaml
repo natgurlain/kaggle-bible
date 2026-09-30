@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "status": "published",
+  "reviewed_by": "GPT-6 Luna Max",
+  "reviewed_at": "2026-09-30",
+  "id": "solution-titanic-wehrley",
+  "title": "R resampling and model-selection tutorial",
+  "summary": "Wehrley compares logistic regression, boosted trees, random forest and SVM using caret resampling.",
+  "competition_id": "competition-titanic",
+  "team": "Independent tutorial author",
+  "authors": [
+    "Curt Wehrley"
+  ],
+  "source_ids": [
+    "source-titanic-wehrley"
+  ],
+  "rank": {
+    "value": null,
+    "basis": "unknown",
+    "source_id": null
+  },
+  "scores": [],
+  "validation": {
+    "strategy": "custom",
+    "details": "Wehrley creates an 80/20 stratified split with seed 23 and describes three repeats of ten-fold cross-validation, selecting models by ROC AUC. Data munging precedes the holdout. SVM center/scale is passed to caret for resampling, but this does not establish that every transformation is isolated. ROC AUC differs from competition accuracy.",
+    "source_ids": [
+      "source-titanic-wehrley"
+    ]
+  },
+  "techniques": [
+    "logistic-regression",
+    "random-forest"
+  ],
+  "resources": [
+    {
+      "id": "full-pipeline",
+      "scope": "full-pipeline",
+      "hardware_class": "unknown",
+      "accelerator_model": null,
+      "accelerator_count": null,
+      "vram_gb_per_device": null,
+      "ram_gb": null,
+      "wall_hours": null,
+      "accelerator_hours": null,
+      "basis": "unknown",
+      "claim_id": null
+    }
+  ],
+  "reproducibility": {
+    "code_url": "https://github.com/wehrley/wehrley.github.io",
+    "code_revision": "06ecaaa6ccb77793545df3e85d0fe24ec3d5b7b2",
+    "status": "code-available",
+    "reproduction_ids": [],
+    "notes": "Source availability was checked; this historical tutorial was not run. Dependency compatibility, original data rights and exact outputs are unverified."
+  },
+  "claims": [
+    {
+      "id": "approach-01",
+      "statement": "Wehrley compares logistic regression, boosted trees, random forest and SVM using caret resampling.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-titanic-wehrley",
+          "locator": "Fitting a Model; model calls and final resamples comparison",
+          "support_summary": "The author supplies the four model workflows and a resampling comparison."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Author tutorial at the pinned revision.",
+      "limitations": "The comparison is source-reported and was not rerun; model contributions cannot be equated to Kaggle accuracy gains."
+    },
+    {
+      "id": "validation-01",
+      "statement": "Wehrley creates an 80/20 stratified split with seed 23 and describes three repeats of ten-fold cross-validation, selecting models by ROC AUC.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-titanic-wehrley",
+          "locator": "createDataPartition p=0.8; 3x10-fold explanation; trainControl and metric=ROC",
+          "support_summary": "The source shows the holdout and repeated-CV configuration and metric selection."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "caret default fold count is described by the author; no environment rerun was performed.",
+      "limitations": "Data munging precedes the holdout. SVM center/scale is passed to caret for resampling, but this does not establish that every transformation is isolated. ROC AUC differs from competition accuracy."
+    }
+  ],
+  "unsuccessful_attempts": [],
+  "transfer_limits": [
+    "Source model families are hypotheses for a fixed split, not demonstrated gains on other data.",
+    "Passenger relations may constrain a transferable split; random-row performance does not establish family-held-out behavior."
+  ]
+}

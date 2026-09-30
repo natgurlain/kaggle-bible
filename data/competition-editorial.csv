@@ -1,5 +1,5 @@
 id,completeness_level,editorial_status,priority,work_order,learning_path_stage,guide_slug,reviewed_by,reviewed_at,notes
-3136,1,queued,path,1,beginner,,,,Suggested starting competition: first valid submission and binary classification loop.
+3136,2,published,path,1,beginner,titanic,GPT-6 Luna Max,2026-09-30,Reviewed educational Level 2 evidence map; ongoing task with no final rank. Original fixture exercise is separate.
 5407,1,queued,path,2,beginner,,,,Suggested regression practice: feature types, transformations, and cross-validation.
 3004,1,queued,path,3,beginner,,,,Suggested vision introduction: small neural model and compute budgeting.
 17777,1,queued,path,4,beginner,,,,Suggested text introduction: representation comparison and error inspection.

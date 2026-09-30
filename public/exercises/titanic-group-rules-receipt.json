@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "exercise": "titanic-group-rules",
+  "executed_at": "2026-09-30",
+  "data_scope": "generated-teaching-fixture",
+  "data_sha256": "a3c3c843ef11dc68135934d05df20aaa8ec38a2271c03aeb1f42daeab02470fb",
+  "script_sha256": "f6c9251a09490dd775edab867fa326b09633fee5afc1846d2b590d46d78cf0dd",
+  "seed": 17,
+  "split_definition": "Five target-stratified folds with seed 17; each row validates once; group rules fit training rows only.",
+  "python": "3.12.14",
+  "platform": "Darwin arm64",
+  "dependencies": "Python standard library only",
+  "hardware_scope": "local CPU; accelerator not used",
+  "wall_seconds": 0.009962708689272404,
+  "memory_scope": "traced-python-allocations",
+  "peak_memory_bytes": 161198,
+  "limitations": [
+    "Generated fixture is not Titanic data; no leaderboard submission or historical reproduction.",
+    "Random stratification does not isolate passenger families.",
+    "Aggregate is an unweighted mean of folds, not Kaggle test accuracy.",
+    "Memory measures traced Python allocations, not process RSS."
+  ],
+  "metric": "accuracy",
+  "direction": "maximize",
+  "fold_results": [
+    {
+      "split": "stratified fold 1",
+      "train_size": 143,
+      "validation_size": 37,
+      "metrics": {
+        "sex-majority": 0.6756756756756757,
+        "sex-class-majority": 0.7567567567567568
+      }
+    },
+    {
+      "split": "stratified fold 2",
+      "train_size": 144,
+      "validation_size": 36,
+      "metrics": {
+        "sex-majority": 0.6111111111111112,
+        "sex-class-majority": 0.6388888888888888
+      }
+    },
+    {
+      "split": "stratified fold 3",
+      "train_size": 144,
+      "validation_size": 36,
+      "metrics": {
+        "sex-majority": 0.6666666666666666,
+        "sex-class-majority": 0.7777777777777778
+      }
+    },
+    {
+      "split": "stratified fold 4",
+      "train_size": 144,
+      "validation_size": 36,
+      "metrics": {
+        "sex-majority": 0.6944444444444444,
+        "sex-class-majority": 0.7777777777777778
+      }
+    },
+    {
+      "split": "stratified fold 5",
+      "train_size": 145,
+      "validation_size": 35,
+      "metrics": {
+        "sex-majority": 0.6857142857142857,
+        "sex-class-majority": 0.7714285714285715
+      }
+    }
+  ],
+  "aggregate": {
+    "sex-majority": 0.6667224367224367,
+    "sex-class-majority": 0.7445259545259545
+  }
+}

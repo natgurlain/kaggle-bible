@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-titanic-wehrley",
+  "title": "Curt Wehrley Titanic from soup to nuts",
+  "url": "https://github.com/wehrley/wehrley.github.io/blob/06ecaaa6ccb77793545df3e85d0fe24ec3d5b7b2/SOUPTONUTS.md",
+  "kind": "author-writeup",
+  "authors": [
+    "Curt Wehrley"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": "06ecaaa6ccb77793545df3e85d0fe24ec3d5b7b2",
+  "locator_notes": "Fitting a Model; createDataPartition; trainControl; SVM; resamples",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": null,
+  "notes": "Pinned original author tutorial inspected. No license detected in repository; link and summarize, do not copy implementation. No historical execution or leaderboard verification."
+}
