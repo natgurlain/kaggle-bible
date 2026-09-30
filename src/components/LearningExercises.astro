@@ -10,13 +10,15 @@ const exercises = library.exercises.filter(x => !competitionId || x.entry.data.c
  <h2>{entry.data.title}</h2><p>{entry.data.summary}</p>
  <p><a href={`/competitions/${library.guides.find(g=>g.id===entry.data.competition_id.id)?.data.slug}/`}>Read the competition guide</a></p>
  <p><strong>Environment:</strong> {entry.data.environment}</p>
- <p><a data-exercise-start={entry.data.slug} href={entry.data.script_path} download>Download the experiment</a> · <a href={entry.data.receipt_path}>Inspect the executed run receipt</a></p>
+ <p><a data-exercise-start={entry.data.slug} href={entry.data.script_path} download>Download the experiment</a> · <a href={entry.data.receipt_path}>Inspect the executed run receipt</a> · <a href={entry.data.data_path}>Recorded input artifact</a></p>
  <pre><code>{entry.data.command}</code></pre>
  <ol>{entry.data.steps.map(step=><li>{step}</li>)}</ol>
  <details><summary>Recorded run and limits</summary>
  <p>{receipt.executed_at} · Python {receipt.python} · {receipt.platform}. Metric: {receipt.metric}; {receipt.direction}.</p>
  <ul>{Object.entries(receipt.aggregate).map(([method,value])=><li>{method}: {String(value)}</li>)}</ul>
- <p>Wall time: {receipt.wall_seconds.toFixed(3)} seconds. Peak traced Python allocations: {(receipt.peak_python_memory_bytes/1024/1024).toFixed(3)} MiB. These measurements cover this run only; traced allocations are not total process memory.</p>
+ <p>Aggregates are the unweighted mean of the recorded split results.</p>
+ <ul>{receipt.fold_results.map((fold: {split:string;train_size:number;validation_size:number;metrics:Record<string,number>})=><li>{fold.split} ({fold.train_size} train, {fold.validation_size} validation): {Object.entries(fold.metrics).map(([method,value])=>`${method} ${value.toFixed(6)}`).join('; ')}</li>)}</ul>
+ <p>Wall time: {receipt.wall_seconds.toFixed(3)} seconds. Peak memory ({receipt.memory_scope.replaceAll('-', ' ')}): {(receipt.peak_memory_bytes/1024/1024).toFixed(3)} MiB. These measurements cover this run only; traced allocations are not total process memory.</p>
  <ul>{entry.data.limitations.map(limit=><li>{limit}</li>)}</ul>
  </details>
 </article>)}

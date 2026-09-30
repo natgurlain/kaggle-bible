@@ -9,9 +9,10 @@ export async function learningLibrary() {
  const context={solutions:new Map(solutions.map(x=>[x.id,x])),sources:new Map(sources.map(x=>[x.id,x])),practices:new Map(practices.map(x=>[x.id,x]))};
  const guides:CollectionEntry<'competitions'>[]=filterPublicGuides(competitions,context);
  const guideIds=new Set(guides.map(x=>x.id));
- const publishedExercises=await Promise.all(exercises.filter(x=>x.data.status==='published' && guideIds.has(x.data.competition_id.id)).map(async entry=>{
-  const [script,raw]=await Promise.all([readFile(`public${entry.data.script_path}`),readFile(`public${entry.data.receipt_path}`,'utf8')]);
-  const receipt=JSON.parse(raw); const errors=exerciseReceiptErrors(entry.data,receipt,createHash('sha256').update(script).digest('hex'));
+ const publishedExercises=await Promise.all(exercises.filter(x=>x.data.status==='published').map(async entry=>{
+  if(!guideIds.has(entry.data.competition_id.id)) throw new Error(`${entry.id}: exercise parent is not publicly publishable`);
+  const [script,raw,data]=await Promise.all([readFile(`public${entry.data.script_path}`),readFile(`public${entry.data.receipt_path}`,'utf8'),readFile(`public${entry.data.data_path}`)]);
+  const receipt=JSON.parse(raw); const errors=exerciseReceiptErrors(entry.data,receipt,createHash('sha256').update(script).digest('hex'),createHash('sha256').update(data).digest('hex'));
   if(errors.length) throw new Error(`${entry.id}: ${errors.join('; ')}`);
   return {entry,receipt};
  }));
