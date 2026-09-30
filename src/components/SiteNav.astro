@@ -1,3 +1,7 @@
+---
+const { skipTarget = 'main-content' } = Astro.props;
+---
+<a class="skip-link" href={`#${skipTarget}`}>Skip to content</a>
 <header class="site-nav" data-pagefind-ignore>
   <a class="site-brand" href="/">Kaggle Bible</a>
   <nav aria-label="Main">
@@ -25,6 +29,10 @@
   })();
 </script>
 <style is:global>
+  :root { font-family:system-ui,sans-serif; }
+  body { margin:0; }
+  .skip-link { position:absolute; top:-5rem; left:1rem; padding:.75rem; z-index:10; background:#fff; color:#56309d; }
+  .skip-link:focus { top:1rem; }
   .site-nav { display:flex; flex-wrap:wrap; align-items:center; gap:1rem; padding:1rem max(1rem,calc((100% - 1120px)/2)); border-bottom:1px solid #d8d0e2; background:#fff; }
   .site-brand { font-weight:800; text-decoration:none; }
   .site-nav nav { display:flex; flex-wrap:wrap; gap:.9rem; }
@@ -36,6 +44,7 @@
   :root[data-theme="dark"] :is(.site-nav,.panel,.solution-card,.evidence-card,.guide-body,.practice-content,.content-section,.controls,.card,.quick-start) { background:#24232b; border-color:#45414e; color:#e8e5ed; }
   :root[data-theme="dark"] :is(p,dd,li,dt,.lede,.review-note,.breadcrumbs,.summary,.prose p,.prose li,.solution-card p,.practice-list span) { color:#c8c3d1; }
   :root[data-theme="dark"] :is(.claim-meta,.source-meta,.eyebrow,.slug,.card-topline,.breadcrumbs [aria-current="page"]) { color:#c8c3d1; }
+  :root[data-theme="dark"] .resource-block li > strong { color:#e8e5ed; }
   :root[data-theme="dark"] :is(.claim-kind,.pill,.state) { background:#302c3a; color:#e8e5ed; }
   :root[data-theme="dark"] :is(a,.official-link) { color:#c4b5fd; }
   :root[data-theme="dark"] :is(input,select,.unknown-note,.rank,.evidence-section,.level-badge) { background:#302c3a; color:#e8e5ed; border-color:#635775; }

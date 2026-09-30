@@ -2,7 +2,7 @@
 import SiteNav from '../components/SiteNav.astro';
 ---
 <!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width"/><title>Search · Kaggle Bible</title><meta name="robots" content="noindex"/></head>
-<body><SiteNav/><main><h1>Search the learning library</h1><label for="library-query">Find a guide, practice, or lesson</label><input id="library-query" type="search" autocomplete="off"/><p id="search-status" role="status">Enter a topic to search.</p><ul id="search-results"></ul></main></body></html>
+<body><SiteNav/><main id="main-content" tabindex="-1"><h1>Search the learning library</h1><label for="library-query">Find a guide, practice, or lesson</label><input id="library-query" type="search" autocomplete="off"/><p id="search-status" role="status">Enter a topic to search.</p><ul id="search-results"></ul></main></body></html>
 <script>
   const input = document.querySelector<HTMLInputElement>('#library-query')!;
   const status = document.querySelector<HTMLElement>('#search-status')!;
@@ -33,7 +33,7 @@ import SiteNav from '../components/SiteNav.astro';
   }
   input.value = new URLSearchParams(location.search).get('q') || '';
   let timer: ReturnType<typeof setTimeout>;
-  input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(search, 150); });
+  input.addEventListener('input', () => { ++request; results.replaceChildren(); status.textContent = input.value.trim() ? 'Searching…' : 'Enter a topic to search.'; clearTimeout(timer); timer = setTimeout(search, 150); });
   search();
 </script>
 <style>main{max-width:850px;margin:2rem auto;padding:0 1.2rem;font-family:system-ui;line-height:1.6}input{display:block;width:100%;padding:.8rem;margin:.6rem 0;font:inherit}li{padding:1rem 0}a{color:#56309d}</style>
