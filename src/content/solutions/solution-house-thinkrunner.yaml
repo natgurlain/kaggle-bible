@@ -30,7 +30,8 @@
   "techniques": [
     "gradient-boosting",
     "stacking",
-    "target-encoding"
+    "target-encoding",
+    "regularized-linear-regression"
   ],
   "resources": [
     {
