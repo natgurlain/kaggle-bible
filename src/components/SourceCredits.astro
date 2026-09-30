@@ -1,0 +1,8 @@
+---
+import { getCollection } from 'astro:content';
+import { learningLibrary } from '../content/learning-library';
+const library = await learningLibrary();
+const ids = new Set(library.solutions.flatMap(x => x.data.source_ids.map(ref => ref.id)));
+const sources = (await getCollection('sources')).filter(x => ids.has(x.id) && ["author-writeup", "paper"].includes(x.data.kind) && x.data.authors.length).sort((a,b)=>a.data.title.localeCompare(b.data.title));
+---
+<ul>{sources.map(source => <li><a href={source.data.url}>{source.data.authors.join(', ')} — {source.data.title}</a></li>)}</ul>
