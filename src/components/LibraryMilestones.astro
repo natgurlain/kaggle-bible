@@ -1,0 +1,7 @@
+---
+import { learningLibrary } from '../content/learning-library';
+const library = await learningLibrary();
+---
+<p><strong>{library.guides.length} reviewed guides</strong> · {library.solutions.length} documented approaches · {library.practices.length} reviewed practices · <strong>{library.exercises.length} executed learning exercises</strong>.</p>
+<p>Exercise runs are counted separately from guide completeness. A teaching-fixture run validates the learning workflow; it establishes no competition score or historical solution reproduction.</p>
+<p><a href="/exercises/">Browse learning exercises</a> · <a href="/milestones/">What these milestones mean</a></p>

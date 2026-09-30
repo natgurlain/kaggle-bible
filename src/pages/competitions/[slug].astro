@@ -2,6 +2,7 @@
 import SiteNav from '../../components/SiteNav.astro';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import LearningExercises from '../../components/LearningExercises.astro';
 import { satteri } from '@astrojs/markdown-satteri';
 import claimReferenceLinks from '../../markdown/claim-reference-links.js';
 import { removeMatchingLeadingTitle } from '../../markdown/guide-body.js';
@@ -155,6 +156,7 @@ const citationSource = (reference: unknown) => {
 				</p>
 				<a class="official-link" href={competition.data.competition_url} target="_blank" rel="noreferrer">Open official Kaggle competition ↗</a>
 			</header>
+			<LearningExercises competitionId={competition.id} />
 
 			<section class="quick-start" aria-labelledby="learn-heading">
         <h2 id="learn-heading">What you’ll learn</h2>

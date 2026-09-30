@@ -1,0 +1,31 @@
+---
+import { learningLibrary } from '../content/learning-library';
+const { competitionId } = Astro.props;
+const library = await learningLibrary();
+const exercises = library.exercises.filter(x => !competitionId || x.entry.data.competition_id.id === competitionId);
+---
+{exercises.length ? <section class="learning-exercises" id="learning-exercise" aria-label="Learning exercises">
+{exercises.map(({entry,receipt}) => <article class="exercise-card" id={`exercise-${entry.data.slug}`}>
+ <p class="exercise-scope">Executed exercise · {entry.data.data_scope.replaceAll('-', ' ')}</p>
+ <h2>{entry.data.title}</h2><p>{entry.data.summary}</p>
+ <p><a href={`/competitions/${library.guides.find(g=>g.id===entry.data.competition_id.id)?.data.slug}/`}>Read the competition guide</a></p>
+ <p><strong>Environment:</strong> {entry.data.environment}</p>
+ <p><a data-exercise-start={entry.data.slug} href={entry.data.script_path} download>Download the experiment</a> · <a href={entry.data.receipt_path}>Inspect the executed run receipt</a></p>
+ <pre><code>{entry.data.command}</code></pre>
+ <ol>{entry.data.steps.map(step=><li>{step}</li>)}</ol>
+ <details><summary>Recorded run and limits</summary>
+ <p>{receipt.executed_at} · Python {receipt.python} · {receipt.platform}. Metric: {receipt.metric}; {receipt.direction}.</p>
+ <ul>{Object.entries(receipt.aggregate).map(([method,value])=><li>{method}: {String(value)}</li>)}</ul>
+ <p>Wall time: {receipt.wall_seconds.toFixed(3)} seconds. Peak traced Python allocations: {(receipt.peak_python_memory_bytes/1024/1024).toFixed(3)} MiB. These measurements cover this run only; traced allocations are not total process memory.</p>
+ <ul>{entry.data.limitations.map(limit=><li>{limit}</li>)}</ul>
+ </details>
+</article>)}
+</section> : !competitionId && <p>No executed learning exercise is published yet. The <a href="/competitions/">reviewed guides</a> include proposed first experiments.</p>}
+<style>
+.learning-exercises { margin:2rem 0; }
+.exercise-card { padding:1.25rem; border:1px solid #918698; border-radius:.75rem; margin:1rem 0; line-height:1.6; }
+.exercise-card h2 { margin:.5rem 0; font-size:1.4rem; }
+.exercise-scope { font-size:.85rem; font-weight:700; }
+pre { max-width:100%; overflow:auto; padding:1rem; border:1px solid #918698; }
+summary { cursor:pointer; }
+</style>
