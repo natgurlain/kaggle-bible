@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "id": "solution-house-thinkrunner",
+  "status": "published",
+  "title": "Stacked regressors and target encoding",
+  "summary": "thinkrunner combines boosted and regularized linear regressors in a stacking model after feature engineering and target encoding.",
+  "reviewed_by": "GPT-6 Luna Max",
+  "reviewed_at": "2026-09-30",
+  "competition_id": "competition-house-prices-advanced-regression-techniques",
+  "team": "Independent approach author",
+  "authors": [
+    "thinkrunner"
+  ],
+  "source_ids": [
+    "source-house-thinkrunner"
+  ],
+  "rank": {
+    "value": null,
+    "basis": "unknown",
+    "source_id": null
+  },
+  "scores": [],
+  "validation": {
+    "strategy": "custom",
+    "details": "The inspected thinkrunner notebook fits target encoding, preprocessing and feature selection before cross_validate(cv=5) on the transformed features, despite the README claiming fold-only fitting. The printed CV result cannot be treated as an end-to-end fold-isolated estimate. The target uses log1p while official evaluation uses log.",
+    "source_ids": [
+      "source-house-thinkrunner"
+    ]
+  },
+  "techniques": [
+    "gradient-boosting",
+    "stacking",
+    "target-encoding"
+  ],
+  "resources": [
+    {
+      "id": "full-pipeline",
+      "scope": "full-pipeline",
+      "hardware_class": "unknown",
+      "accelerator_model": null,
+      "accelerator_count": null,
+      "vram_gb_per_device": null,
+      "ram_gb": null,
+      "wall_hours": null,
+      "accelerator_hours": null,
+      "basis": "unknown",
+      "claim_id": null
+    }
+  ],
+  "reproducibility": {
+    "code_url": "https://github.com/thinkrunner/kaggle-house-prices",
+    "code_revision": "9d2df7765dfc713ccf989411081ea4c12a4342a6",
+    "status": "code-available",
+    "reproduction_ids": [],
+    "notes": "Pinned implementation inspected as text; not executed. No competition data, pretrained weights or foreign dependencies were downloaded for this guide."
+  },
+  "claims": [
+    {
+      "id": "approach-01",
+      "statement": "thinkrunner combines boosted and regularized linear regressors in a stacking model after feature engineering and target encoding.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-house-thinkrunner",
+          "locator": "Notebook Target Encoding, Feature Selection, StackingRegressor",
+          "support_summary": "Notebook shows category target encoding and LightGBM, XGBoost, gradient boosting, CatBoost and ElasticNet base models with RidgeCV meta-model."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Pinned original implementation.",
+      "limitations": "Model presence and author stepwise scores do not isolate gains on a shared untouched split."
+    },
+    {
+      "id": "validation-01",
+      "statement": "The inspected thinkrunner notebook fits target encoding, preprocessing and feature selection before cross_validate(cv=5) on the transformed features, despite the README claiming fold-only fitting.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-house-thinkrunner",
+          "locator": "te.fit(X_train,y_log); preprocessor.fit_transform; X_selected; cross_validate",
+          "support_summary": "Target-dependent encoding and selected transformed features are constructed before the evaluation call."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Code-order inspection, not execution.",
+      "limitations": "The printed CV result cannot be treated as an end-to-end fold-isolated estimate. The target uses log1p while official evaluation uses log."
+    }
+  ],
+  "unsuccessful_attempts": [],
+  "transfer_limits": [
+    "Model or preprocessing presence does not establish its isolated gain on a common split.",
+    "No independent leaderboard or full-pipeline resource verification; no historical reproduction."
+  ]
+}

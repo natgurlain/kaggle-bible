@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "exercise": "house-neighborhood",
+  "executed_at": "2026-09-30",
+  "data_scope": "generated-teaching-fixture",
+  "data_sha256": "a8305147440a71ebd95e7b4c7c5b3f48f7b581f5e67a42cec12e4fe516dd5a1b",
+  "script_sha256": "b50f952c3d40e842ef9ba1f96836c0b2f74743701f07df99ec7d6e30171c6ef7",
+  "seed": 17,
+  "split_definition": "Five shuffled random folds with seed 17; each row validates once; all log-price category means fit training rows only.",
+  "python": "3.12.14",
+  "platform": "Darwin arm64",
+  "dependencies": "Python standard library only",
+  "hardware_scope": "local CPU; accelerator not used",
+  "wall_seconds": 0.009037540294229984,
+  "memory_scope": "traced-python-allocations",
+  "peak_memory_bytes": 75681,
+  "limitations": [
+    "Generated homes are not Ames competition data; no submission or historical reproduction.",
+    "Random folds do not establish spatial or temporal transfer; the neighborhood smoothing weight was fixed before evaluation.",
+    "Aggregate is mean fold log-RMSE, rather than pooled test RMSE or a competition score.",
+    "Memory measures traced Python allocations, not process RSS."
+  ],
+  "metric": "RMSE of natural log prices",
+  "direction": "minimize",
+  "fold_results": [
+    {
+      "split": "random fold 1",
+      "train_size": 160,
+      "validation_size": 40,
+      "metrics": {
+        "global-log-mean": 0.2767937108244997,
+        "shrunk-neighborhood-log-mean": 0.19021102446852606
+      }
+    },
+    {
+      "split": "random fold 2",
+      "train_size": 160,
+      "validation_size": 40,
+      "metrics": {
+        "global-log-mean": 0.26284125086994997,
+        "shrunk-neighborhood-log-mean": 0.20150533946701193
+      }
+    },
+    {
+      "split": "random fold 3",
+      "train_size": 160,
+      "validation_size": 40,
+      "metrics": {
+        "global-log-mean": 0.22891247781750051,
+        "shrunk-neighborhood-log-mean": 0.1716467185217194
+      }
+    },
+    {
+      "split": "random fold 4",
+      "train_size": 160,
+      "validation_size": 40,
+      "metrics": {
+        "global-log-mean": 0.27019792851621394,
+        "shrunk-neighborhood-log-mean": 0.17494578956281281
+      }
+    },
+    {
+      "split": "random fold 5",
+      "train_size": 160,
+      "validation_size": 40,
+      "metrics": {
+        "global-log-mean": 0.24185585242521598,
+        "shrunk-neighborhood-log-mean": 0.20017878227435648
+      }
+    }
+  ],
+  "aggregate": {
+    "global-log-mean": 0.256120244090676,
+    "shrunk-neighborhood-log-mean": 0.18769753085888533
+  }
+}
