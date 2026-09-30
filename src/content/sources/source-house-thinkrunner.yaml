@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "source-house-thinkrunner",
+  "title": "thinkrunner House Prices notebook",
+  "url": "https://github.com/thinkrunner/kaggle-house-prices/blob/9d2df7765dfc713ccf989411081ea4c12a4342a6/notebooks/house_prices_final.ipynb",
+  "kind": "author-writeup",
+  "authors": [
+    "thinkrunner"
+  ],
+  "published_at": null,
+  "accessed_at": "2026-09-30",
+  "revision": "9d2df7765dfc713ccf989411081ea4c12a4342a6",
+  "locator_notes": "Target & Target Encoding; Preprocessing Pipeline; Feature Selection; Stacking CV; README Cross-Validation Strategy",
+  "access_status": "accessible",
+  "content_reviewed": true,
+  "license": "MIT",
+  "notes": "Pinned original notebook and README inspected. README fold-only claim conflicts with preprocessing order in inspected notebook. Public score/rank claims are not imported as verified evidence."
+}
