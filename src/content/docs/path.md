@@ -15,7 +15,7 @@ Suggested starting points:
 
 Gate: you can describe the target, metric, split, baseline, and one measured improvement without relying on the public leaderboard.
 
-- **[NLP Getting Started](/competitions/?view=all&q=nlp-getting-started)** (guide pending): a text baseline, vocabulary fitting, and classification metrics.
+- **[NLP Getting Started](/competitions/nlp-getting-started/)**: train-only vocabulary fitting, word-pair features, and positive-class F1.
 
 ## Intermediate: learn validation and iteration
 
