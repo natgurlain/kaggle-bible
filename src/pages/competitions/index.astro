@@ -14,6 +14,12 @@ const catalogAsset = '/data/competition-discovery.json';
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/x-icon" href="https://www.kaggle.com/static/images/favicon.ico" />
 		<title>Competition catalog · Kaggle Bible</title>
+		<script is:inline>
+			const loadingParams = new URLSearchParams(location.search);
+			if (loadingParams.get('view') === 'all' || ['q','category','state','level'].some(key => loadingParams.get(key))) {
+				document.documentElement.dataset.archivePending = '';
+			}
+		</script>
 		<meta
 			name="description"
 			content="Browse the Kaggle Bible competition catalog by task, metric, status, and guide completeness."
@@ -70,11 +76,13 @@ const catalogAsset = '/data/competition-discovery.json';
 				</div>
 				<p>Archive snapshot: <time datetime={manifest.inventory.snapshot_date}>{manifest.inventory.snapshot_date}</time>. States, deadlines and metric names describe that snapshot and may differ from official definitions. Published guides state their sourced official metric; check Kaggle for current availability.</p>
 				<p id="summary" class="summary" role="status">Browse the available reviewed guides below.</p>
+				<button id="retry" type="button" hidden>Retry loading archive</button>
 			</section>
 
-			<section aria-labelledby="results-heading">
+			<section id="result-region" aria-labelledby="results-heading" aria-busy="false">
 				<h2 id="results-heading" class="visually-hidden">Competition results</h2>
 				<div id="published-guides"><PublishedLibrary /></div>
+				<div id="archive-placeholder" class="results" aria-hidden="true">{Array.from({length: 12}, () => <div class="loading-card"><span></span><span></span><span></span></div>)}</div>
 				<div id="results" class="results"></div>
 				<nav id="pagination" aria-label="Result pages" hidden><button id="previous" type="button">Previous page</button> <span id="page-label"></span> <button id="next" type="button">Next page</button> <button id="last" type="button">Last page</button></nav>
 				<noscript><p>The reviewed guides above work without JavaScript. Archive filtering requires JavaScript; you can also <a href="/data/competition-catalog.json">download the complete snapshot</a>.</p></noscript>
@@ -82,6 +90,7 @@ const catalogAsset = '/data/competition-discovery.json';
 		</main>
 
 		<script>
+			import { createLatestTask } from '../../content/loading-policy.js';
 			import { expandCatalog, paginateCatalog } from '../../content/discovery-index.js';
 			import {
 				getCatalogCardPresentation,
@@ -119,6 +128,8 @@ const catalogAsset = '/data/competition-discovery.json';
 		if (!catalogAsset) throw new Error('The catalog asset path is missing.');
 			let competitions: CatalogCompetition[] = [];
 			const published = document.querySelector<HTMLElement>('#published-guides')!;
+			const region = document.querySelector<HTMLElement>('#result-region')!;
+			const retry = document.querySelector<HTMLButtonElement>('#retry')!;
 			const pagination = document.querySelector<HTMLElement>('#pagination')!;
 			const previous = document.querySelector<HTMLButtonElement>('#previous')!;
 			const next = document.querySelector<HTMLButtonElement>('#next')!;
@@ -233,28 +244,36 @@ const catalogAsset = '/data/competition-discovery.json';
 			category.value = filters.category;
 			state.value = filters.state;
 			level.value = filters.level;
+			const updates = createLatestTask();
 			async function ensureArchive() {
-                archiveView = true; published.hidden = true;
-                if (!load) {
-                    summary.textContent = 'Loading archive…';
-                        load = fetch(catalogAsset!).then(response => {
-                        if (!response.ok) throw new Error(`Catalog request failed (${response.status})`);
-                        return response.json();
-                    }).then(data => {
-                        competitions = expandCatalog(data) as CatalogCompetition[];
-                        const priority: Record<string,number> = {'Getting Started':0, Featured:1, Research:2};
-                        competitions.sort((a,b) => (priority[a.category] ?? 3) - (priority[b.category] ?? 3) || b.deadline_at.localeCompare(a.deadline_at) || Number(a.id) - Number(b.id));
-                    }).catch(error => {
-                        summary.textContent = 'The archive could not be loaded. The available guides still work.';
-                        published.hidden = false; load = undefined; throw error;
-                    });
-                }
-                try { await load; render(); } catch { pagination.hidden = true; }
-            }
-            const changed = () => { page = 1; ensureArchive(); };
-            [query, state, level].forEach(control => control.addEventListener('input', changed));
-            category.addEventListener('change', changed);
-            previous.addEventListener('click', () => { page--; render(); });
+				archiveView = true;
+				await updates.run(async () => {
+					if (!load) {
+						load = fetch(catalogAsset!)
+							.then(response => { if (!response.ok) throw new Error('Archive unavailable'); return response.json(); })
+							.then(data => {
+								competitions = expandCatalog(data) as CatalogCompetition[];
+								const priority: Record<string,number> = {'Getting Started':0, Featured:1, Research:2};
+                                competitions.sort((a,b) => (priority[a.category] ?? 3) - (priority[b.category] ?? 3) || b.deadline_at.localeCompare(a.deadline_at) || Number(a.id) - Number(b.id));
+							}).catch(error => { load = undefined; throw error; });
+					}
+					await load;
+				}, {
+					pending: () => { region.setAttribute('aria-busy', 'true'); summary.textContent = 'Loading archive…'; retry.hidden = true; },
+					complete: () => { render(); published.hidden = true; },
+					failed: () => { summary.textContent = 'The archive could not be loaded. Your current results are still available. Try again.'; retry.hidden = false; },
+					settled: () => { region.setAttribute('aria-busy', 'false'); delete document.documentElement.dataset.archivePending; },
+				});
+			}
+			let timer: ReturnType<typeof setTimeout>;
+			query.addEventListener('input', () => {
+				updates.invalidate(); clearTimeout(timer); page = 1;
+				timer = setTimeout(ensureArchive, 180);
+			});
+			[category, state, level].forEach(control => control.addEventListener('change', () => {
+				clearTimeout(timer); page = 1; ensureArchive();
+			}));
+			retry.addEventListener('click', () => { clearTimeout(timer); ensureArchive(); });            previous.addEventListener('click', () => { page--; render(); });
             next.addEventListener('click', () => { page++; render(); });
             last.addEventListener('click', () => { page = pages; render(); });
             if (archiveView) ensureArchive();
@@ -311,3 +330,20 @@ const catalogAsset = '/data/competition-discovery.json';
 </style>
 
 <style is:global> #pagination { margin-top:1.5rem; } #pagination button { padding:.65rem; font:inherit; } #pagination[hidden], #published-guides[hidden] { display:none; } </style>
+
+<style is:global>
+  #archive-placeholder { display:none; }
+  :root[data-archive-pending] #archive-placeholder { display:grid; }
+  :root[data-archive-pending] #published-guides { display:none; }
+  .loading-card { min-height:295px; box-sizing:border-box; padding:1.25rem; border:1px solid #d8d0e2; border-radius:.75rem; background:#f8f6fb; }
+  .loading-card span { display:block; height:1rem; margin:1rem 0; border-radius:.3rem; background:#e4dfec; }
+  .loading-card span:first-child { width:65%; height:1.5rem; }
+  .loading-card span:last-child { width:45%; }
+  #summary { min-height:3em; }
+  #result-region[aria-busy="true"] { opacity:.75; }
+  #result-region { transition:opacity 140ms ease-out; }
+  :root[data-theme="dark"] .loading-card { background:#24232b; border-color:#45414e; }
+  :root[data-theme="dark"] .loading-card span { background:#45414e; }
+  @media(prefers-reduced-motion:reduce) { #result-region { transition:none; } }
+</style>
+<noscript><style>:root[data-archive-pending] #published-guides{display:block}#archive-placeholder{display:none!important}</style></noscript>
