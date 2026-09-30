@@ -10,7 +10,7 @@
   "script_path": "/exercises/m5-rolling-origin.py",
   "receipt_path": "/exercises/m5-rolling-origin-receipt.json",
   "command": "python3 m5-rolling-origin.py --fixture --output my-m5-receipt.json",
-  "environment": "Recorded with Python 3.12.14 and its standard library only, on a local CPU. Use that exact interpreter to compare receipts; other Python >=3.11 environments are not covered by this run.",
+  "environment": "Recorded with Python 3.12.14 and its standard library only on Darwin arm64. This local CPU run is the recorded environment; other environments are not covered by this receipt.",
   "steps": [
     "Download the script. Use Python 3.12.14; no packages, account or data download are needed for the fixture.",
     "Run the command and compare the per-series results at each of the three origins. Freeze those windows before interpreting the aggregate.",
@@ -30,5 +30,14 @@
   "split_definition": "Three fixed rolling origins: days 1\u201384, 1\u2013112 and 1\u2013140 train; next 28 days validate for each series.",
   "metric": "mean absolute error (unweighted; not M5 WRMSSE)",
   "direction": "minimize",
-  "memory_scope": "traced-python-allocations"
+  "memory_scope": "traced-python-allocations",
+  "platform": "Darwin arm64",
+  "expected_splits": [
+    "declining origin 84",
+    "growing origin 84",
+    "declining origin 112",
+    "growing origin 112",
+    "declining origin 140",
+    "growing origin 140"
+  ]
 }
