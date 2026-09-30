@@ -231,6 +231,8 @@ export const exerciseSchema = z.object({
 	script_path: z.string().regex(/^\/exercises\/[a-z0-9-]+\.py$/),
 	receipt_path: z.string().regex(/^\/exercises\/[a-z0-9-]+-receipt\.json$/),
 	data_path: z.string().regex(/^\/exercises\/[a-z0-9-]+-data\.json$/),
+	platform: z.string().min(1),
+	expected_splits: z.array(z.string().min(1)).min(1).refine(values => new Set(values).size === values.length, 'Expected unique split identifiers'),
 	python_version: z.string().regex(/^\d+\.\d+\.\d+$/),
 	dependencies: z.string().min(1),
 	seed: z.number().int(),
