@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "id": "exercise-digit-centroids",
+  "status": "published",
+  "slug": "digit-centroids",
+  "title": "Check 784 pixels and fit centroids inside each fold",
+  "competition_id": "competition-digit-recognizer",
+  "summary": "Compare raw-pixel nearest-class centroids with one per-image L2 change under a bounded CPU workflow. The original 200 geometric patterns are not real handwritten digits.",
+  "data_scope": "generated-teaching-fixture",
+  "script_path": "/exercises/digit-centroids.py",
+  "receipt_path": "/exercises/digit-centroids-receipt.json",
+  "command": "python3 digit-centroids.py --fixture --output my-digit-receipt.json",
+  "environment": "Recorded with Python 3.12.14 and its standard library only on Darwin arm64. This local CPU run is the recorded environment; other environments are not covered by this receipt.",
+  "steps": [
+    "Download and run with Python 3.12.14. The fixture needs no neural library, accelerator or account.",
+    "Check 784 pixels and labels 0\u20139. Compare raw nearest-class centroids with per-image L2 normalization on the same five stratified folds; class means fit training rows only.",
+    "Inspect fold results, blank-image behavior and the actual resource receipt. Explain why a high pattern-fixture score says nothing about handwriting recognition quality.",
+    "Optional: --csv authorized-train.csv --max-rows 1000 reads a bounded prefix. Use columns label,pixel0,...,pixel783 in order, finite 0\u2013255 values and at least five rows per label. The generated CSV mode is tested; real competition images were not run."
+  ],
+  "limitations": [
+    "Generated geometric patterns are not handwritten digits, MNIST or competition data.",
+    "A bounded prefix sample may be biased; no full competition dataset was run.",
+    "Per-image normalization and training-only centroids do not establish writer-held-out or shifted-image performance.",
+    "Mean fold accuracy is not a competition score or historical CNN reproduction.",
+    "Memory measures traced Python allocations, not process RSS."
+  ],
+  "data_path": "/exercises/digit-centroids-receipt-data.json",
+  "python_version": "3.12.14",
+  "dependencies": "Python standard library only",
+  "seed": 17,
+  "split_definition": "Five label-stratified folds with seed 17; each sampled row validates once; centroids fit training rows only; CSV uses a declared prefix cap.",
+  "metric": "accuracy",
+  "direction": "maximize",
+  "memory_scope": "traced-python-allocations",
+  "platform": "Darwin arm64",
+  "expected_splits": [
+    "stratified fold 1",
+    "stratified fold 2",
+    "stratified fold 3",
+    "stratified fold 4",
+    "stratified fold 5"
+  ]
+}

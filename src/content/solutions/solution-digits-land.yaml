@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "id": "solution-digits-land",
+  "status": "published",
+  "title": "Dense and convolutional author comparison",
+  "summary": "John Land presents a dense network and a convolutional network using different training budgets.",
+  "reviewed_by": "GPT-6 Luna Max",
+  "reviewed_at": "2026-09-30",
+  "competition_id": "competition-digit-recognizer",
+  "team": "Independent approach author",
+  "authors": [
+    "John Land"
+  ],
+  "source_ids": [
+    "source-digits-land"
+  ],
+  "rank": {
+    "value": null,
+    "basis": "unknown",
+    "source_id": null
+  },
+  "scores": [],
+  "validation": {
+    "strategy": "custom",
+    "details": "John Land fits MinMaxScaler before 20% validation_split and times training with process_time. This is not fold-isolated scaling or a wall-time/hardware benchmark; selection stability is unknown.",
+    "source_ids": [
+      "source-digits-land"
+    ]
+  },
+  "techniques": [
+    "dense-neural-network",
+    "convolutional-network"
+  ],
+  "resources": [
+    {
+      "id": "full-pipeline",
+      "scope": "full-pipeline",
+      "hardware_class": "unknown",
+      "accelerator_model": null,
+      "accelerator_count": null,
+      "vram_gb_per_device": null,
+      "ram_gb": null,
+      "wall_hours": null,
+      "accelerator_hours": null,
+      "basis": "unknown",
+      "claim_id": null
+    }
+  ],
+  "reproducibility": {
+    "code_url": "https://github.com/John-Land/Digit-Recognizer-ML-competition-Kaggle-with-deep-learning-tensorflow",
+    "code_revision": "64796ba0304b3bce306f780206f4d25f339676d1",
+    "status": "code-available",
+    "reproduction_ids": [],
+    "notes": "Pinned implementation inspected as text; not executed. No competition data, pretrained weights or foreign dependencies were downloaded for this guide."
+  },
+  "claims": [
+    {
+      "id": "approach-01",
+      "statement": "John Land presents a dense network and a convolutional network using different training budgets.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-digits-land",
+          "locator": "Select, train and fine-tune models; model1 fit and all three consecutive model2.fit calls (lines 850, 889 and 913 of pinned index.md)",
+          "support_summary": "The dense model fits 50 epochs; the same convolutional model has three consecutive five-epoch fit calls (15 epochs in total), with no reinitialization shown."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Pinned original author page.",
+      "limitations": "A difference in validation results would not isolate architecture when budgets differ."
+    },
+    {
+      "id": "validation-01",
+      "statement": "John Land fits MinMaxScaler before 20% validation_split and times training with process_time.",
+      "kind": "source-reported",
+      "evidence": [
+        {
+          "source_id": "source-digits-land",
+          "locator": "scaler.fit(X_train); model.fit(validation_split=.2); time.process_time",
+          "support_summary": "Scaling precedes holdout creation, and the timer measures process CPU time."
+        }
+      ],
+      "supports_claim_refs": [],
+      "reproduction_ids": [],
+      "conditions": "Code-order inspection, not a rerun.",
+      "limitations": "This is not fold-isolated scaling or a wall-time/hardware benchmark; selection stability is unknown."
+    }
+  ],
+  "unsuccessful_attempts": [],
+  "transfer_limits": [
+    "Model or preprocessing presence does not establish its isolated gain on a common split.",
+    "No independent leaderboard or full-pipeline resource verification; no historical reproduction."
+  ]
+}
