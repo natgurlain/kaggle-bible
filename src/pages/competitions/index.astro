@@ -68,7 +68,7 @@ const catalogAsset = '/data/competition-discovery.json';
 						</select>
 					</label>
 				</div>
-				<p>Archive snapshot: <time datetime={manifest.inventory.snapshot_date}>{manifest.inventory.snapshot_date}</time>. States and deadlines describe that snapshot; check Kaggle for current availability.</p>
+				<p>Archive snapshot: <time datetime={manifest.inventory.snapshot_date}>{manifest.inventory.snapshot_date}</time>. States, deadlines and metric names describe that snapshot and may differ from official definitions. Published guides state their sourced official metric; check Kaggle for current availability.</p>
 				<p id="summary" class="summary" role="status">Browse the available reviewed guides below.</p>
 			</section>
 
@@ -215,7 +215,7 @@ const catalogAsset = '/data/competition-discovery.json';
 						<p>${escapeHtml(competition.subtitle || 'No subtitle recorded in the source snapshot.')}</p>
 						<dl>
 							<div><dt>Category</dt><dd>${escapeHtml(competition.category || 'Uncategorized')}</dd></div>
-							<div><dt>Metric</dt><dd>${escapeHtml(metric)}</dd></div>
+							<div><dt>Metric at snapshot</dt><dd>${escapeHtml(metric)}</dd></div>
 							<div><dt>Deadline</dt><dd>${escapeHtml(dateLabel(competition.deadline_at))}</dd></div>
 						</dl>
 						<div class="card-links">
