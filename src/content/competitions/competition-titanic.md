@@ -100,11 +100,11 @@ The target is survival as a binary label, and the competition metric is accuracy
 
 ## Approaches
 
-Conti's Python notebook demonstrates logistic regression, SVM kernels and random forest. [evidence:solution-titanic-agconti#approach-01] Wehrley's R tutorial compares logistic regression, boosted trees, random forest and SVM. [evidence:solution-titanic-wehrley#approach-01] These are readable original tutorials, rather than verified winning entries. Presence in either notebook supplies a method to investigate; it does not show which model is best on a shared split or budget.
+Conti's Python notebook demonstrates logistic regression, SVM kernels and random forest. [View evidence](#evidence-solution-titanic-agconti-approach-01) Wehrley's R tutorial compares logistic regression, boosted trees, random forest and SVM. [View evidence](#evidence-solution-titanic-wehrley-approach-01) These are readable original tutorials, rather than verified winning entries. Presence in either notebook supplies a method to investigate; it does not show which model is best on a shared split or budget.
 
 ## Validation and leakage checks
 
-Conti's inspected SVM block is a shuffled 90/10 holdout, despite the README's K-fold description. [evidence:solution-titanic-agconti#validation-01] Wehrley uses an 80/20 stratified holdout and repeated resampling, choosing by ROC AUC rather than Kaggle accuracy. [evidence:solution-titanic-wehrley#validation-01] Avoid treating these protocols or metrics as equivalent. Audit preprocessing order before reusing either notebook: some munging occurs before splits. The exercise deliberately learns only from the current training fold. Random stratification still does not answer how well a model transfers to unseen passenger families.
+Conti's inspected SVM block is a shuffled 90/10 holdout, despite the README's K-fold description. [View evidence](#evidence-solution-titanic-agconti-validation-01) Wehrley uses an 80/20 stratified holdout and repeated resampling, choosing by ROC AUC rather than Kaggle accuracy. [View evidence](#evidence-solution-titanic-wehrley-validation-01) Avoid treating these protocols or metrics as equivalent. Audit preprocessing order before reusing either notebook: some munging occurs before splits. The exercise deliberately learns only from the current training fold. Random stratification still does not answer how well a model transfers to unseen passenger families.
 
 ## Source limitations
 
