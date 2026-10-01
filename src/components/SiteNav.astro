@@ -48,7 +48,8 @@ const { skipTarget = 'main-content', showSkip = true } = Astro.props;
   :root[data-theme="dark"] :is(.claim-meta,.source-meta,.eyebrow,.slug,.card-topline,.breadcrumbs [aria-current="page"]) { color:#c8c3d1; }
   :root[data-theme="dark"] .resource-block li > strong { color:#e8e5ed; }
   :root[data-theme="dark"] :is(.claim-kind,.pill,.state) { background:#302c3a; color:#e8e5ed; }
-  :root[data-theme="dark"] :is(a,.official-link) { color:#c4b5fd; }
+  /* Starlight buttons own their foreground/background pair in every variant. */
+  :root[data-theme="dark"] :is(a,.official-link):not(.sl-link-button) { color:#c4b5fd; }
   :root[data-theme="dark"] .sidebar-pane a[aria-current="page"] { color:var(--sl-color-text-invert); }
   :root[data-theme="dark"] :is(input,select,.unknown-note,.rank,.evidence-section,.level-badge) { background:#302c3a; color:#e8e5ed; border-color:#635775; }
   :root[data-theme="dark"] .site-nav a:hover { color:#e4dbff; }
