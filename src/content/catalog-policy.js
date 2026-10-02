@@ -60,7 +60,7 @@ export function readCatalogFilters(search) {
 }
 export function usesArchiveView(search) {
 	const params = new URLSearchParams(search);
-	return params.get('view') === 'all' || Object.values(readCatalogFilters(search)).some(Boolean);
+	return params.get('view') === 'all';
 }
 
 export function serializeCatalogFilters(filters) {
@@ -70,4 +70,26 @@ export function serializeCatalogFilters(filters) {
 	if (filters.state) params.set('state', filters.state);
 	if (filters.level) params.set('level', filters.level);
 	return params.toString();
+}
+
+/** View is an explicit choice, independent of query and filter values. */
+export function serializeCatalogState(filters, archiveView, page = 1) {
+ const params = new URLSearchParams(serializeCatalogFilters(filters));
+ if (archiveView) params.set('view', 'all');
+ if (archiveView && page > 1) params.set('page', String(page));
+ return params.toString();
+}
+
+export function filterCatalog(rows, filters, archiveView = false) {
+ const needle = filters.query.trim().toLowerCase();
+ return rows.filter(competition => {
+  const presentation = getCatalogCardPresentation(competition);
+  const searchable = [competition.title, competition.slug, competition.subtitle,
+   competition.metric_abbreviation, competition.metric_name].join(' ').toLowerCase();
+  return (archiveView || presentation.guideHref !== null)
+   && (!needle || searchable.includes(needle))
+   && (!filters.category || competition.category === filters.category)
+   && (!filters.state || competition.record_state === filters.state)
+   && (!filters.level || presentation.completenessLevel === filters.level);
+ });
 }

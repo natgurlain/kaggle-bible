@@ -98,6 +98,7 @@ const solutionScoreSchema = z.object({
 export const competitionSchema = contentSchema.extend({
 	id: z.string().regex(/^competition-[a-z0-9]+(?:-[a-z0-9]+)*$/),
 	slug: idString,
+	learning_card: z.object({ outcome: z.string().trim().min(1), prerequisites: z.array(z.string().trim().min(1)).min(1), actual_data_access: z.object({ instructions: z.string().trim().min(1), url: webUrl }) }).optional(),
 	learning_goals: z.array(z.string().min(1)).max(5).default([]),
 	meta_kaggle_id: z.string().regex(/^\d+$/).optional(),
 	kaggle_slug: idString,

@@ -1,9 +1,14 @@
 ---
 import SiteNav from '../components/SiteNav.astro';
+import PublishedLibrary from '../components/PublishedLibrary.astro';
+import { learningLibrary } from '../content/learning-library';
+const {guideCards}=await learningLibrary();
+const cardsByPath=Object.fromEntries(guideCards.map(card=>[card.guide_href,card]));
 ---
 <!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width"/><title>Search · Kaggle Bible</title><meta name="robots" content="noindex"/></head>
-<body><SiteNav/><main id="main-content" tabindex="-1"><h1>Search the learning library</h1><label for="library-query">Find a guide, practice, or lesson</label><input id="library-query" type="search" autocomplete="off"/><p id="search-status" role="status">Enter a topic to search.</p><button id="search-retry" type="button" hidden>Retry search</button><ul id="search-results" aria-busy="false"></ul></main></body></html>
+<body><SiteNav/><main data-guide-cards={JSON.stringify(cardsByPath)} id="main-content" tabindex="-1"><h1>Search the learning library</h1><label for="library-query">Find a guide, practice, or lesson</label><input id="library-query" type="search" autocomplete="off"/><p id="search-status" role="status">Enter a topic to search.</p><button id="search-retry" type="button" hidden>Retry search</button><ul id="search-results" aria-busy="false"></ul><noscript><h2>Published guide projects</h2><PublishedLibrary /></noscript></main></body></html>
 <script>
+  import { renderGuideCardDetails } from '../content/guide-card-policy.js';
   import { createLatestTask } from '../content/loading-policy.js';
   const input = document.querySelector<HTMLInputElement>('#library-query')!;
   const status = document.querySelector<HTMLElement>('#search-status')!;
@@ -11,6 +16,7 @@ import SiteNav from '../components/SiteNav.astro';
   const retry = document.querySelector<HTMLButtonElement>('#search-retry')!;
   type SearchPage = { url: string; meta: { title: string }; excerpt: string };
   type SearchResult = { data: () => Promise<SearchPage> };
+  const guideCards = JSON.parse(document.querySelector<HTMLElement>('[data-guide-cards]')!.dataset.guideCards!);
   const updates = createLatestTask();
   async function search() {
     const query = input.value.trim();
@@ -33,7 +39,12 @@ import SiteNav from '../components/SiteNav.astro';
           const link = document.createElement('a');
           link.href = page.url; link.textContent = page.meta.title;
           const excerpt = document.createElement('p'); excerpt.textContent = page.excerpt.replace(/<[^>]*>/g, '');
-          item.append(link, excerpt); return item;
+          item.append(link, excerpt);
+          const path = new URL(page.url, location.origin).pathname.replace(/\/?$/, '/');
+          if(guideCards[path]) {
+            const details=document.createElement('div'); details.innerHTML=renderGuideCardDetails(guideCards[path]); item.append(details);
+          }
+          return item;
         });
         results.replaceChildren(...items);
         status.textContent = `${found.results.length} results${found.results.length > 20 ? '; showing the first 20. Refine your search for more.' : '.'}`;
@@ -53,7 +64,7 @@ import SiteNav from '../components/SiteNav.astro';
   });
   search();
 </script>
-<style>main{max-width:850px;margin:2rem auto;padding:0 1.2rem;font-family:system-ui;line-height:1.6}input{display:block;width:100%;padding:.8rem;margin:.6rem 0;font:inherit}li{padding:1rem 0}a{color:#56309d}</style>
+<style>main{max-width:850px;margin:2rem auto;padding:0 1.2rem;font-family:system-ui;line-height:1.6}input{display:block;width:100%;padding:.8rem;margin:.6rem 0;font:inherit}li{padding:1rem 0;overflow-wrap:anywhere} :global(.guide-learning-details){line-height:1.55} :global(.guide-projects){padding-left:1.2rem}a{color:#56309d}</style>
 
 <style>
   #search-status { min-height:3em; }
