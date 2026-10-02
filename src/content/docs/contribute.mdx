@@ -22,13 +22,13 @@ Every task below has an **unassigned contributor owner**. Claim a bounded task i
 
 **Artifact:** a [run report](https://github.com/natgurlain/kaggle-bible/issues/new?template=exercise-result.yml&title=Titanic%20fixture%20setup%20report) linked to #67. **Owner:** unassigned. **Reviewer needed:** someone who can compare the report to the pinned fixture and distinguish setup evidence from actual-data verification. Do not attach competition rows or passenger IDs.
 
-### House Prices: explain an unseen-neighborhood prediction
+### House Prices: audit category coverage and fallback
 
-**Gap:** a fold metric alone does not explain what the neighborhood rule does when a held-out category has no training examples.
+**Gap:** a fold metric alone does not establish category coverage or test the unseen-category fallback. The current five-neighborhood fixture has every category represented in each training fold.
 
-**Done:** inspect the [published fixture](/exercises/#exercise-house-neighborhood), its downloadable script and recorded input. Trace one unseen category through the fallback and compare it to the global log-price mean on the same fold. Report the fold and public fixture row locator, the rule used and one limit of random-fold validation. If no such row occurs, document that finding rather than inventing an example.
+**Done:** inspect the [published fixture](/exercises/#exercise-house-neighborhood), its script and recorded input. Compare training and validation category coverage in every fold. A finished report may document that no validation category is unseen and explain the code fallback to the training global log-price mean without claiming a measured fallback prediction. Report the fold/category coverage, the exact fallback code locator and one limit of random-fold validation. If an unseen category is observed in another clearly identified run, an optional prediction comparison must cite that run and its public or safe artifact.
 
-**Artifact:** a [focused correction or explanation](https://github.com/natgurlain/kaggle-bible/issues/new?template=correction.yml&title=House%20Prices%20unseen-neighborhood%20diagnostic), linked to [#70](https://github.com/natgurlain/kaggle-bible/issues/70). **Owner:** unassigned. **Reviewer needed:** someone who can trace training-only statistics, fallback behavior and log-RMSE scope. This task uses generated homes; it does not execute Ames data.
+**Artifact:** a [focused correction or explanation](https://github.com/natgurlain/kaggle-bible/issues/new?template=correction.yml&title=House%20Prices%20category-coverage%20audit), linked to [#70](https://github.com/natgurlain/kaggle-bible/issues/70). **Owner:** unassigned. **Reviewer needed:** someone who can trace training-only statistics, fallback behavior and log-RMSE scope. This task uses generated homes; it does not execute Ames data.
 
 ### Disaster Tweets: explain one recorded text error
 
