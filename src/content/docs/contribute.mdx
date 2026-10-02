@@ -10,17 +10,59 @@ A precise correction or one well-located source is enough to help. Choose a form
 - [Correct a guide](https://github.com/natgurlain/kaggle-bible/issues/new?template=correction.yml)
 - [Report an exercise run](https://github.com/natgurlain/kaggle-bible/issues/new?template=exercise-result.yml)
 
-## Pick one small task
+## Pick one finishable task
 
-| Task | Finished when | Form |
-| --- | --- | --- |
-| Check a Home Credit validation detail | Link one original split description with its exact locator, or document that the inspected source does not report it. | [Source](https://github.com/natgurlain/kaggle-bible/issues/new?template=source.yml&title=Home%20Credit%20split%20detail) |
-| Find one final-system resource report | Identify its hardware, data and run scope; keep tuning costs separate. Unknown is a useful result. | [Source](https://github.com/natgurlain/kaggle-bible/issues/new?template=source.yml&title=Final-system%20resource%20evidence) |
-| Run one published fixture | Execute the exact downloaded script and provide its receipt, command and environment. Retain failures and regressions. | [Run report](https://github.com/natgurlain/kaggle-bible/issues/new?template=exercise-result.yml&title=Published%20fixture%20run) |
-| Explain one text error | Inspect an error ID in the NLP receipt and recorded input; describe why a template may mislead the classifier. | [Correction](https://github.com/natgurlain/kaggle-bible/issues/new?template=correction.yml&title=NLP%20fixture%20error%20interpretation) |
-| Correct one sentence or link | Give the page, proposed wording and primary evidence locator. | [Correction](https://github.com/natgurlain/kaggle-bible/issues/new?template=correction.yml) |
+Every task below has an **unassigned contributor owner**. Claim a bounded task in its linked issue before starting; a claim does not assign an independent reviewer or authorize data access. Source gaps may finish with a documented negative result. Keep existing corrections and failed attempts in the issue history.
 
-Start with the [guides](/competitions/) or [learning exercises](/exercises/). Tasks describe useful work, not assignments or promises that missing evidence exists.
+### Titanic: report a fixture setup failure or successful run
+
+**Gap:** the available passenger-rule fixture has an execution receipt, but that does not tell us whether your setup works. The actual-data project in [#67](https://github.com/natgurlain/kaggle-bible/issues/67) still needs authorized inputs and separately reviewed execution evidence.
+
+**Done:** run the exact [published fixture](/exercises/titanic-group-rules/) with its pinned environment. Record the command, environment, script hash and receipt, or the sanitized error and recovery attempt. State explicitly that the inputs were generated; a successful run does not establish comprehension or complete #67.
+
+**Artifact:** a [run report](https://github.com/natgurlain/kaggle-bible/issues/new?template=exercise-result.yml&title=Titanic%20fixture%20setup%20report) linked to #67. **Owner:** unassigned. **Reviewer needed:** someone who can compare the report to the pinned fixture and distinguish setup evidence from actual-data verification. Do not attach competition rows or passenger IDs.
+
+### House Prices: explain an unseen-neighborhood prediction
+
+**Gap:** a fold metric alone does not explain what the neighborhood rule does when a held-out category has no training examples.
+
+**Done:** inspect the [published fixture](/exercises/house-neighborhood/), its downloadable script and recorded input. Trace one unseen category through the fallback and compare it to the global log-price mean on the same fold. Report the fold and public fixture row locator, the rule used and one limit of random-fold validation. If no such row occurs, document that finding rather than inventing an example.
+
+**Artifact:** a [focused correction or explanation](https://github.com/natgurlain/kaggle-bible/issues/new?template=correction.yml&title=House%20Prices%20unseen-neighborhood%20diagnostic), linked to [#70](https://github.com/natgurlain/kaggle-bible/issues/70). **Owner:** unassigned. **Reviewer needed:** someone who can trace training-only statistics, fallback behavior and log-RMSE scope. This task uses generated homes; it does not execute Ames data.
+
+### Disaster Tweets: explain one recorded text error
+
+**Gap:** the generated word-pair exercise preserves a neutral result, but its metric does not explain a specific template error.
+
+**Done:** inspect an error locator in the [published fixture](/exercises/nlp-word-pairs/) receipt and recorded input. Compare the two predictions on the same held-out text; explain the fitting boundary and one reason repeated templates limit transfer. If the selected fold has no recorded errors, retain that observation and choose another recorded fold.
+
+**Artifact:** a [text-error explanation](https://github.com/natgurlain/kaggle-bible/issues/new?template=correction.yml&title=NLP%20fixture%20error%20interpretation), linked to [#71](https://github.com/natgurlain/kaggle-bible/issues/71). **Owner:** unassigned. **Reviewer needed:** someone who can check the public error locator, training-fold vocabulary and positive-class F1 interpretation. No real tweet result is established by this task.
+
+### M5: audit one forecast origin
+
+**Gap:** a generated rolling-origin exercise cannot establish competition-scale WRMSSE or the historical systems' resource requirements.
+
+**Done:** inspect one origin in the [published fixture](/exercises/m5-rolling-origin/). Locate its training end, forecast horizon and method difference in the script and receipt; explain which observations the lag rule may use. State that the recorded metric is unweighted mean absolute error and that hierarchy aggregation and competition execution remain separate work.
+
+**Artifact:** a [forecast-origin explanation](https://github.com/natgurlain/kaggle-bible/issues/new?template=correction.yml&title=M5%20fixture%20forecast-origin%20audit), linked to [#72](https://github.com/natgurlain/kaggle-bible/issues/72). **Owner:** unassigned. **Reviewer needed:** someone who can check time boundaries and distinguish unweighted mean absolute error from WRMSSE. Keep a worse method result visible.
+
+### Home Credit: locate the twelfth-place split recipe
+
+**Gap:** the [guide](/competitions/home-credit-default-risk/) records local CV but the inspected twelfth-place report lacks a complete split recipe; seeds and assignments remain unknown.
+
+**Done:** inspect the original report linked from the guide and any author-linked primary supplement. Record author, URL, revision or access date and exact section. Identify the disclosed split conditions, or document precisely what is absent or inaccessible. Do not infer missing folds from a typical model workflow.
+
+**Artifact:** a [source report](https://github.com/natgurlain/kaggle-bible/issues/new?template=source.yml&title=Home%20Credit%20twelfth-place%20split%20detail), linked to [#73](https://github.com/natgurlain/kaggle-bible/issues/73). **Owner:** unassigned. **Reviewer needed:** someone who can inspect the same primary passage and preserve source-reported results and unknowns. This is an evidence task, not a promise that a missing recipe exists.
+
+### IEEE-CIS: resolve official-source accessibility
+
+**Gap:** [the qualification audit](https://github.com/natgurlain/kaggle-bible/blob/main/docs/research.md#decision-replacement-and-bounded-next-experiment) has two inspected participant reports, while the official task, metric, data-access, rules and leaderboard page bodies were unavailable in that review. The candidate remains blocked and has no published guide.
+
+**Done:** inspect the official URLs listed in [#76](https://github.com/natgurlain/kaggle-bible/issues/76)'s linked audit. Record access date and exact readable locators for each relevant claim, or document the access failure. Separate rank-to-team matching from a participant's placement claim. Do not download data, accept terms for someone else or upgrade readiness from a search snippet.
+
+**Artifact:** a [source-access report](https://github.com/natgurlain/kaggle-bible/issues/new?template=source.yml&title=IEEE-CIS%20official-source%20access%20audit), linked to #76. **Owner:** unassigned. **Reviewer needed:** someone who can independently inspect the official passages and verify attribution before any qualification change.
+
+These tasks extend the [research queue](https://github.com/natgurlain/kaggle-bible/blob/main/docs/research.md#ordered-queue); they do not assign actual-data port slots. At most three ports may be active, with ownership and access recorded in the project issue. Use [#77](https://github.com/natgurlain/kaggle-bible/issues/77) to report a stale task or missing artifact. Start with the [guides](/competitions/) or [learning exercises](/exercises/).
 
 ## What to include
 
