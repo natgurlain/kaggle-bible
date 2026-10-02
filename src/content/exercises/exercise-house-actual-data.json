@@ -61,7 +61,7 @@
       "environment_path": "/exercises/house-actual-data-environment.txt",
       "helper_path": "/exercises/house-neighborhood.py",
       "helper_sha256": "b50f952c3d40e842ef9ba1f96836c0b2f74743701f07df99ec7d6e30171c6ef7",
-      "script_sha256": "558f4db5968da435e591bcb2d21f40c2e7b2be04d8a6eb8b840cb5b6b6377277",
+      "script_sha256": "c5f1661303a15d734197beae37e3161b4b53f3e7c4dc623d06d1aa7c58d5ff9e",
       "notebook_sha256": "f52ef21381eef2f0677b428ce8fb0c6e2bf6c09f1390fd16f1dac4c53d46c814",
       "environment_sha256": "2ff94d8df75c7f2cab9c8fd236f73816f43ad9e7dbba039cac591fd03d978e0d"
     },
