@@ -36,3 +36,7 @@ Record outcomes as pass/fail with page, viewport, and the exact local commit. Fi
 | Commit SHA | Automated checks | Local routes and viewports | Keyboard and evidence trace | GPT-6 Luna Max exact-head verdict |
 | --- | --- | --- | --- | --- |
 | Fill only after running the checks; no simulated results. | Pending | Pending | Pending | Pending |
+
+## Optional learner pilot, separate from release acceptance
+
+[#69's learner-pilot protocol](learner-pilot-protocol.md) prepares 5–10 voluntary sessions with manual artifact checks, setup-failure logging, consent, minimal coded notes outside Git, and a frozen comprehension rubric. It does not replace this local acceptance checklist or add recruitment/human sign-off as a release gate. Its fixture facilitator rehearsal is software/protocol evidence only; no participant findings or learning gains are claimed. Real sessions require separate authorization and the applicable actual-data package. Reconcile the protocol after #64 lands and obtain GPT-6 Luna Max exact-head review before integration.
