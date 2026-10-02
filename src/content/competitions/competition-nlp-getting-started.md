@@ -123,3 +123,7 @@ Neither source implementation was executed here. Pretrained weights, hardware, f
 ## Unresolved questions
 
 Does a duplicate-group or chronological split reverse a text-model comparison? Can the authors' representation variants be compared with the same tuning budget and an untouched final holdout? Supply the exact source locator, authorized data scope and execution receipt for a correction or new experiment.
+
+### Actual-data package status
+
+A separate [private-input package setup](https://github.com/natgurlain/kaggle-bible/blob/main/docs/nlp-actual-data-setup.md) is a draft blocked candidate for [#71](https://github.com/natgurlain/kaggle-bible/issues/71). It preserves the same-fold unigram versus adjacent-word-pair comparison and keeps raw text and local error inspection private. No authorized competition data has been supplied or run. Exact normalized duplicates reject without silent deletion; near-duplicate and grouped-template leakage remain limitations. Generated software checks do not satisfy actual-data acceptance.
