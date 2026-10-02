@@ -1,6 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { filterPublicGuides, filterPublicContent } from './publication-policy.js';
 import { exerciseReceiptErrors, projectContractErrors } from './exercise-policy.js';
+import { guideCardMetadata } from './guide-card-policy.js';
 import { loadExerciseArtifacts } from './project-artifacts.js';
 
 export async function learningLibrary() {
@@ -17,5 +18,5 @@ export async function learningLibrary() {
   if(errors.length) throw new Error(`${entry.id}: ${errors.join('; ')}`);
   return {entry,receipt};
  }));
- return {guides,solutions:solutions.filter(x=>guides.some(g=>g.data.solution_ids.some(ref=>ref.id===x.id))),practices:filterPublicContent(practices,context) as CollectionEntry<'practices'>[],exercises:publishedExercises};
+ return {guides,guideCards:guides.map(guide=>guideCardMetadata(guide,publishedExercises)),solutions:solutions.filter(x=>guides.some(g=>g.data.solution_ids.some(ref=>ref.id===x.id))),practices:filterPublicContent(practices,context) as CollectionEntry<'practices'>[],exercises:publishedExercises};
 }

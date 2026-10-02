@@ -82,7 +82,17 @@
       "conditions": "This is an original bounded teaching design with fixed seed and splits, rather than either author implementation.",
       "limitations": "Generated teaching passengers cannot establish performance on Titanic, and random stratification does not protect family groups."
     }
-  ]
+  ],
+  "learning_card": {
+    "outcome": "Compare passenger group rules on fixed stratified folds and explain why family overlap can limit the accuracy estimate.",
+    "prerequisites": [
+      "Read a small table with a binary target and distinguish training from validation rows."
+    ],
+    "actual_data_access": {
+      "instructions": "For actual-data work, obtain authorized train.csv from the official data page. Sign-in and rule acceptance may be required. Competition data is not bundled.",
+      "url": "https://www.kaggle.com/competitions/titanic/data"
+    }
+  }
 }
 ---
 

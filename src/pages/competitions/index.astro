@@ -95,6 +95,7 @@ const catalogAsset = '/data/competition-discovery.json';
 		<script>
 			import { createLatestTask } from '../../content/loading-policy.js';
 			import { expandCatalog, paginateCatalog } from '../../content/discovery-index.js';
+			import { renderGuideCardDetails } from '../../content/guide-card-policy.js';
 			import {
 				getCatalogCardPresentation,
 				readCatalogFilters,
@@ -132,6 +133,7 @@ const catalogAsset = '/data/competition-discovery.json';
 		if (!catalogAsset) throw new Error('The catalog asset path is missing.');
 			const guideRows: CatalogCompetition[] = JSON.parse(document.querySelector('#guide-records')!.textContent!);
 			let competitions: CatalogCompetition[] = [];
+			let guideCards: Record<string, Parameters<typeof renderGuideCardDetails>[0]> = {};
 			const published = document.querySelector<HTMLElement>('#published-guides')!;
 			const region = document.querySelector<HTMLElement>('#result-region')!;
 			const retry = document.querySelector<HTMLButtonElement>('#retry')!;
@@ -246,6 +248,7 @@ const catalogAsset = '/data/competition-discovery.json';
 							<div><dt>Metric at snapshot</dt><dd>${escapeHtml(metric)}</dd></div>
 							<div><dt>Deadline</dt><dd>${escapeHtml(dateLabel(competition.deadline_at))}</dd></div>
 						</dl>
+						${presentation.guideHref ? renderGuideCardDetails(guideCards[competition.slug]) : ''}
 						<div class="card-links">
 							<a href="${escapeHtml(competition.competition_url)}" target="_blank" rel="noreferrer">Open on Kaggle ↗</a>
 							${guide}
@@ -281,6 +284,7 @@ const catalogAsset = '/data/competition-discovery.json';
 							.then(response => { if (!response.ok) throw new Error('Archive unavailable'); return response.json(); })
 							.then(data => {
 								competitions = expandCatalog(data) as CatalogCompetition[];
+								guideCards = data.guide_cards ?? {};
 								const priority: Record<string,number> = {'Getting Started':0, Featured:1, Research:2};
 								competitions.sort((a,b) => (priority[a.category] ?? 3) - (priority[b.category] ?? 3) || b.deadline_at.localeCompare(a.deadline_at) || Number(a.id) - Number(b.id));
 							}).catch(error => { load = undefined; throw error; });
