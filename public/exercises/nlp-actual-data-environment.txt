@@ -1,0 +1,4 @@
+Python: 3.12.14
+Dependencies: Python standard library only
+Declared target: Darwin arm64; CPU only
+Imported helper SHA-256: 75ccbf247a955f3f06d08444c87fc79cf5eb3f46abae106204314bd5a278d599
