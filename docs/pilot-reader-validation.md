@@ -15,7 +15,7 @@ ASTRO_TELEMETRY_DISABLED=1 pnpm build
 CHECK_BUILT_CONTENT=1 pnpm check-content
 ```
 
-All commands must pass. The built-content check verifies that only published records/routes are emitted, catalog guide links resolve to the matching competition identity, references are valid, and drafts remain private. If a check finds an issue, fix it and rerun the complete sequence on the new head.
+All commands must pass. The built-content check verifies that draft records are excluded from public routes and discovery cards, catalog guide links resolve to the matching competition identity, and references are valid. Candidate runner code, notebooks and environment files may still be public static assets at anonymous download paths while their records remain drafts. Private inputs and raw execution outputs must stay outside public assets and the built site. If a check finds an issue, fix it and rerun the complete sequence on the new head.
 
 ## Local browser acceptance
 
