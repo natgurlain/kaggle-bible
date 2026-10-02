@@ -18,3 +18,9 @@ Events are not unique people. A guide discovery is a page load, exercise start i
 ## Optional future deployment adapter
 
 No adapter is implemented or configured. A separate authorized integration must document consent, retention, hosting request-log boundaries and endpoint ownership before sending anything. It should subscribe to this contract without adding URL/query/free-text fields. Define rate denominators explicitly and distinguish intent, self-report and artifact-verified runs. Do not present page-local acceptance as recruited reader evidence.
+
+## Optional manual learner pilot
+
+The [learner-pilot protocol](learner-pilot-protocol.md) uses consented manual observation; it does not add an event adapter or persist browser events. No event data is collected remotely or copied into study notes. Participant codes and minimal observations stay in a maintainer-controlled local folder outside Git, restricted to the consenting facilitator and maintainer, with raw records deleted within 30 days of report completion. Any published findings are anonymous aggregates with explicit denominators and separate publication consent.
+
+In that pilot, artifact-verified baseline/change execution, rubric-assessed explanations, voluntary self-report, and page-local activity remain separate evidence classes. Missing/unassessable responses and setup/access failures remain visible. A fixture facilitator rehearsal is not a participant or a demonstration of learner comprehension. See the protocol for consent, withdrawal, deletion ownership and reporting rules.
