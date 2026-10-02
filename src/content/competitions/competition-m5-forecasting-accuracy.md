@@ -5,6 +5,13 @@ meta_kaggle_id: '18599'
 status: published
 title: M5 Forecasting – Accuracy
 summary: An evidence map comparing a hierarchical LightGBM/N-BEATS ensemble report with a single-model, multi-window validation report, without inventing comparable scores or compute costs.
+learning_card:
+  outcome: "Compare simple forecasts across frozen rolling origins and explain why a small mean-absolute-error exercise does not reproduce hierarchical WRMSSE."
+  prerequisites:
+    - "Understand chronological holdouts, a forecasting horizon and regression error; complete a tabular baseline first."
+  actual_data_access:
+    instructions: "For actual-data work, obtain authorized sales, calendar and price files; choose a bounded scope before running from the official data page. Sign-in and rule acceptance may be required. Competition data is not bundled."
+    url: https://www.kaggle.com/competitions/m5-forecasting-accuracy/data
 learning_goals:
   - Distinguish fixed competition windows from rolling forecast origins.
   - Compare hierarchy streams and store/week partitions as hypotheses.

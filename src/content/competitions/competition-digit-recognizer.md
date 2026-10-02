@@ -81,7 +81,17 @@
       "conditions": "Original bounded CPU lab with fixed pixel shape, row cap and split; normalization uses only each image itself.",
       "limitations": "The generated geometric patterns and centroid model reproduce neither CNN author pipeline nor handwritten-digit recognition quality."
     }
-  ]
+  ],
+  "learning_card": {
+    "outcome": "Compare raw and normalized image centroids on unchanged folds and explain image-shape, writer-grouping and distribution-shift limits.",
+    "prerequisites": [
+      "Read flattened 28 by 28 pixel arrays, class labels and accuracy."
+    ],
+    "actual_data_access": {
+      "instructions": "For actual-data work, obtain authorized train.csv from the official data page. Sign-in and rule acceptance may be required. Competition data is not bundled.",
+      "url": "https://www.kaggle.com/competitions/digit-recognizer/data"
+    }
+  }
 }
 ---
 

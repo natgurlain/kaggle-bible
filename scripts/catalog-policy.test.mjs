@@ -1,3 +1,4 @@
+import { renderGuideCardDetails } from '../src/content/guide-card-policy.js';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
@@ -200,7 +201,7 @@ async function catalogPageHarness(fetchRequest) {
   window:{location,history,addEventListener:(event,callback)=>{listeners[event]=callback;}}, location,
   URLSearchParams, Intl, Date, setTimeout:callback=>{timers.set(++timerId,callback);return timerId;}, clearTimeout:id=>timers.delete(id),
   fetch:async()=>{fetchCount++; if (fetchRequest) await fetchRequest(fetchCount); return {ok:true,json:async()=>compactCatalog(archive,'2026-10-02')};},
-  createLatestTask, expandCatalog, paginateCatalog, getCatalogCardPresentation, readCatalogFilters, serializeCatalogState, usesArchiveView, filterCatalog,
+  createLatestTask, expandCatalog, paginateCatalog, getCatalogCardPresentation, readCatalogFilters, serializeCatalogState, usesArchiveView, filterCatalog, renderGuideCardDetails,
  });
  const flush = async()=>{ for(const callback of [...timers.values()]) {timers.clear();callback();} await new Promise(resolve=>setImmediate(resolve)); };
  return {elements,cards,entries,location,history,flush,fetchCount:()=>fetchCount};

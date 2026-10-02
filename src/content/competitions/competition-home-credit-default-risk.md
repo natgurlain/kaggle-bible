@@ -6,6 +6,13 @@ slug: home-credit-default-risk
 status: published
 title: Home Credit Default Risk
 summary: An evidence map of relational feature engineering and model diversity for applicant-level credit-risk ranking, with validation and leaderboard uncertainty kept explicit.
+learning_card:
+  outcome: "Explain applicant-level aggregation boundaries and compare sourced AUC claims without treating incompatible validation protocols as interchangeable."
+  prerequisites:
+    - "Understand table joins, grouped entities, train-only feature construction and binary-ranking metrics."
+  actual_data_access:
+    instructions: "For actual-data work, obtain authorized application and related credit-history tables from the official data page. Sign-in and rule acceptance may be required. Competition data is not bundled. No executed project is published here."
+    url: https://www.kaggle.com/competitions/home-credit-default-risk/data
 learning_goals:
   - Build applicant-level aggregates without crossing the prediction boundary.
   - Compare validation protocols before interpreting reported AUC.
