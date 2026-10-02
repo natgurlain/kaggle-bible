@@ -81,7 +81,17 @@
       "conditions": "Original bounded CPU lab with fixed pixel shape, row cap and split; normalization uses only each image itself.",
       "limitations": "The generated geometric patterns and centroid model reproduce neither CNN author pipeline nor handwritten-digit recognition quality."
     }
-  ]
+  ],
+  "learning_card": {
+    "outcome": "Compare raw and normalized image centroids on unchanged folds and explain image-shape, writer-grouping and distribution-shift limits.",
+    "prerequisites": [
+      "Read flattened 28 by 28 pixel arrays, class labels and accuracy."
+    ],
+    "actual_data_access": {
+      "instructions": "For actual-data work, obtain authorized train.csv from the official data page. Sign-in and rule acceptance may be required. Competition data is not bundled.",
+      "url": "https://www.kaggle.com/competitions/digit-recognizer/data"
+    }
+  }
 }
 ---
 
@@ -92,6 +102,24 @@ The official input is 28×28 grayscale pixels and the target is a digit 0–9, s
 ## Suggested first experiment
 
 [Run the pixel-centroid exercise](/exercises/#exercise-digit-centroids). Compare raw-pixel nearest-class centroids with one per-image L2-normalization change on the same five stratified folds. Keep shape, seed, row cap and accuracy fixed; calculate each class centroid from training rows only. [claim:experiment-01] The default generated geometric patterns are not handwriting or MNIST samples. Their score demonstrates the workflow, not real digit-recognition performance.
+
+## Current learner role
+
+**Outcome:** check the 28×28 / 784-pixel layout, fit nearest-class centroids inside training folds, and compare one per-image L2 change under the same validation. Prerequisites are flattened image arrays, labels 0–9, vector length, class means and accuracy, plus running the pinned Python script. A neural model is not required.
+
+**Execution state:** the [published centroid project](#exercise-digit-centroids) is a runnable generated teaching fixture with a measured fixture receipt. Its 200 geometric patterns are not handwritten digits, MNIST samples or competition images. Actual-data execution and its resource needs remain unverified. Competition input access must be established separately on the [official data page](https://www.kaggle.com/competitions/digit-recognizer/data); no competition images are bundled.
+
+**Next task:** an explicitly unassigned maintainer must establish authorized local input access and prepare the safe actual-data adapter described below. Keep the current fixture receipt, data artifact and code pins intact. Optional legacy CSV mode writes normalized rows into a local `*-data.json`; keep that file private rather than publishing it as a verification artifact.
+
+## Bounded future actual-data experiment
+
+This is a planned port, not an executed result. Its data-access owner is **maintainer — unassigned**; the next action is to record current rules/access authorization, authorized local input provenance and header/class checks before writing or running the port.
+
+1. **Freeze input and validation.** Use at most the first 1000 authorized training rows in their recorded file order. Declare the exact prefix length and input file hash before fitting. Require `label,pixel0,...,pixel783` in order, 784 finite values in 0–255 and integer labels 0–9; require at least five examples of every digit. Keep five label-stratified folds with seed 17, and retain the private assignment plus a public split fingerprint. A prefix may be biased and does not establish writer-held-out or full-data performance. If class coverage fails, stop; changing the sample requires a newly declared scope and a fresh comparison.
+2. **Baseline and one change.** Fit raw-pixel class centroids using training rows only. Compare per-image L2-normalized centroids on exactly those folds; the zero-length image remains the zero vector. Keep metric (accuracy), shape, row cap and seed fixed. No neural model, augmentation, tuning loop or leaderboard submission is required. A worse result is still an informative completed comparison.
+3. **Diagnostics.** Record aggregate class counts, blank-image counts, each fold's accuracy difference, per-class accuracy and a ten-class confusion matrix for both methods. Publish only permitted aggregate summaries through the closed diagnostic JSON contract; do not publish images, pixel arrays, row identifiers or private assignments. Explain which class errors disagree and why this split cannot establish generalization across writers or image shifts.
+4. **Measure resources and retain limits.** Pin script, notebook, environment and any imported helper; the notebook must execute the shared script. Measure full parse/validation/fit/predict/diagnostic wall time, per-method wall time and peak process RSS with a documented measurement boundary. Record CPU/platform, Python/dependency versions, thread count and exact sample/split/configuration in permitted receipt fields or diagnostic summaries. Runtime, process memory and learner completion time are currently unknown; the existing traced-allocation fixture receipt is not this budget. Preserve negative outcomes and sampling limits.
+5. **Publication gate.** Build a successful actual-data receipt with fingerprint-only public inputs and diagnostic artifacts under the [project readiness contract](https://github.com/natgurlain/kaggle-bible/blob/main/docs/content-model.md#learning-project-readiness-incremental-version-1-extension). The old CSV runner's raw-row artifact and `reader-provided-data` label do not satisfy that contract. Until authorized execution and evidence review occur, this port stays planned and cannot replace the synthetic receipt or be called actual-data verified.
 
 ## Problem, data, and evaluation
 

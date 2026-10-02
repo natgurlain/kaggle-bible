@@ -98,6 +98,7 @@ const solutionScoreSchema = z.object({
 export const competitionSchema = contentSchema.extend({
 	id: z.string().regex(/^competition-[a-z0-9]+(?:-[a-z0-9]+)*$/),
 	slug: idString,
+	learning_card: z.object({ outcome: z.string().trim().min(1), prerequisites: z.array(z.string().trim().min(1)).min(1), actual_data_access: z.object({ instructions: z.string().trim().min(1), url: webUrl }) }).optional(),
 	learning_goals: z.array(z.string().min(1)).max(5).default([]),
 	meta_kaggle_id: z.string().regex(/^\d+$/).optional(),
 	kaggle_slug: idString,
@@ -218,6 +219,25 @@ export const reproductionSchema = z.object({
 	limitations: z.array(z.string()),
 });
 
+const projectText = z.string().trim().min(1);
+const projectAsset = z.string().regex(/^\/exercises\/[a-z0-9-]+\.(?:py|ipynb|txt|json)$/);
+const fingerprint = z.string().regex(/^[a-f0-9]{64}$/);
+const readiness = z.enum(['planned', 'runnable', 'actual-data-verified', 'blocked']);
+export const projectSchema = z.object({
+ readiness,
+ readiness_history: z.array(readiness).min(1),
+ outcome: projectText,
+ prerequisites: z.array(projectText).min(1),
+ access: z.object({ instructions: projectText, provenance_url: z.url(), authorization: projectText, redistribution: z.enum(['public-input', 'private-input']) }),
+ package: z.object({ notebook_path: projectAsset, notebook_sha256: fingerprint, environment_path: projectAsset, environment_sha256: fingerprint, script_sha256: fingerprint, helper_path: projectAsset.optional(), helper_sha256: fingerprint.optional() }).refine(pkg=>(pkg.helper_path===undefined)===(pkg.helper_sha256===undefined), 'Helper path and fingerprint must be declared together').optional(),
+ baseline: projectText,
+ controlled_change: projectText,
+ diagnostics: z.array(projectText).min(1),
+ troubleshooting: z.array(z.object({ symptom: projectText, recovery: projectText })).min(1),
+ next_lesson: z.object({ title: projectText, url: z.string().regex(/^\/(?!\/)[a-z0-9/#-]+$/), experiment: projectText }),
+ blocker: z.object({ reason: projectText, owner: projectText, next_action: projectText }).optional(),
+});
+
 // Learning exercises are independent of historical solution reproductions.
 export const exerciseSchema = z.object({
 	schema_version: z.literal(1),
@@ -228,9 +248,10 @@ export const exerciseSchema = z.object({
 	competition_id: reference('competitions'),
 	summary: z.string().min(1),
 	data_scope: z.enum(['generated-teaching-fixture', 'open-teaching-data', 'competition-data']),
+	project: projectSchema.optional(),
 	script_path: z.string().regex(/^\/exercises\/[a-z0-9-]+\.py$/),
-	receipt_path: z.string().regex(/^\/exercises\/[a-z0-9-]+-receipt\.json$/),
-	data_path: z.string().regex(/^\/exercises\/[a-z0-9-]+-data\.json$/),
+	receipt_path: z.string().regex(/^\/exercises\/[a-z0-9-]+-receipt\.json$/).optional(),
+	data_path: z.string().regex(/^\/exercises\/[a-z0-9-]+-data\.json$/).optional(),
 	platform: z.string().min(1),
 	expected_splits: z.array(z.string().min(1)).min(1).refine(values => new Set(values).size === values.length, 'Expected unique split identifiers'),
 	python_version: z.string().regex(/^\d+\.\d+\.\d+$/),

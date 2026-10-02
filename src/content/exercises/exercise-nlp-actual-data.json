@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "id": "exercise-nlp-actual-data",
+  "status": "draft",
+  "slug": "nlp-actual-data",
+  "title": "Disaster Tweets private-data comparison (blocked candidate)",
+  "competition_id": "competition-nlp-getting-started",
+  "summary": "Candidate private-input package comparing unigram Naive Bayes with adjacent word pairs on identical train-only folds; no actual competition inputs supplied.",
+  "data_scope": "competition-data",
+  "script_path": "/exercises/nlp-actual-data.py",
+  "platform": "Darwin arm64",
+  "expected_splits": [
+    "stratified fold 1",
+    "stratified fold 2",
+    "stratified fold 3",
+    "stratified fold 4",
+    "stratified fold 5"
+  ],
+  "python_version": "3.12.14",
+  "dependencies": "Python standard library only",
+  "seed": 17,
+  "split_definition": "Five target-stratified folds with seed 17; exact normalized duplicate texts rejected; vocabulary and class counts fit training rows only.",
+  "metric": "positive-class F1 (zero when denominator is zero)",
+  "direction": "maximize",
+  "memory_scope": "traced-python-allocations",
+  "command": "python3 nlp-actual-data.py --acknowledge-authorized-data",
+  "environment": "Declared target: Python 3.12.14 standard library on Darwin arm64; no actual Disaster Tweets run recorded. Set private input/output environment variables as documented before execution.",
+  "steps": [
+    "Obtain authorized private training and optional test files outside Git/public; inspect current access/rules.",
+    "Use the pinned package and declare duplicate policy before scoring; do not silently deduplicate to pass.",
+    "Compare unchanged unigram/pair models on the same five train-only folds; inspect aggregate confusion and private local errors.",
+    "Compare notebook/script metrics exactly; locally validate a private submission without uploading."
+  ],
+  "limitations": [
+    "No actual Disaster Tweets competition data has been supplied or executed; generated tests cannot satisfy actual-data acceptance.",
+    "Exact token-normalized duplicates are rejected without silent deletion; near-duplicates and grouped-template leakage remain limitations.",
+    "Random stratification does not group events, users or time.",
+    "Mean fold F1 is distinct from pooled OOF and hidden competition test F1.",
+    "Raw text, user-supplied IDs and local error excerpts stay private.",
+    "Traced allocations are not RSS; no actual learner compute budget measured."
+  ],
+  "project": {
+    "readiness": "blocked",
+    "readiness_history": [
+      "planned",
+      "blocked"
+    ],
+    "outcome": "Explain a train-only text feature comparison, positive-class F1 and false-positive/negative patterns without publishing raw texts.",
+    "prerequisites": [
+      "Run a local Python script and set private environment variables.",
+      "Explain binary targets, positive-class F1 and the vocabulary fitting boundary."
+    ],
+    "access": {
+      "instructions": "Inspect https://www.kaggle.com/competitions/nlp-getting-started/data and current rules yourself; obtain authorized train.csv and optional test.csv privately. Follow docs/nlp-actual-data-setup.md; no automatic acquisition or submission.",
+      "provenance_url": "https://www.kaggle.com/competitions/nlp-getting-started/data",
+      "authorization": "Missing: no authorized learner-supplied competition inputs or access evidence received.",
+      "redistribution": "private-input"
+    },
+    "package": {
+      "notebook_path": "/exercises/nlp-actual-data.ipynb",
+      "environment_path": "/exercises/nlp-actual-data-environment.txt",
+      "helper_path": "/exercises/nlp-word-pairs.py",
+      "helper_sha256": "75ccbf247a955f3f06d08444c87fc79cf5eb3f46abae106204314bd5a278d599",
+      "script_sha256": "3f7a9662e10557a651867f78b2707289157848bec88a19678ac6d6acc37c292f",
+      "notebook_sha256": "aff94655b8e82210afd18ef3d575fbe4f0fcc7eea45b4ce1b46fe29e21a9bd15",
+      "environment_sha256": "2d7e4f14e7ad927716402427c4ac18f214a4bee22fefa7b46fec4386c5bb6dcf"
+    },
+    "baseline": "Fit unigram Naive Bayes vocabulary and counts inside each fixed stratified training fold.",
+    "controlled_change": "Add adjacent word pairs with unchanged smoothing, threshold and folds; retain worse outcomes.",
+    "diagnostics": [
+      "Does adding adjacent word pairs help consistently across the same five fixed stratified folds?",
+      "What do aggregate false positives/negatives and repeated-template overlap omit about transfer?"
+    ],
+    "troubleshooting": [
+      {
+        "symptom": "Missing authorized data or access failure",
+        "recovery": "Retain blocked status; the owner must supply private authorized paths and inspect access conditions before running."
+      },
+      {
+        "symptom": "Input/path/package validation failure",
+        "recovery": "Use the setup recovery table, restore pinned files and rerun into a new private output directory; never publish raw errors or inputs."
+      }
+    ],
+    "next_lesson": {
+      "title": "Validation checks",
+      "url": "/practices/validation-checks/",
+      "experiment": "Freeze a duplicate-aware grouped split as a separate sensitivity analysis; preserve the primary comparison and require separate authorized evidence."
+    },
+    "blocker": {
+      "reason": "Authorized Disaster Tweets paths, reviewed duplicate/access policy and a successful privacy-reviewed actual-data receipt have not been supplied.",
+      "owner": "Unassigned: authorized data owner needed.",
+      "next_action": "Supply authorized private Disaster Tweets file paths and access provenance; run the pinned package, inspect safe candidates, and obtain exact-head review before readiness promotion."
+    }
+  }
+}

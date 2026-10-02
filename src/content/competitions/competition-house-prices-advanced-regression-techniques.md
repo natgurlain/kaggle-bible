@@ -82,7 +82,17 @@
       "conditions": "Fit all category target statistics inside each fold and use a fixed smoothing weight.",
       "limitations": "This simple original lab does not reproduce stacking/PCA authors or establish spatial/time transfer."
     }
-  ]
+  ],
+  "learning_card": {
+    "outcome": "Compare global and neighborhood means of log prices on frozen folds and explain log-scale RMSE, fallback groups and target-scale limits.",
+    "prerequisites": [
+      "Read numerical and categorical columns, averages and a regression error metric."
+    ],
+    "actual_data_access": {
+      "instructions": "For actual-data work, obtain authorized train.csv from the official data page. Sign-in and rule acceptance may be required. Competition data is not bundled.",
+      "url": "https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/data"
+    }
+  }
 }
 ---
 
@@ -113,3 +123,7 @@ Both original implementations were inspected as text and not executed. Rolling l
 ## Unresolved questions
 
 How does each author pipeline perform after fold-isolating preprocessing and target encoding? Do neighborhood-held-out or chronological splits change the model ordering? A useful contribution supplies a precise source locator, authorized data scope, full split description and actual run receipt.
+
+### Actual-data package status
+
+A separate [private-input package setup](https://github.com/natgurlain/kaggle-bible/blob/main/docs/house-actual-data-setup.md) is a draft blocked candidate for [#70](https://github.com/natgurlain/kaggle-bible/issues/70). It preserves the global log-price mean versus fixed neighborhood smoothing comparison and keeps row residuals and submission IDs private. No authorized Ames data has been supplied or run, and official scoring-formula inspection remains unresolved. Generated software tests and the existing published fixture do not satisfy actual-data acceptance.

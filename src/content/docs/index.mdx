@@ -8,8 +8,8 @@ hero:
     - text: Explore the guides
       link: /competitions/
       icon: right-arrow
-    - text: Start learning
-      link: /start/
+    - text: Try a first project
+      link: '#first-project'
       icon: external
       variant: minimal
 ---
@@ -17,7 +17,9 @@ hero:
 import { Card, CardGrid } from '@astrojs/starlight/components';
 import PublishedLibrary from '../../components/PublishedLibrary.astro';
 import LibraryMilestones from '../../components/LibraryMilestones.astro';
+import FirstProject from '../../components/FirstProject.astro';
 
+<FirstProject />
 <LibraryMilestones />
 
 Kaggle Bible is a practical, searchable knowledge base for turning past competition evidence into better decisions in a new competition.

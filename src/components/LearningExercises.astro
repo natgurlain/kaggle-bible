@@ -1,4 +1,5 @@
 ---
+import { projectReadiness, projectReadinessLabels } from '../content/exercise-policy.js';
 import { learningLibrary } from '../content/learning-library';
 const { competitionId } = Astro.props;
 const library = await learningLibrary();
@@ -6,27 +7,40 @@ const exercises = library.exercises.filter(x => !competitionId || x.entry.data.c
 ---
 {exercises.length ? <section class="learning-exercises" id="learning-exercise" aria-label="Learning exercises">
 {exercises.map(({entry,receipt}) => <article class="exercise-card" id={`exercise-${entry.data.slug}`}>
- <p class="exercise-scope">Executed exercise · {entry.data.data_scope.replaceAll('-', ' ')}</p>
+ <p class="exercise-scope">{projectReadinessLabels[projectReadiness(entry.data)]} project · {entry.data.data_scope.replaceAll('-', ' ')}</p>
  <h2>{entry.data.title}</h2><p>{entry.data.summary}</p>
  <p><a href={`/competitions/${library.guides.find(g=>g.id===entry.data.competition_id.id)?.data.slug}/`}>Read the competition guide</a></p>
  <p><strong>Environment:</strong> {entry.data.environment}</p>
- <p><a data-exercise-start={entry.data.slug} href={entry.data.script_path} download>Download the experiment</a> · <a href={entry.data.receipt_path}>Inspect the executed run receipt</a> · <a href={entry.data.data_path}>Recorded input artifact</a></p>
+ {entry.data.project && <div class="project-contract">
+ <p><strong>Outcome:</strong> {entry.data.project.outcome}</p>
+ <p><strong>Prerequisites:</strong> {entry.data.project.prerequisites.join(' ')}</p>
+ <p><strong>Data access:</strong> {entry.data.project.access.instructions} <a href={entry.data.project.access.provenance_url}>Input provenance</a>. {entry.data.project.access.authorization}</p>
+ {entry.data.project.blocker && <p><strong>Blocked:</strong> {entry.data.project.blocker.reason} Owner: {entry.data.project.blocker.owner}. Next action: {entry.data.project.blocker.next_action}</p>}
+ <p><strong>Fixed validation:</strong> {entry.data.split_definition} Seed: {entry.data.seed}.</p>
+ <p><strong>Baseline:</strong> {entry.data.project.baseline} <strong>One controlled change:</strong> {entry.data.project.controlled_change}</p>
+ <ul>{entry.data.project.diagnostics.map(item=><li>{item}</li>)}</ul>
+ <details><summary>Troubleshooting and recovery</summary><ul>{entry.data.project.troubleshooting.map(item=><li><strong>{item.symptom}:</strong> {item.recovery}</li>)}</ul></details>
+ <p><strong>Next lesson:</strong> <a href={entry.data.project.next_lesson.url}>{entry.data.project.next_lesson.title}</a>. {entry.data.project.next_lesson.experiment}</p>
+ {entry.data.project.package && ['runnable','actual-data-verified'].includes(entry.data.project.readiness) && <p><a href={entry.data.project.package.notebook_path} download>Download the notebook</a> · <a href={entry.data.project.package.environment_path}>Pinned environment</a>. The notebook runs the shared script below.</p>}
+ </div>}
+ {(!entry.data.project || ['runnable','actual-data-verified'].includes(entry.data.project.readiness)) && <><p><a data-exercise-start={entry.data.slug} href={entry.data.script_path} download>Download the experiment</a> · {entry.data.receipt_path && <a href={entry.data.receipt_path}>Inspect the executed run receipt</a>} · {entry.data.data_path && <a href={entry.data.data_path}>Recorded input artifact or fingerprint manifest</a>}</p>
  <pre><code>{entry.data.command}</code></pre>
  <ol>{entry.data.steps.map(step=><li>{step}</li>)}</ol>
  <div data-exercise-progress={entry.data.slug} class="exercise-progress">
  <p data-completion-status role="status">No run reported on this page.</p>
- <button type="button" data-report-completion>I ran this exercise</button>
+ <button type="button" data-report-completion hidden>I ran this exercise</button>
  <button type="button" data-undo-completion hidden>Undo report</button>
+ <noscript><p>On-page run reports require JavaScript. You can share a result using the GitHub link below.</p></noscript>
  <p>This voluntary report stays on this page and resets when you leave. <a href={`https://github.com/natgurlain/kaggle-bible/issues/new?template=exercise-result.yml&title=${encodeURIComponent(entry.data.slug + ' run report')}`}>Share a result on GitHub</a> if you want a reviewed public record.</p>
  </div>
- <details><summary>Recorded run and limits</summary>
+ {receipt && <details><summary>Recorded run and limits</summary>
  <p>{receipt.executed_at} · Python {receipt.python} · {receipt.platform}. Metric: {receipt.metric}; {receipt.direction}.</p>
  <ul>{Object.entries(receipt.aggregate).map(([method,value])=><li>{method}: {String(value)}</li>)}</ul>
  <p>Aggregates are the unweighted mean of the recorded split results.</p>
  <ul>{receipt.fold_results.map((fold: {split:string;train_size:number;validation_size:number;metrics:Record<string,number>})=><li>{fold.split} ({fold.train_size} train, {fold.validation_size} validation): {Object.entries(fold.metrics).map(([method,value])=>`${method} ${value.toFixed(6)}`).join('; ')}</li>)}</ul>
  <p>Wall time: {receipt.wall_seconds.toFixed(3)} seconds. Peak memory ({receipt.memory_scope.replaceAll('-', ' ')}): {(receipt.peak_memory_bytes/1024/1024).toFixed(3)} MiB. These measurements cover this run only; traced allocations are not total process memory.</p>
  <ul>{entry.data.limitations.map(limit=><li>{limit}</li>)}</ul>
- </details>
+ </details>}</>}
 </article>)}
 </section> : !competitionId && <p>No executed learning exercise is published yet. The <a href="/competitions/">reviewed guides</a> include proposed first experiments.</p>}
 <style>

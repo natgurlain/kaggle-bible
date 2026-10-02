@@ -82,7 +82,17 @@
       "conditions": "This is an original bounded teaching design with fixed seed and splits, rather than either author implementation.",
       "limitations": "Generated teaching passengers cannot establish performance on Titanic, and random stratification does not protect family groups."
     }
-  ]
+  ],
+  "learning_card": {
+    "outcome": "Compare passenger group rules on fixed stratified folds and explain why family overlap can limit the accuracy estimate.",
+    "prerequisites": [
+      "Read a small table with a binary target and distinguish training from validation rows."
+    ],
+    "actual_data_access": {
+      "instructions": "For actual-data work, obtain authorized train.csv from the official data page. Sign-in and rule acceptance may be required. Competition data is not bundled.",
+      "url": "https://www.kaggle.com/competitions/titanic/data"
+    }
+  }
 }
 ---
 
@@ -93,6 +103,10 @@ Start with a repeatable split and a simple baseline. The official task predicts 
 ## Suggested first experiment
 
 [Run the passenger-rule exercise](/exercises/#exercise-titanic-group-rules). Compare a sex-group majority rule with one change: split groups by passenger class too. Use the same five stratified folds, seed and accuracy calculation; fit every group decision on training rows only. [claim:experiment-01] The default generated fixture needs no account, packages or competition data. Inspect each fold, retain a worse result, and explain any reversal before trying another change.
+
+## Actual-data package status
+
+The [new actual-data package and private setup instructions](https://github.com/natgurlain/kaggle-bible/blob/main/docs/titanic-actual-data-setup.md) are a blocked candidate tracked in [#67](https://github.com/natgurlain/kaggle-bible/issues/67). No authorized Titanic input has been run or verified. The notebook delegates to the new privacy-safe runner and pinned original computation helper; generated software tests are separate from actual-data evidence. Keep submissions private and inspect review candidates before any publication. The existing fixture exercise remains available with its original labels.
 
 ## Problem, data, and evaluation
 

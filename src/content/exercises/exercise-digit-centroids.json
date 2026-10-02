@@ -39,5 +39,53 @@
     "stratified fold 3",
     "stratified fold 4",
     "stratified fold 5"
-  ]
+  ],
+  "project": {
+    "readiness": "runnable",
+    "readiness_history": [
+      "runnable"
+    ],
+    "outcome": "Check 28 by 28 pixel layout and class coverage, fit class centroids inside training folds, and compare one per-image L2 change without treating generated patterns as handwriting.",
+    "prerequisites": [
+      "Read 784 flattened pixels, integer labels 0\u20139, vector length, class means and fold accuracy; run the pinned Python script locally."
+    ],
+    "access": {
+      "instructions": "Use the generated teaching fixture with --fixture. Optional private inputs require your own authorized access; they have not been verified by this receipt.",
+      "provenance_url": "https://github.com/natgurlain/kaggle-bible",
+      "authorization": "Original generated teaching fixture distributed with the script; no competition files required.",
+      "redistribution": "public-input"
+    },
+    "package": {
+      "notebook_path": "/exercises/digit-centroids.ipynb",
+      "notebook_sha256": "942c71566281544310f5f1ce37319abeea14f6536720e818a567778d40a4831c",
+      "environment_path": "/exercises/digit-centroids-environment.txt",
+      "environment_sha256": "c681cbf1a2d2920611488e3410a43937eccaf355559b81466907e3fea738bca7",
+      "script_sha256": "8de76e7ae614dc0aac32a82e97d446ae66d09394af6a67cb625eb4e0ef7201fd"
+    },
+    "baseline": "Fit raw-centroids using training rows only on the fixed declared splits.",
+    "controlled_change": "Compare image-l2-centroids on exactly the same splits; a worse metric is a valid outcome.",
+    "diagnostics": [
+      "Inspect label counts and blank-image behavior before fitting; explain why every fold needs all ten classes.",
+      "Compare raw and L2-normalized centroid accuracy on every unchanged fold and explain why the pattern-fixture result does not establish writer-held-out performance."
+    ],
+    "troubleshooting": [
+      {
+        "symptom": "Wrong image shape, pixel range or label",
+        "recovery": "The validator requires exactly 784 finite pixel values in 0\u2013255 and an integer label 0\u20139. Fix the authorized input format; do not pad, reshape or clip silently."
+      },
+      {
+        "symptom": "CSV header or class-coverage failure",
+        "recovery": "Use label,pixel0,...,pixel783 in that order and a declared prefix cap between 50 and 1000 with at least five rows of every digit. If the scope cannot meet this, stop and document a new sample before rerunning both methods."
+      },
+      {
+        "symptom": "Blank image has zero L2 length",
+        "recovery": "Keep the script's zero-vector fallback; count blank images and inspect their effect without dividing by zero."
+      }
+    ],
+    "next_lesson": {
+      "title": "Digit actual-data preparation",
+      "url": "/competitions/digit-recognizer/#bounded-future-actual-data-experiment",
+      "experiment": "Record authorized input provenance and class coverage for a fixed prefix, then prepare a safe actual-data receipt adapter. Actual handwritten-digit execution is not yet verified."
+    }
+  }
 }

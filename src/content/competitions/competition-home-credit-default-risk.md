@@ -6,6 +6,13 @@ slug: home-credit-default-risk
 status: published
 title: Home Credit Default Risk
 summary: An evidence map of relational feature engineering and model diversity for applicant-level credit-risk ranking, with validation and leaderboard uncertainty kept explicit.
+learning_card:
+  outcome: "Explain applicant-level aggregation boundaries and compare sourced AUC claims without treating incompatible validation protocols as interchangeable."
+  prerequisites:
+    - "Understand table joins, grouped entities, train-only feature construction and binary-ranking metrics."
+  actual_data_access:
+    instructions: "For actual-data work, obtain authorized application and related credit-history tables from the official data page. Sign-in and rule acceptance may be required. Competition data is not bundled. No executed project is published here."
+    url: https://www.kaggle.com/competitions/home-credit-default-risk/data
 learning_goals:
   - Build applicant-level aggregates without crossing the prediction boundary.
   - Compare validation protocols before interpreting reported AUC.
@@ -228,6 +235,24 @@ Applicant-linked aggregation and model diversity occur in both write-ups, but ne
 ## Bounded lesson
 
 Start with one applicant-level baseline and add one family of history aggregates at a time on frozen stratified folds. Keep an out-of-fold prediction for every training applicant before creating model-derived history features. Compare per-fold AUC and retain a feature family only if its result is stable enough to justify added complexity. This is an editorial experiment proposal, not an ablation measured by either team. [claim:experiment-01]
+
+## Current learner role
+
+**Outcome:** preserve customer-keyed validation while deciding whether one family of relational aggregates adds useful information to an application-only baseline. Prerequisites are many-to-one joins, customer keys, prediction-time availability, train-only preprocessing and AUC. The source-reported CV/public/private AUC values below are historical solution claims; none is a learner baseline or a result from this proposed experiment.
+
+**Execution state:** this is a guide-only relational lesson. No learner project, fixture execution or actual-data receipt is published for Home Credit. Runtime and process-memory needs are unknown, and historical solution hardware cannot establish them. Access is a separate blocker: an explicitly unassigned maintainer must establish permitted local use and reporting rights under the [official data page](https://www.kaggle.com/competitions/home-credit-default-risk/data) and current rules before running a port. Public source readability does not establish those rights.
+
+**Next task:** document the application/customer key, the one history table's join cardinality and its prediction-time cutoff from an authorized data dictionary; then prepare the bounded comparison below. Do not expand to the full relational winning system, ensembles or target-derived history features.
+
+## Bounded future actual-data experiment
+
+This is an editorial plan, not an executed AUC or a reproduction. Owner: **maintainer — unassigned**. Next action: establish authorized local inputs and verify key/time semantics; missing access or unverified cutoff semantics keeps execution blocked.
+
+1. **Bound the input.** Propose at most 10,000 application-training entity rows, ordered by verified `SK_ID_CURR` and fixed before fitting, plus only their permitted prior-credit records from one table (`bureau.csv`). Verify the authorized data dictionary and reject duplicate application keys, ambiguous joins or invalid targets. Require at least five customers of each binary target class. Keep complete eligible histories for these customers; if more than 100,000 history rows are needed, stop and declare a smaller customer scope before fitting rather than truncate histories silently. Do not bring in balance, installment or previous-application tables for this first comparison.
+2. **Freeze customer-keyed validation.** Use five target-stratified folds with seed 17 at the verified application/customer entity boundary, with each entity in one validation fold only. Establish whether `SK_ID_CURR` identifies an application/loan or a distinct customer; do not infer person-held-out validation from a sampled-loan key. If multiple application keys can be linked to one verified customer, construct group-aware folds that keep them together and verify both target classes in every training and validation fold; stop if the declared scope cannot satisfy those constraints. If that mapping is unavailable, label the result application-keyed and leave cross-application customer generalization unknown. Assign all of that customer's related records to the same customer boundary; never split history rows independently. Keep private assignments and a public split fingerprint. Use only history available at application prediction time. Before filtering on `DAYS_CREDIT <= 0`, verify the dictionary confirms that column's relative-time meaning; unknown or missing timing semantics blocks this plan. A validation entity's own permitted past history is an input to its prediction, not a training example pooled with other customers.
+3. **Baseline and one change.** After verifying their definitions, use fixed numeric application fields `DAYS_BIRTH`, `AMT_INCOME_TOTAL` and `AMT_CREDIT` with fold-fitted median imputation, scaling and logistic regression (`C=1`, `solver=lbfgs`, `max_iter=1000`, no class weighting). Add exactly one applicant-linked feature: the count of eligible prior-credit rows, with zero for a verified absence of eligible history. Keep those folds, preprocessing and model settings unchanged. Do not use history labels, target means, model-derived features, neural models or ensembles. Report per-fold and aggregate AUC, including a worse result; reaching a source author's score is not a completion requirement.
+4. **Relational diagnostics.** Record uniqueness, join cardinality, missing-history coverage, cutoff exclusions and label counts as permitted aggregates. Check that a left join retains exactly one prediction row per application customer, held-out customers never become training rows, and preprocessing fits training folds only. Compare fold AUC differences and inspect instability before proposing a second feature family. Unknown join/time semantics or an AUC undefined because a fold lacks a class is a failure to recover, not a score to invent.
+5. **Resource and receipt plan.** Pin the shared script/notebook/environment and any helper. Measure full wall time for input, joins, preprocessing, fitting, predictions and diagnostics, per-method time and peak process RSS with a documented boundary; record CPU, thread count and dependency versions. Input limits bound scope, not promised runtime or memory. Actual resources and completion time remain unknown. Publish only a successful safe receipt, input fingerprints and permitted aggregate diagnostic summaries; retain datasets, customer keys, labels and fold assignments privately. Keep historical source scores separate and preserve failures and limits.
 
 ## Suggested first experiment
 

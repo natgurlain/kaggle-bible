@@ -1,0 +1,32 @@
+---
+import { learningLibrary } from '../content/learning-library';
+import { learningPathSteps } from '../content/learning-path-policy.js';
+const library=await learningLibrary();
+const steps=learningPathSteps(library.guides,library.exercises);
+const groups=[{id:'core',title:'Core sequence'},{id:'vision',title:'Optional vision branch'},{id:'forecast',title:'Forecasting progression'}];
+---
+<div class="learning-path">
+{groups.map(group=><section aria-labelledby={`path-${group.id}`}>
+ <h2 id={`path-${group.id}`}>{group.title}</h2>
+ {steps.filter(step=>step.group===group.id).map(step=><article id={`lesson-${step.slug}`} class="path-step" data-path-step={step.slug}>
+  <h3>{step.title}</h3><p><strong>Before this step:</strong> {step.before}</p>
+  {step.project ? <>
+   <p class="readiness"><strong>{step.project.label} · {step.project.scope}</strong></p>
+   <p><strong>Outcome:</strong> {step.project.outcome}</p>
+   <p><strong>Prerequisites:</strong> {step.project.prerequisites.join(' ')}</p>
+   <p><strong>Run the comparison:</strong> {step.project.baseline} {step.project.change}</p>
+   <p><a href={step.project.href}>Start this project</a> · <a href={step.guide_href}>Read the guide</a></p>
+   <p><strong>Explain before advancing:</strong> {step.explain} Keep the baseline and changed-method results on the same declared splits, plus a diagnostic and a limitation. A worse result is valid; a metric gain or leaderboard rank is not the gate.</p>
+  </> : <>
+   <p><strong>Project not runnable yet.</strong> No published runnable project is available for this step.</p>
+   {step.guide_href && <p><a href={step.guide_href}>Study the available guide</a>; guide availability does not establish project execution.</p>}
+  </>}
+  <p class="actual-status"><strong>Actual-data status:</strong> {step.actual_status}</p>
+  {step.actual_blocker && <p>{step.actual_blocker}</p>}
+ </article>)}
+</section>)}
+</div>
+<style>
+.path-step{border:1px solid var(--sl-color-gray-4);border-radius:.6rem;padding:1rem;margin:1rem 0;overflow-wrap:anywhere}
+.path-step h3{margin-top:0}.path-step p{margin:.65rem 0}.readiness{font-weight:600}.actual-status{border-top:1px solid var(--sl-color-gray-4);padding-top:.65rem}
+</style>

@@ -7,11 +7,11 @@ Kaggle Bible is organized around decisions. Read just enough evidence to choose 
 
 ## Your first loop
 
-1. Pick a competition from the [beginner-to-advanced path](/path/) or [competition catalog](/competitions/).
-2. Read the problem, data, metric, and validation sections before looking at model recipes.
-3. Establish a cheap baseline and write down the split, seed, runtime, and score.
-4. Use the guide’s evidence cards to choose one change at a time.
-5. Record what happened, including negative results, before trying the next idea.
+1. Start with [Titanic in the learning path](/path/#lesson-titanic), then House Prices and Disaster Tweets. Digit is an optional vision branch; M5 adds time-based forecasting. Follow the current readiness label before using a project start link.
+2. Read the outcome and prerequisites, then the problem, metric and validation sections. A generated teaching fixture's receipt is not a competition-data result. Actual-data projects require authorized inputs and their own reviewed execution evidence.
+3. Run the pinned baseline and one change on the same declared split, seed and input scope. Record both methods' per-split results and the measurement limits; runtime and completion time for another input remain unknown.
+4. Inspect a diagnostic and explain why the change helped, hurt or remains inconclusive, plus one limit of the split or data. A worse metric is valid; positive gain or leaderboard rank is not required to advance.
+5. Keep your own notes and choose the next available path step only after that explanation. There is no login or saved progress. [Guide-only and pending study](/path/#optional-future-study) are separate from runnable lessons.
 
 ## Read evidence labels carefully
 

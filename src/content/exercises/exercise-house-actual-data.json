@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "id": "exercise-house-actual-data",
+  "status": "draft",
+  "slug": "house-actual-data",
+  "title": "House Prices private-data comparison (blocked candidate)",
+  "competition_id": "competition-house-prices-advanced-regression-techniques",
+  "summary": "Candidate private-input package comparing global log-price mean with fixed neighborhood smoothing; no authorized Ames run or official scoring-formula verification yet.",
+  "data_scope": "competition-data",
+  "script_path": "/exercises/house-actual-data.py",
+  "platform": "Darwin arm64",
+  "expected_splits": [
+    "random fold 1",
+    "random fold 2",
+    "random fold 3",
+    "random fold 4",
+    "random fold 5"
+  ],
+  "python_version": "3.12.14",
+  "dependencies": "Python standard library only",
+  "seed": 17,
+  "split_definition": "Five shuffled random folds with seed 17; each row validates once; all log-price category means fit training rows only.",
+  "metric": "RMSE of natural log prices",
+  "direction": "minimize",
+  "memory_scope": "traced-python-allocations",
+  "command": "python3 house-actual-data.py --acknowledge-authorized-data",
+  "environment": "Declared target: Python 3.12.14 standard library on Darwin arm64; no actual House Prices run recorded. Set private input/output environment variables as documented before execution.",
+  "steps": [
+    "Obtain authorized private Ames training and optional test paths outside Git/public; inspect current data rules and official scoring formula.",
+    "Use the pinned package and private environment variables; preserve the same five random folds and fixed smoothing weight five.",
+    "Inspect public aggregate candidates and private once-only OOF residuals; explain log and dollar units and retain worse changes.",
+    "Compare notebook/script results exactly and validate private submission locally without uploading."
+  ],
+  "limitations": [
+    "No actual Ames competition data has been supplied or executed; generated tests do not satisfy actual-data acceptance.",
+    "Official scoring-formula page returned no readable body in the preparation inspection; no official formula equivalence claimed.",
+    "Random folds do not establish spatial or temporal transfer.",
+    "Mean fold natural-log RMSE is distinct from pooled OOF RMSE; dollar MAE is diagnostic only.",
+    "Row residuals and submission IDs remain private; public slices below ten rows are suppressed.",
+    "Traced allocations are not RSS; no actual learner compute budget measured."
+  ],
+  "project": {
+    "readiness": "blocked",
+    "readiness_history": [
+      "planned",
+      "blocked"
+    ],
+    "outcome": "Explain train-only neighborhood smoothing with fixed random folds and residual diagnostics in log and original units.",
+    "prerequisites": [
+      "Run a local Python script and set private environment variables.",
+      "Explain natural logarithms, RMSE and a training/validation split."
+    ],
+    "access": {
+      "instructions": "Inspect https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/data and current rules yourself; obtain authorized train.csv and optional test.csv privately. Follow docs/house-actual-data-setup.md; no automatic acquisition or submission.",
+      "provenance_url": "https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/data",
+      "authorization": "Missing: no authorized learner-supplied competition inputs or access evidence received.",
+      "redistribution": "private-input"
+    },
+    "package": {
+      "notebook_path": "/exercises/house-actual-data.ipynb",
+      "environment_path": "/exercises/house-actual-data-environment.txt",
+      "helper_path": "/exercises/house-neighborhood.py",
+      "helper_sha256": "b50f952c3d40e842ef9ba1f96836c0b2f74743701f07df99ec7d6e30171c6ef7",
+      "script_sha256": "c5f1661303a15d734197beae37e3161b4b53f3e7c4dc623d06d1aa7c58d5ff9e",
+      "notebook_sha256": "f52ef21381eef2f0677b428ce8fb0c6e2bf6c09f1390fd16f1dac4c53d46c814",
+      "environment_sha256": "2ff94d8df75c7f2cab9c8fd236f73816f43ad9e7dbba039cac591fd03d978e0d"
+    },
+    "baseline": "Fit the global training natural-log price mean inside each fixed random fold.",
+    "controlled_change": "Compare neighborhood means with five fixed pseudo-examples on exactly the same folds; retain worse outcomes.",
+    "diagnostics": [
+      "Does the neighborhood change help consistently across the same five unchanged random folds?",
+      "How do log residuals and original-dollar errors differ across fixed price bins and seen/unseen neighborhoods?"
+    ],
+    "troubleshooting": [
+      {
+        "symptom": "Missing authorized data or access failure",
+        "recovery": "Retain blocked status; the owner must supply private authorized paths and inspect access conditions before running."
+      },
+      {
+        "symptom": "Input/path/package validation failure",
+        "recovery": "Use the setup recovery table, restore pinned files and rerun into a new private output directory; never publish raw errors or inputs."
+      }
+    ],
+    "next_lesson": {
+      "title": "Validation checks",
+      "url": "/practices/validation-checks/",
+      "experiment": "Freeze one spatial split before fitting and compare the same two methods; this requires a separate authorized run."
+    },
+    "blocker": {
+      "reason": "Authorized Ames competition paths, inspected official scoring/access evidence and a successful privacy-reviewed actual-data receipt have not been supplied.",
+      "owner": "Unassigned: authorized data owner needed.",
+      "next_action": "Supply authorized private House Prices file paths and access provenance; run the pinned package, inspect safe candidates, and obtain exact-head review before readiness promotion."
+    }
+  }
+}

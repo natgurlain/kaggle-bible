@@ -14,7 +14,7 @@
   "steps": [
     "Download and run the script with Python 3.12.14. No packages, weights or account are needed for the fixture.",
     "Compare unigrams with unigrams plus adjacent word pairs; train vocabulary and class counts inside each fold. Both models use fixed Laplace smoothing.",
-    "Inspect per-fold positive-class F1 and the printed false-positive/negative counts. Use the receipt’s error IDs to inspect those texts in the recorded input. Retain a worse result and explain whether template overlap limits interpretation.",
+    "Inspect per-fold positive-class F1 and the printed false-positive/negative counts. Use the receipt\u2019s error IDs to inspect those texts in the recorded input. Retain a worse result and explain whether template overlap limits interpretation.",
     "Optional: --csv authorized-train.csv reads unique id,text,target rows. Empty texts and exact normalized duplicates are rejected; choose and document any grouping/deduplication policy first. Generated CSV mode is tested; competition tweets were not run."
   ],
   "limitations": [
@@ -38,5 +38,45 @@
     "stratified fold 3",
     "stratified fold 4",
     "stratified fold 5"
-  ]
+  ],
+  "project": {
+    "readiness": "runnable",
+    "readiness_history": [
+      "runnable"
+    ],
+    "outcome": "Compare unigram Naive Bayes with one adjacent-word-pair change on the same stratified folds. Original generated template texts demonstrate the fitting workflow rather than real tweet quality.",
+    "prerequisites": [
+      "Run a Python script locally and read per-split metric results."
+    ],
+    "access": {
+      "instructions": "Use the generated teaching fixture with --fixture. Optional private inputs require your own authorized access; they have not been verified by this receipt.",
+      "provenance_url": "https://github.com/natgurlain/kaggle-bible",
+      "authorization": "Original generated teaching fixture distributed with the script; no competition files required.",
+      "redistribution": "public-input"
+    },
+    "package": {
+      "notebook_path": "/exercises/nlp-word-pairs.ipynb",
+      "notebook_sha256": "8c40c1465572b446dd91b8441c6cab50583ab0695fceaf6452a1cbf5c660a954",
+      "environment_path": "/exercises/nlp-word-pairs-environment.txt",
+      "environment_sha256": "c681cbf1a2d2920611488e3410a43937eccaf355559b81466907e3fea738bca7",
+      "script_sha256": "75ccbf247a955f3f06d08444c87fc79cf5eb3f46abae106204314bd5a278d599"
+    },
+    "baseline": "Fit unigrams using training rows only on the fixed declared splits.",
+    "controlled_change": "Compare unigrams-and-pairs on exactly the same splits; a worse metric is a valid outcome.",
+    "diagnostics": [
+      "Inspect every recorded split and compare the direction and size of the method difference.",
+      "Explain the split assumption and at least one limit before choosing another experiment."
+    ],
+    "troubleshooting": [
+      {
+        "symptom": "Python version or input-column error",
+        "recovery": "Use the pinned Python version, inspect the script error, and rerun the fixture before attempting authorized private inputs."
+      }
+    ],
+    "next_lesson": {
+      "title": "Validation practice",
+      "url": "/practices/validation-checks/",
+      "experiment": "Choose one new split assumption, freeze it before fitting, and compare the same methods without tuning against held-out labels."
+    }
+  }
 }

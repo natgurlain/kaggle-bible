@@ -1,27 +1,43 @@
 # Lesson-sharing drafts
 
-These are reusable drafts. They have not been posted or sent. Choose a relevant community, read its rules, and adapt the lesson and caveat before publishing.
+These concise drafts have not been posted or sent. They describe existing generated-fixture lessons, not completed actual-data projects, historical reproductions or learner outcomes. Before any later publication, check the live links and the community's rules. No community contact is authorized by these drafts.
 
-## Validation before model complexity
+## Titanic: keep the comparison inside the folds
 
-Kaggle Bible compares two Titanic tutorials and traces their validation choices back to the original sources. Its small passenger-rule exercise fits every statistic inside the training fold. The generated fixture demonstrates the workflow, not a competition score or historical reproduction.
+Try Kaggle Bible's Titanic passenger-rule lesson: compare sex-majority with sex-and-class-majority on the same training-only folds. The generated fixture teaches the validation workflow; it is not a Titanic competition result. Help us check setup with a sanitized success or failure report.
 
-Guide: https://kaggle-bible.vercel.app/competitions/titanic/
+Lesson: https://kaggle-bible.vercel.app/exercises/#exercise-titanic-group-rules
 
-Found a missing condition? Help improve the evidence on GitHub: https://github.com/natgurlain/kaggle-bible — one source locator or correction is enough.
+Task: https://kaggle-bible.vercel.app/contribute/#titanic-report-a-fixture-setup-failure-or-successful-run
 
-## Text features need a fitting boundary
+Live project: https://kaggle-bible.vercel.app/
 
-A text baseline needs more than a classifier: vocabulary fitting belongs inside validation. The Disaster Tweets guide compares two primary workflows; the original word-pair exercise keeps a neutral result visible. Its repeated generated templates do not establish real tweet quality.
+GitHub project task: https://github.com/natgurlain/kaggle-bible/issues/67 — authorized-data execution remains pending; a fixture report does not complete it.
 
-Guide: https://kaggle-bible.vercel.app/competitions/nlp-getting-started/
+## Disaster Tweets: explain the error, not just the score
 
-We welcome source corrections and actual run receipts through GitHub: https://github.com/natgurlain/kaggle-bible/issues/new/choose
+What changes when a text baseline adds adjacent word pairs? Kaggle Bible keeps the same folds and fits vocabulary inside training. Its generated-template lesson retains the neutral result and recorded errors; it does not establish real tweet quality. Contribute one precise error explanation.
 
-## A resource number needs a scope
+Lesson: https://kaggle-bible.vercel.app/exercises/#exercise-nlp-word-pairs
 
-Wall time, peak memory, tuning cost and final-system cost answer different questions. Kaggle Bible keeps unknown historical resource details unknown and records the scope of its own learning runs.
+Task: https://kaggle-bible.vercel.app/contribute/#disaster-tweets-explain-one-recorded-text-error
 
-Practice: https://kaggle-bible.vercel.app/practices/compute-resource-planning/
+Live project: https://kaggle-bible.vercel.app/
 
-Help locate a precise original resource report or improve a guide: https://github.com/natgurlain/kaggle-bible/issues/new/choose
+GitHub project task: https://github.com/natgurlain/kaggle-bible/issues/71
+
+## M5: make the forecast boundary explicit
+
+Before trying a forecasting model, trace what one forecast origin can see. Kaggle Bible's generated M5 teaching fixture compares seasonal-naive with a fixed four-week averaging change across rolling origins. Its unweighted mean absolute error is not competition WRMSSE. Help audit one origin and preserve a worse result.
+
+Lesson: https://kaggle-bible.vercel.app/exercises/#exercise-m5-rolling-origin
+
+Task: https://kaggle-bible.vercel.app/contribute/#m5-audit-one-forecast-origin
+
+Live project: https://kaggle-bible.vercel.app/
+
+GitHub project task: https://github.com/natgurlain/kaggle-bible/issues/72
+
+## Refresh after an actual-data release
+
+An unassigned maintainer should refresh only the affected draft after an exact-head reviewed release is available on its live route. Replace the fixture scope only when a published actual-data receipt supports the new wording, link the precise package/diagnostic and corresponding task, and retain this file's history. Keep historical rank reproduction and reader comprehension separate; do not add measured resource claims from an unrelated fixture. The reviewer must check lesson availability, evidence scope, caveats and links. Until then, these fixture drafts remain the available copy.
