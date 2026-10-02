@@ -1,6 +1,6 @@
 # Research notes and initial selection queue
 
-Research date: 2026-09-22. These notes support the design proposal; they are not published competition guides. Repository inspection found an empty Git worktree with no application or content to migrate.
+Historical research date: 2026-09-22. The 2026-10-02 queue and IEEE-CIS audit below supersede the original shortlist ordering; the older notes remain dated evidence, not current publication/readiness claims. These notes support the design proposal; they are not published competition guides. Repository inspection found an empty Git worktree with no application or content to migrate.
 
 ## Tooling checked
 
@@ -90,3 +90,54 @@ Research limits: this is a source-qualification audit, not a full content audit 
 ## Getting Started teaching exception (2026-09-30)
 
 Titanic, House Prices, NLP Getting Started and Digit Recognizer are selected as ongoing educational tasks rather than historical final-leaderboard case studies. They still require a verifiable official task and metric and two independently authored primary approaches. Keep end_date null, final ranks unknown and author tutorials distinct from winning solutions. Register precise validation gaps; an executed original teaching fixture does not reproduce those authors or the competition. Current data access and participation rules must be checked by the participant before downloading or submitting.
+
+
+## Current delivery queue and IEEE-CIS qualification (2026-10-02)
+
+This is planning evidence for [#76](https://github.com/natgurlain/kaggle-bible/issues/76), not a new guide, execution receipt, or publication-status change. The six-guide library and existing teaching fixtures do not establish actual-data project completion. Integrate this planning work after the [project contract #64](https://github.com/natgurlain/kaggle-bible/issues/64); implementation and publication retain the exact-head GPT-6 Luna Max gate in the current delivery/editorial workflows.
+
+### Ordered queue
+
+Finish existing learner projects before expanding the archive. At most **three actual-data ports may be active at once**; research, qualification, and a queue entry do not consume or assign a port. The delivery coordinator must record an execution owner and available slot in the linked issue before starting a port, and release the slot when work finishes or becomes access-blocked. Owners below are explicitly unassigned because this document does not establish lasting ownership. Issue progress and durable receipts, rather than this dated planning snapshot, determine actual readiness.
+
+| Order | Project / missing lesson | Planning readiness and blocker | Owner / next action |
+| --- | --- | --- | --- |
+| 1 | [Titanic #67](https://github.com/natgurlain/kaggle-bible/issues/67): first complete actual-data learning loop | Planned; needs #64 contract, authorized inputs, and a successful durable actual-data receipt | Unassigned; finish access/setup, fixed split, baseline/change, diagnostics and receipt before recommending verified execution |
+| 2 | [House Prices #70](https://github.com/natgurlain/kaggle-bible/issues/70): regression and residual diagnosis | Queued behind flagship pattern; actual-data execution not established here | Unassigned; reuse the reviewed Titanic pattern, then compare under a fixed split and inspect residuals |
+| 3 | [Disaster Tweets #71](https://github.com/natgurlain/kaggle-bible/issues/71): text representations and class errors | Queued behind flagship pattern; actual-data execution not established here | Unassigned; compare representations under the same split and retain false-positive/negative diagnostics |
+| 4 | [Scoped M5 #72](https://github.com/natgurlain/kaggle-bible/issues/72): forecast-time information and bounded hierarchy | Waiting for House Prices; authorized inputs and bounded run not established | Unassigned; specify the slice, holdout and metric scope, then record actual runtime and limits |
+| 5 | [Digit Recognizer / Home Credit #73](https://github.com/natgurlain/kaggle-bible/issues/73): preserve vision and relational lessons | Existing-guide/fixture maintenance; no new full-data port commissioned by this row | Unassigned; preserve distinct roles and expose resource/access gaps instead of claiming full execution |
+| 6 | [IEEE-CIS #76](https://github.com/natgurlain/kaggle-bible/issues/76): entity reconstruction and temporal feature availability | **Blocked qualification** on readable official task/metric/rules/access and source attribution gaps below; no implementation slot | Unassigned; inspect official originals, resolve provenance and freeze a bounded experiment plan before requesting a port |
+| 7 | Porto Seguro: possible imbalance/metric comparison | Deferred replacement lead; official evaluation/rules bodies also unreadable in this audit; no qualified replacement | Unassigned; only revisit if it can fill the required lesson with inspectable primary evidence |
+
+No numerical rubric score or reader-demand claim is assigned. Priorities 1–5 finish existing product commitments; IEEE addresses a distinct entity/time lesson if qualified. Catalog size alone never raises a candidate's priority. Record actual voluntary reader demand separately when evidence exists.
+
+### IEEE-CIS source-access receipt
+
+Access date: **2026-10-02**. No dataset, model, or solution code was executed or downloaded. The original NVIDIA article body and original author repository README were inspected. Search excerpts were used only to discover leads. The NVIDIA page's separately marked AI-generated summary was excluded from evidence.
+
+| Official original attempted | Access observation | Disposition |
+| --- | --- | --- |
+| [Task description](https://www.kaggle.com/competitions/ieee-fraud-detection/overview/description) | Page title returned, zero readable body lines | Official target/task unverified in this audit |
+| [Evaluation](https://www.kaggle.com/competitions/ieee-fraud-detection/overview/evaluation) | Zero readable body lines; legacy `/c/` route also attempted | ROC-AUC is participant-reported below, not newly verified official metric evidence |
+| [Data/access](https://www.kaggle.com/competitions/ieee-fraud-detection/data) | Zero readable body lines; legacy `/c/` route also attempted | Current download eligibility, agreement steps and data-use conditions unknown; no rules acceptance or access claim |
+| [Rules](https://www.kaggle.com/competitions/ieee-fraud-detection/rules) | Zero readable body lines; search exposed text but direct original and legacy route did not | Full applicable rules, external-data permission and redistribution conditions unverified |
+| [Final leaderboard](https://www.kaggle.com/competitions/ieee-fraud-detection/leaderboard) | Zero readable body lines | Final standings and author-to-team matches unverified |
+
+These observations describe the available reader, not proof that Kaggle removed or globally blocked the pages. A future auditor must inspect readable originals and record exact sections, access date and relevant terms; titles, search snippets and participant accounts cannot close these gates.
+
+### Two independent primary solution reports inspected
+
+**Report A — Carol McDonald and Chris Deotte**, [NVIDIA Technical Blog, 2021-01-26](https://developer.nvidia.com/blog/leveraging-machine-learning-to-detect-fraud-tips-to-developing-a-winning-kaggle-solution/). Deotte is a named participant/coauthor. Inspected locators: `Evaluating the model` (time-before-validation advice), `Feature selection` (first-month/last-month screen), `New features from aggregation encoding` (UID from card/address and day-minus-D1), and `Final model training and predictions submission` (month-grouped GroupKFold and ensemble/postprocessing). The article reports first place; no official row was matched. Its validation prose does not by itself prove every fold trains only on the past: exact fold indices remain to inspect. Entity identity is a reconstructed hypothesis, not verified customer identity. Its `Conclusion` describes accelerated feature preparation, not a measured learner exercise or complete-system budget. End-to-end hardware, memory, runtime and cost remain unknown here. No score or speed claim is adopted.
+
+**Report B — repository author `white-bird`**, [original README](https://github.com/white-bird/kaggle-ieee), pinned [README revision 116030bcd992bc0ffcfe74035f302be5a31a1f2c](https://github.com/white-bird/kaggle-ieee/blob/116030bcd992bc0ffcfe74035f302be5a31a1f2c/README.md). The pinned body was read through GitHub's public contents API after the pinned web view failed. Locators: numbered keys 1–4, `LB 9590-9600`, and `LB 9600-9630`. The author describes entity-like keys, two-stage modeling and combining train/test during grouping. Numerical improvements remain author reports, not isolated gains or reproduced results. Holdout indices, fold construction, resource profile and final rank are unknown. The linked Kaggle blend notebook was not inspected. Grouping across the full test set is competition-time context, not proof of feature availability for future transactions.
+
+These are independently presented participant accounts: different displayed authors, repositories and system descriptions, with no displayed common authorship. This supports provisional independence; Report B's real-name/team attribution still needs confirmation. It does not establish official placement or code ownership for the whole team. The previously listed [jxzly repository](https://github.com/jxzly/Kaggle-IEEE-CIS-Fraud-Detection-2019) was also readable, but its short run instructions do not establish a second detailed write-up or a connection to a named team; its “10th” description remains unverified attribution. The [linked Kaggle write-up](https://www.kaggle.com/competitions/ieee-fraud-detection/writeups/m5-10th-solution-and-code) returned no readable body.
+
+### Decision, replacement and bounded next experiment
+
+**Decision: blocked, not rejected and not ready-to-draft.** Two substantive original reports provide useful research material, but the official-source eligibility gate is incomplete. Keep IEEE as future study and retain the gaps; do not publish a guide or commence an actual-data port merely because two reports are readable.
+
+Apply the existing rubric conservatively: source inspectability is partial, entity/time reasoning would add a distinct lesson, modest-compute suitability is unknown, and measured reader demand is absent. No 100-point score is justified. Porto Seguro is a deferred replacement lead for validation/imbalance coverage, not a like-for-like entity/time replacement: its [official evaluation](https://www.kaggle.com/competitions/porto-seguro-safe-driver-prediction/overview/evaluation) and [rules](https://www.kaggle.com/competitions/porto-seguro-safe-driver-prediction/rules) also returned zero readable body lines. It has not passed official or two-source qualification in this audit. Replacing IEEE now would merely hide the same access gate.
+
+After official qualification and #64 integration, propose one bounded training-data exercise: fix a chronological holdout and a deterministic bounded input selection; compare a baseline with one past-only entity aggregate under identical settings; log holdout entity overlap and feature availability at prediction time. Inspect actual source code before specifying the aggregate, never compute it using future rows or holdout labels, and document missing true customer IDs and label-delay information. Freeze row/time limits, seeds, split indices, environment and metric definition before running. Capture actual metrics, diagnostics and measured resource scope; deterioration is a valid result. This is an editorial experiment proposal, not a ready project, proven transfer claim, historical reproduction or authorization to acquire data.

@@ -2,6 +2,14 @@
 
 The path turns the inventory into a sequence of decisions. A reader should finish each stage with a working habit and a reviewed competition lesson, then move forward when the completion gate is met. The suggested competitions are editorial starting points; they are not ranked as universally best, and the full guide can change their order when source coverage is reviewed.
 
+## Availability and expansion gate (2026-10-02)
+
+The stages below describe future-study skills; they do not establish runnable actual-data packages or learner comprehension. Finish the existing [Titanic #67](https://github.com/natgurlain/kaggle-bible/issues/67), [House Prices #70](https://github.com/natgurlain/kaggle-bible/issues/70), [Disaster Tweets #71](https://github.com/natgurlain/kaggle-bible/issues/71) and [scoped M5 #72](https://github.com/natgurlain/kaggle-bible/issues/72) work before adding new ports. [#73](https://github.com/natgurlain/kaggle-bible/issues/73) preserves the distinct vision/relational roles of Digit Recognizer and Home Credit.
+
+**IEEE-CIS is future study, guide pending, and source qualification blocked.** The [dated research audit](research.md#ieee-cis-source-access-receipt) records two readable primary reports but unreadable official task/evaluation/data/rules/leaderboard bodies. Participant-reported metric and rank do not close those gates. [#76](https://github.com/natgurlain/kaggle-bible/issues/76) records the next audit action and bounded experiment proposal; neither is authorization or evidence of completed implementation. Readiness remains independent of Level 1/2/3 editorial completeness and requires the [#64 project contract](https://github.com/natgurlain/kaggle-bible/issues/64).
+
+The [ordered research queue](research.md#ordered-queue) caps active actual-data ports at three. An assigned issue owner, authorized access and dependency-ready scope are needed before occupying a slot. An advanced topic's presence here does not reserve one. Move forward using actual receipts and explainable learner artifacts; synthetic teaching runs and reviewed historical reports remain distinct evidence.
+
 ## How to use the path
 
 Choose one competition at a time. For each one:
@@ -45,7 +53,7 @@ Goal: handle complex validation, composite metrics, external data, model diversi
 
 | Sequence | Suggested competition | What to practice | Completion gate |
 | --- | --- | --- | --- |
-| 8 | [IEEE-CIS Fraud Detection](https://www.kaggle.com/competitions/ieee-fraud-detection) | Entity reconstruction, temporal behavior, sparse identifiers, leakage and distribution shift | Document feature availability in time, compare a temporal-aware check, and keep external-data provenance |
+| 8 | [IEEE-CIS Fraud Detection](https://www.kaggle.com/competitions/ieee-fraud-detection) — guide pending; qualification blocked | Entity reconstruction, temporal behavior, sparse identifiers, leakage and distribution shift | Document feature availability in time, compare a temporal-aware check, and keep external-data provenance |
 | 9 | [Jigsaw Unintended Bias in Toxicity Classification](https://www.kaggle.com/competitions/jigsaw-unintended-bias-in-toxicity-classification) | Composite metrics, subgroup diagnostics, auxiliary targets, model diversity | Report the overall and subgroup metrics separately and explain which objective the model optimizes |
 | 10 | [SIIM-ISIC Melanoma Classification](https://www.kaggle.com/competitions/siim-isic-melanoma-classification) | Small imbalanced vision data, leak-free folds, external data, rank averaging | Compare a single model with a diverse ensemble under a fixed fold design and account for compute |
 | 11 | [Cassava Leaf Disease Classification](https://www.kaggle.com/competitions/cassava-leaf-disease-classification) | Domain-specific pretraining, augmentation, model diversity, ensemble selection | Explain why a model is diverse in error space and what evidence supports the ensemble choice |
