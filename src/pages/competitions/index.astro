@@ -99,7 +99,7 @@ const catalogAsset = '/data/competition-discovery.json';
 				getCatalogCardPresentation,
 				readCatalogFilters,
 				serializeCatalogState,
-                filterCatalog,
+				filterCatalog,
 				usesArchiveView,
 			} from '../../content/catalog-policy.js';
 
@@ -131,7 +131,7 @@ const catalogAsset = '/data/competition-discovery.json';
 			const catalogAsset = document.querySelector<HTMLElement>('.catalog-shell')?.dataset.catalogAsset;
 		if (!catalogAsset) throw new Error('The catalog asset path is missing.');
 			const guideRows: CatalogCompetition[] = JSON.parse(document.querySelector('#guide-records')!.textContent!);
-            let competitions: CatalogCompetition[] = [];
+			let competitions: CatalogCompetition[] = [];
 			const published = document.querySelector<HTMLElement>('#published-guides')!;
 			const region = document.querySelector<HTMLElement>('#result-region')!;
 			const retry = document.querySelector<HTMLButtonElement>('#retry')!;
@@ -170,28 +170,31 @@ const catalogAsset = '/data/competition-discovery.json';
 					: new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(date);
 			};
 
-			const updateUrl = () => {
+			const updateUrl = (historyMode: 'push' | 'replace' = 'replace') => {
 				const search = serializeCatalogState({
 					query: query.value,
 					category: category.value,
 					state: state.value,
 					level: level.value,
 				}, archiveView, page);
-                const effectiveSearch = search;
-                const archiveSearch = serializeCatalogState(currentFilters(), true);
-                document.querySelector<HTMLAnchorElement>('#archive-view')!.href = `?${archiveSearch}`;
-                document.querySelector<HTMLAnchorElement>('#guide-view')!.href = `?${serializeCatalogState(currentFilters(), false)}`;
-                document.querySelector('#archive-view')!.setAttribute('aria-current', archiveView ? 'page' : 'false');
-                document.querySelector('#guide-view')!.setAttribute('aria-current', archiveView ? 'false' : 'page');
+				const effectiveSearch = search;
+				const archiveSearch = serializeCatalogState(currentFilters(), true);
+				document.querySelector<HTMLAnchorElement>('#archive-view')!.href = `?${archiveSearch}`;
+				document.querySelector<HTMLAnchorElement>('#guide-view')!.href = `?${serializeCatalogState(currentFilters(), false)}`;
+				document.querySelector('#archive-view')!.setAttribute('aria-current', archiveView ? 'page' : 'false');
+				document.querySelector('#guide-view')!.setAttribute('aria-current', archiveView ? 'false' : 'page');
 				const next = effectiveSearch
 					? `?${effectiveSearch}${window.location.hash}`
 					: `${window.location.pathname}${window.location.hash}`;
-				window.history.replaceState({}, '', next);
+				if (next !== `${window.location.pathname}${window.location.search}${window.location.hash}`
+					&& next !== `${window.location.search}${window.location.hash}`) {
+					window.history[historyMode === 'push' ? 'pushState' : 'replaceState']({}, '', next);
+				}
 			};
 
-			const render = () => {
-                const filtered = filterCatalog(archiveView ? competitions : guideRows, currentFilters(), archiveView);
-                published.hidden = true;
+			const render = (historyMode: 'push' | 'replace' = 'replace') => {
+				const filtered = filterCatalog(archiveView ? competitions : guideRows, currentFilters(), archiveView);
+				published.hidden = true;
 
 				const paginationResult = paginateCatalog(filtered, page);
 				page = paginationResult.page; pages = paginationResult.pages;
@@ -202,23 +205,23 @@ const catalogAsset = '/data/competition-discovery.json';
 
 				if (!visible.length) {
 					results.innerHTML = archiveView
-                        ? '<p class="empty">No archive competitions match these filters. Try a broader search.</p>'
-                        : `<p class="empty">No available guides match these filters. <a href="?${escapeHtml(serializeCatalogState(currentFilters(), true))}">Search all competitions in the archive</a>.</p>`;
-					updateUrl();
+						? '<p class="empty">No archive competitions match these filters. Try a broader search.</p>'
+						: `<p class="empty">No available guides match these filters. <a href="?${escapeHtml(serializeCatalogState(currentFilters(), true))}">Search all competitions in the archive</a>.</p>`;
+					updateUrl(historyMode);
 					return;
 				}
 
-                if (!archiveView) {
-                    const visibleRoutes = new Set(visible.map((row: CatalogCompetition) => getCatalogCardPresentation(row).guideHref));
-                    published.querySelectorAll<HTMLElement>('.library-card').forEach(card => {
-                        const route = card.querySelector('a')?.getAttribute('href');
-                        card.hidden = !visibleRoutes.has(route ?? null);
-                    });
-                    published.hidden = false;
-                    results.innerHTML = '';
-                    updateUrl();
-                    return;
-                }
+				if (!archiveView) {
+					const visibleRoutes = new Set(visible.map((row: CatalogCompetition) => getCatalogCardPresentation(row).guideHref));
+					published.querySelectorAll<HTMLElement>('.library-card').forEach(card => {
+						const route = card.querySelector('a')?.getAttribute('href');
+						card.hidden = !visibleRoutes.has(route ?? null);
+					});
+					published.hidden = false;
+					results.innerHTML = '';
+					updateUrl(historyMode);
+					return;
+				}
 
 				results.innerHTML = visible.map((competition: CatalogCompetition) => {
 					const presentation = getCatalogCardPresentation(competition);
@@ -245,26 +248,28 @@ const catalogAsset = '/data/competition-discovery.json';
 						</div>
 					</article>`;
 				}).join('');
-				updateUrl();
+				updateUrl(historyMode);
 			};
 
 			const currentFilters = () => ({ query: query.value, category: category.value, state: state.value, level: level.value });
-            const filters = readCatalogFilters(window.location.search);
+			const filters = readCatalogFilters(window.location.search);
 			let archiveView = usesArchiveView(window.location.search);
 			query.value = filters.query;
 			category.value = filters.category;
 			state.value = filters.state;
 			level.value = filters.level;
 			const updates = createLatestTask();
-            function updateResults() {
-                updateUrl();
-                if (archiveView) return ensureArchive();
-                updates.invalidate();
-                region.setAttribute('aria-busy', 'false');
-                retry.hidden = true;
-                delete document.documentElement.dataset.archivePending;
-                render();
-            }
+			function updateResults(historyMode: 'push' | 'replace' = 'replace') {
+				if (archiveView) {
+					updateUrl(historyMode);
+					return ensureArchive();
+				}
+				updates.invalidate();
+				region.setAttribute('aria-busy', 'false');
+				retry.hidden = true;
+				delete document.documentElement.dataset.archivePending;
+				render(historyMode);
+			}
 			async function ensureArchive() {
 				await updates.run(async () => {
 					if (!load) {
@@ -273,7 +278,7 @@ const catalogAsset = '/data/competition-discovery.json';
 							.then(data => {
 								competitions = expandCatalog(data) as CatalogCompetition[];
 								const priority: Record<string,number> = {'Getting Started':0, Featured:1, Research:2};
-                                competitions.sort((a,b) => (priority[a.category] ?? 3) - (priority[b.category] ?? 3) || b.deadline_at.localeCompare(a.deadline_at) || Number(a.id) - Number(b.id));
+								competitions.sort((a,b) => (priority[a.category] ?? 3) - (priority[b.category] ?? 3) || b.deadline_at.localeCompare(a.deadline_at) || Number(a.id) - Number(b.id));
 							}).catch(error => { load = undefined; throw error; });
 					}
 					await load;
@@ -287,25 +292,25 @@ const catalogAsset = '/data/competition-discovery.json';
 			let timer: ReturnType<typeof setTimeout>;
 			query.addEventListener('input', () => {
 				updates.invalidate(); clearTimeout(timer); page = 1;
-				updateUrl();
-                timer = setTimeout(updateResults, 180);
+				timer = setTimeout(() => updateResults('push'), 180);
 			});
 			[category, state, level].forEach(control => control.addEventListener('change', () => {
-				clearTimeout(timer); page = 1; updateResults();
+				clearTimeout(timer); page = 1; updateResults('push');
 			}));
-			retry.addEventListener('click', () => { clearTimeout(timer); ensureArchive(); });            previous.addEventListener('click', () => { page--; render(); });
-            next.addEventListener('click', () => { page++; render(); });
-            last.addEventListener('click', () => { page = pages; render(); });
-            window.addEventListener('popstate', () => {
-                clearTimeout(timer); updates.invalidate();
-                const restored = readCatalogFilters(window.location.search);
-                query.value = restored.query; category.value = restored.category;
-                state.value = restored.state; level.value = restored.level;
-                archiveView = usesArchiveView(window.location.search);
-                page = Math.max(1, Math.floor(Number(new URLSearchParams(location.search).get('page')) || 1));
-                updateResults();
-            });
-            updateResults();
+			retry.addEventListener('click', () => { clearTimeout(timer); updateResults('push'); });
+			previous.addEventListener('click', () => { clearTimeout(timer); updates.invalidate(); page--; render('push'); });
+			next.addEventListener('click', () => { clearTimeout(timer); updates.invalidate(); page++; render('push'); });
+			last.addEventListener('click', () => { clearTimeout(timer); updates.invalidate(); page = pages; render('push'); });
+			window.addEventListener('popstate', () => {
+				clearTimeout(timer); updates.invalidate();
+				const restored = readCatalogFilters(window.location.search);
+				query.value = restored.query; category.value = restored.category;
+				state.value = restored.state; level.value = restored.level;
+				archiveView = usesArchiveView(window.location.search);
+				page = Math.max(1, Math.floor(Number(new URLSearchParams(location.search).get('page')) || 1));
+				updateResults();
+			});
+			updateResults();
 
 		</script>
 	</body>
