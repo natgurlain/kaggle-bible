@@ -6,6 +6,7 @@ import csv
 import hashlib
 import types
 import json
+import io
 import os
 import platform
 import statistics
@@ -66,8 +67,10 @@ def private_path(path):
     return resolved
 
 
-def load_passengers(path, labeled):
-    with Path(path).open(newline='', encoding='utf-8-sig') as stream:
+def load_passengers(path, labeled, snapshot=None):
+    # Decode the captured bytes whose digest is used by the receipt manifest.
+    captured = Path(path).read_bytes() if snapshot is None else snapshot
+    with io.StringIO(captured.decode('utf-8-sig'), newline='') as stream:
         reader = csv.DictReader(stream)
         required = {'PassengerId', 'Sex', 'Pclass'} | ({'Survived'} if labeled else set())
         if not reader.fieldnames or len(reader.fieldnames) != len(set(reader.fieldnames)) or not required.issubset(reader.fieldnames):
@@ -171,9 +174,10 @@ def run_project(train_csv, output_dir, data_kind, acknowledged, test_csv=None, e
     tracemalloc.start()
     start = time.perf_counter()
     try:
-        input_hashes = {path: sha(path) for path in [train_path, test_path] if path}
-        rows = load_passengers(train_path, True)
-        test_rows = load_passengers(test_path, False) if test_path else None
+        input_snapshots = {path: path.read_bytes() for path in [train_path, test_path] if path}
+        input_hashes = {path: hashlib.sha256(snapshot).hexdigest() for path, snapshot in input_snapshots.items()}
+        rows = load_passengers(train_path, True, input_snapshots[train_path])
+        test_rows = load_passengers(test_path, False, input_snapshots[test_path]) if test_path else None
         if test_rows and {row['PassengerId'] for row in rows}.intersection(row['PassengerId'] for row in test_rows):
             raise ValueError('Train and test PassengerId sets must not overlap.')
         if submission_to_check:
@@ -182,7 +186,7 @@ def run_project(train_csv, output_dir, data_kind, acknowledged, test_csv=None, e
         if any(sha(path) != digest for path, digest in input_hashes.items()):
             raise ValueError('Input changed during execution; rerun with frozen private files.')
         manifest = {'kind': 'fingerprint-only', 'files': [
-            {'name': name, 'sha256': sha(path), 'bytes': path.stat().st_size}
+            {'name': name, 'sha256': input_hashes[path], 'bytes': len(input_snapshots[path])}
             for name, path in [('train.csv', train_path), ('test.csv', test_path)] if path
         ]}
         output.mkdir(parents=True, mode=0o700)

@@ -1,5 +1,6 @@
 """Generated software tests only: none of these rows are actual Titanic inputs."""
 import csv
+import hashlib
 import importlib.util
 import json
 import os
@@ -137,6 +138,35 @@ class TitanicActualDataTests(unittest.TestCase):
         with mock.patch.object(lab, 'evaluate', mutate):
             with self.assertRaisesRegex(ValueError, 'Input changed'): self.run_generated()
         self.assertFalse((self.base / 'run').exists())
+
+    def test_check_to_manifest_mutation_keeps_digest_and_size_of_parsed_snapshot(self):
+        captured = self.train.read_bytes()
+        original_sha = lab.sha
+        mutated = False
+        evaluated = False
+        original_evaluate = lab.evaluate
+        def mark_evaluated(rows, helper):
+            nonlocal evaluated
+            result = original_evaluate(rows, helper)
+            evaluated = True
+            return result
+        def mutate_after_hash(path):
+            nonlocal mutated
+            digest = original_sha(path)
+            if Path(path).resolve() == self.train.resolve() and evaluated and not mutated:
+                # Simulate mutation immediately after the consistency check returns
+                # its digest; the manifest must never re-read these different bytes.
+                self.train.write_bytes(captured + b'\n')
+                mutated = True
+            return digest
+        with mock.patch.object(lab, 'evaluate', mark_evaluated), mock.patch.object(lab, 'sha', mutate_after_hash):
+            receipt = self.run_generated()
+        self.assertTrue(mutated)
+        self.assertNotEqual(original_sha(self.train), hashlib.sha256(captured).hexdigest())
+        self.assertEqual(receipt['input_manifest']['files'], [
+            {'name': 'train.csv', 'sha256': hashlib.sha256(captured).hexdigest(), 'bytes': len(captured)}
+        ])
+        self.assertEqual(receipt['aggregate'], {'sex-majority': 1.0, 'sex-class-majority': 1.0})
 
     def test_submission_shape_identity_binary_values_and_private_location(self):
         test = self.base / 'test-private.csv'

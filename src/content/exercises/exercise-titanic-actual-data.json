@@ -60,7 +60,7 @@
       "environment_path": "/exercises/titanic-actual-data-environment.txt",
       "helper_path": "/exercises/titanic-group-rules.py",
       "helper_sha256": "f6c9251a09490dd775edab867fa326b09633fee5afc1846d2b590d46d78cf0dd",
-      "script_sha256": "39997e9ca1281a554a072158b060b635f3f79d6fd562b8e51747827e1272143c",
+      "script_sha256": "5967b5aae8ef0bf8a0e258cf311c8c05e8adc6bd22ede748f1f7561dee2bb09d",
       "notebook_sha256": "c936eff831c3bf7c393eb391cfca3f68be2755801e5f778f50f94aec174108f5",
       "environment_sha256": "531f68fda515bb3b7ba6d8f9a0ee3f3364b58a0e4c2601534f9bf641143c2986"
     },
