@@ -291,3 +291,19 @@ test('history restoration cancels a pending archive result and its late failure'
  assert.equal(e['#summary'].textContent,'Showing 1–100 of 251 archive matches.');
  assert.equal(h.fetchCount(),2);
 });
+
+
+test('scope links capture the latest typed query before the debounce commits history',async()=>{
+ const h=await catalogPageHarness(), e=h.elements;
+ e['#query'].value='Titanic';e['#query'].emit('input');
+ assert.equal(h.entries.length,1);
+ assert.equal(h.location.search,'');
+ assert.equal(new URLSearchParams(e['#archive-view'].href).get('q'),'Titanic');
+ assert.equal(new URLSearchParams(e['#guide-view'].href).get('q'),'Titanic');
+ // Follow the archive link immediately, without flushing the pending typing timer.
+ h.history.pushState({},'',e['#archive-view'].href);h.history.go(0);await h.flush();
+ assert.equal(e['#query'].value,'Titanic');
+ assert.equal(usesArchiveView(h.location.search),true);
+ assert.equal(e['#summary'].textContent,'Showing 1–100 of 250 archive matches.');
+ assert.equal(h.entries.length,2);
+});

@@ -170,6 +170,14 @@ const catalogAsset = '/data/competition-discovery.json';
 					: new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(date);
 			};
 
+			const updateViewLinks = () => {
+				const archiveSearch = serializeCatalogState(currentFilters(), true);
+				document.querySelector<HTMLAnchorElement>('#archive-view')!.href = `?${archiveSearch}`;
+				document.querySelector<HTMLAnchorElement>('#guide-view')!.href = `?${serializeCatalogState(currentFilters(), false)}`;
+				document.querySelector('#archive-view')!.setAttribute('aria-current', archiveView ? 'page' : 'false');
+				document.querySelector('#guide-view')!.setAttribute('aria-current', archiveView ? 'false' : 'page');
+			};
+
 			const updateUrl = (historyMode: 'push' | 'replace' = 'replace') => {
 				const search = serializeCatalogState({
 					query: query.value,
@@ -178,11 +186,7 @@ const catalogAsset = '/data/competition-discovery.json';
 					level: level.value,
 				}, archiveView, page);
 				const effectiveSearch = search;
-				const archiveSearch = serializeCatalogState(currentFilters(), true);
-				document.querySelector<HTMLAnchorElement>('#archive-view')!.href = `?${archiveSearch}`;
-				document.querySelector<HTMLAnchorElement>('#guide-view')!.href = `?${serializeCatalogState(currentFilters(), false)}`;
-				document.querySelector('#archive-view')!.setAttribute('aria-current', archiveView ? 'page' : 'false');
-				document.querySelector('#guide-view')!.setAttribute('aria-current', archiveView ? 'false' : 'page');
+				updateViewLinks();
 				const next = effectiveSearch
 					? `?${effectiveSearch}${window.location.hash}`
 					: `${window.location.pathname}${window.location.hash}`;
@@ -292,6 +296,7 @@ const catalogAsset = '/data/competition-discovery.json';
 			let timer: ReturnType<typeof setTimeout>;
 			query.addEventListener('input', () => {
 				updates.invalidate(); clearTimeout(timer); page = 1;
+				updateViewLinks();
 				timer = setTimeout(() => updateResults('push'), 180);
 			});
 			[category, state, level].forEach(control => control.addEventListener('change', () => {
