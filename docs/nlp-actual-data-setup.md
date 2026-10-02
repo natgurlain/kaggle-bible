@@ -22,6 +22,10 @@ python3 nlp-actual-data.py --acknowledge-authorized-data
 
 Omit `NLP_TEST_CSV` if unavailable. CLI alternatives are `--train-csv`, `--test-csv`, `--output-dir`, `--data-kind`. Declaring `competition-data` does not authenticate provenance or authorize access. Generated software tests must declare `generated-test-data`, which cannot satisfy actual-data acceptance. Launch the notebook from the same private package folder and environment, with a different attempt directory. Compare fold/aggregate metrics and all fingerprints exactly; resource observations may differ between executions.
 
+## Official file-description receipt
+
+On 2026-10-02, a direct web open of the official data route returned a title with no readable body. Search retrieval exposed indexed text from the official [Disaster Tweets data page](https://www.kaggle.com/competitions/nlp-getting-started/data), reported as crawled four days earlier. `What files do I need?` names `train.csv`, `test.csv` and `sample_submission.csv`; `Columns` identifies `id`, `text`, optional/blank `location` and `keyword`, and training-only binary `target` (one for a real disaster, zero otherwise). `Metadata > License` says data is subject to competition rules. This supports the package's intended file roles, not current access permission, rules inspection, duplicate absence or a successful run. Its stricter token-normalized duplicate policy remains an experiment constraint requiring private input inspection.
+
 ## Declare duplicate handling before scoring
 
 The fixed primary comparison rejects exact **token-normalized duplicates** within either input and exact normalized train/test overlap. It does not silently drop, relabel or group rows. Blank/token-empty texts and fewer than five training examples of either class also reject the attempt. If authorized files contain duplicates, preserve the originals and the failure; a separate, reviewed selection/grouping policy must define its input identity and scope before any claimed score. Do not delete examples merely to make the runner pass.
