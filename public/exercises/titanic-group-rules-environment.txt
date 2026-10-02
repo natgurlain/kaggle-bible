@@ -1,0 +1,4 @@
+Python==3.12.14
+Dependencies: Python standard library only
+Recorded platform: Darwin arm64
+Notebook frontend is optional; its cell invokes the shared script without a second implementation.

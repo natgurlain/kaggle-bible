@@ -39,5 +39,45 @@
     "growing origin 112",
     "declining origin 140",
     "growing origin 140"
-  ]
+  ],
+  "project": {
+    "readiness": "runnable",
+    "readiness_history": [
+      "runnable"
+    ],
+    "outcome": "Run a seasonal-naive forecast and one four-week averaging change on identical 28-day windows. This small original teaching lab demonstrates the workflow; it does not reproduce an M5 entry.",
+    "prerequisites": [
+      "Run a Python script locally and read per-split metric results."
+    ],
+    "access": {
+      "instructions": "Use the generated teaching fixture with --fixture. Optional private inputs require your own authorized access; they have not been verified by this receipt.",
+      "provenance_url": "https://github.com/natgurlain/kaggle-bible",
+      "authorization": "Original generated teaching fixture distributed with the script; no competition files required.",
+      "redistribution": "public-input"
+    },
+    "package": {
+      "notebook_path": "/exercises/m5-rolling-origin.ipynb",
+      "notebook_sha256": "1dc11ee7c0227fcb32aa71b0bca57b1f80e77dc36e4b843c0a8eaac22e9a280e",
+      "environment_path": "/exercises/m5-rolling-origin-environment.txt",
+      "environment_sha256": "c681cbf1a2d2920611488e3410a43937eccaf355559b81466907e3fea738bca7",
+      "script_sha256": "eb6c90b7a6f629e172107f7e74f41d777cd50bb29508c9b585c0941a9353543f"
+    },
+    "baseline": "Fit seasonal-naive using training rows only on the fixed declared splits.",
+    "controlled_change": "Compare four-week-mean on exactly the same splits; a worse metric is a valid outcome.",
+    "diagnostics": [
+      "Inspect every recorded split and compare the direction and size of the method difference.",
+      "Explain the split assumption and at least one limit before choosing another experiment."
+    ],
+    "troubleshooting": [
+      {
+        "symptom": "Python version or input-column error",
+        "recovery": "Use the pinned Python version, inspect the script error, and rerun the fixture before attempting authorized private inputs."
+      }
+    ],
+    "next_lesson": {
+      "title": "Validation practice",
+      "url": "/practices/validation-checks/",
+      "experiment": "Choose one new split assumption, freeze it before fitting, and compare the same methods without tuning against held-out labels."
+    }
+  }
 }
