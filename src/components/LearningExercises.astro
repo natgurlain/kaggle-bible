@@ -28,8 +28,9 @@ const exercises = library.exercises.filter(x => !competitionId || x.entry.data.c
  <ol>{entry.data.steps.map(step=><li>{step}</li>)}</ol>
  <div data-exercise-progress={entry.data.slug} class="exercise-progress">
  <p data-completion-status role="status">No run reported on this page.</p>
- <button type="button" data-report-completion>I ran this exercise</button>
+ <button type="button" data-report-completion hidden>I ran this exercise</button>
  <button type="button" data-undo-completion hidden>Undo report</button>
+ <noscript><p>On-page run reports require JavaScript. You can share a result using the GitHub link below.</p></noscript>
  <p>This voluntary report stays on this page and resets when you leave. <a href={`https://github.com/natgurlain/kaggle-bible/issues/new?template=exercise-result.yml&title=${encodeURIComponent(entry.data.slug + ' run report')}`}>Share a result on GitHub</a> if you want a reviewed public record.</p>
  </div>
  {receipt && <details><summary>Recorded run and limits</summary>

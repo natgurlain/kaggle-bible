@@ -18,10 +18,23 @@ test('all six authored guide cards have distinct outcomes and preserve actual-da
  assert.equal(cards.reduce((sum,card)=>sum+card.projects.length,0),5);
 });
 test('card resources come exclusively from the matching receipt and retain fixture and memory measurement scope',()=>{
- const guide=guides.find(guide=>guide.data.slug==='titanic');const card=guideCardMetadata(guide,exercises);const receipt=exercises.find(x=>x.entry.data.competition_id===guide.id).receipt;
+ const guide=guides.find(guide=>guide.data.slug==='titanic');const card=guideCardMetadata(guide,exercises);const receipt=exercises.find(x=>x.entry.id===card.projects[0].id && x.entry.data.status==='published').receipt;
  assert.equal(card.projects[0].measured.wall_seconds,receipt.wall_seconds);assert.equal(card.projects[0].measured.peak_memory_bytes,receipt.peak_memory_bytes);
  const html=renderGuideCardDetails(card);assert.match(html,/generated teaching fixture/);assert.match(html,/traced python allocations/);assert.match(html,/not a learner completion-time estimate/);assert.match(html,/Actual-data execution and its resource needs have not been verified/);
  const noReceipt=guideCardMetadata(guide,exercises.map(x=>({...x,receipt:null})));assert.match(renderGuideCardDetails(noReceipt),/Measured run resources are unknown/);
+});
+test('draft-first input order retains the published fixture receipt and excludes actual-data draft links',()=>{
+ const guide=guides.find(guide=>guide.data.slug==='titanic');
+ const drafts=exercises.filter(x=>x.entry.data.status==='draft');
+ assert.ok(drafts.some(x=>x.entry.data.competition_id===guide.id));
+ const published=exercises.filter(x=>x.entry.data.status==='published');
+ const expected=guideCardMetadata(guide,published);
+ for(const ordered of [[...drafts,...published],[...published,...drafts]]) {
+  const card=guideCardMetadata(guide,ordered);assert.deepEqual(card,expected);
+  assert.equal(card.projects.length,1);assert.equal(card.projects[0].id,'exercise-titanic-group-rules');
+  const html=renderGuideCardDetails(card);
+  for(const draft of drafts.filter(x=>x.entry.data.competition_id===guide.id)) assert.ok(!html.includes(`#exercise-${draft.entry.data.slug}`));
+ }
 });
 test('draft projects and unrelated receipts never appear in card metadata or its links',()=>{
  const guide=guides.find(guide=>guide.data.slug==='titanic');const poisoned=exercises.map(x=>({...x,entry:{...x.entry,data:{...x.entry.data,status:'draft'}}}));
