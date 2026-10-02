@@ -39,7 +39,8 @@ export async function loadExerciseArtifacts(metadata, base='public') {
   if(input) {
    const manifest=JSON.parse(input);
    artifacts.fingerprint_only_input=manifest.kind==='fingerprint-only' && Object.keys(manifest).every(key=>['kind','files'].includes(key)) && Array.isArray(manifest.files) && manifest.files.every(file=>Object.keys(file).every(key=>['name','sha256','bytes'].includes(key)));
-   if(receipt?.input_manifest && canonical(receipt.input_manifest)!==canonical(manifest)) artifacts.fingerprint_only_input=false;
+   artifacts.input_manifest_matches_receipt=Boolean(receipt?.input_manifest) && canonical(receipt.input_manifest)===canonical(manifest);
+   if(receipt?.input_manifest && !artifacts.input_manifest_matches_receipt) artifacts.fingerprint_only_input=false;
   }
  }
  return {receipt,artifacts};
