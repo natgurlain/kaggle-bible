@@ -82,7 +82,17 @@
       "conditions": "Original standard-library lab; vocabulary and class token counts fit only training rows.",
       "limitations": "The generated template fixture and Naive Bayes lab reproduce neither author TF-IDF/transformer pipeline nor competition performance."
     }
-  ]
+  ],
+  "learning_card": {
+    "outcome": "Compare unigram and word-pair rules on the same text folds and explain validation errors and language-shift limits.",
+    "prerequisites": [
+      "Read binary labels and understand simple token counts and precision/recall."
+    ],
+    "actual_data_access": {
+      "instructions": "For actual-data work, obtain authorized train.csv from the official data page. Sign-in and rule acceptance may be required. Competition data is not bundled.",
+      "url": "https://www.kaggle.com/competitions/nlp-getting-started/data"
+    }
+  }
 }
 ---
 
