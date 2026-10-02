@@ -39,5 +39,45 @@
     "stratified fold 3",
     "stratified fold 4",
     "stratified fold 5"
-  ]
+  ],
+  "project": {
+    "readiness": "runnable",
+    "readiness_history": [
+      "runnable"
+    ],
+    "outcome": "Compare raw-pixel nearest-class centroids with one per-image L2 change under a bounded CPU workflow. The original 200 geometric patterns are not real handwritten digits.",
+    "prerequisites": [
+      "Run a Python script locally and read per-split metric results."
+    ],
+    "access": {
+      "instructions": "Use the generated teaching fixture with --fixture. Optional private inputs require your own authorized access; they have not been verified by this receipt.",
+      "provenance_url": "https://github.com/natgurlain/kaggle-bible",
+      "authorization": "Original generated teaching fixture distributed with the script; no competition files required.",
+      "redistribution": "public-input"
+    },
+    "package": {
+      "notebook_path": "/exercises/digit-centroids.ipynb",
+      "notebook_sha256": "942c71566281544310f5f1ce37319abeea14f6536720e818a567778d40a4831c",
+      "environment_path": "/exercises/digit-centroids-environment.txt",
+      "environment_sha256": "c681cbf1a2d2920611488e3410a43937eccaf355559b81466907e3fea738bca7",
+      "script_sha256": "8de76e7ae614dc0aac32a82e97d446ae66d09394af6a67cb625eb4e0ef7201fd"
+    },
+    "baseline": "Fit raw-centroids using training rows only on the fixed declared splits.",
+    "controlled_change": "Compare image-l2-centroids on exactly the same splits; a worse metric is a valid outcome.",
+    "diagnostics": [
+      "Inspect every recorded split and compare the direction and size of the method difference.",
+      "Explain the split assumption and at least one limit before choosing another experiment."
+    ],
+    "troubleshooting": [
+      {
+        "symptom": "Python version or input-column error",
+        "recovery": "Use the pinned Python version, inspect the script error, and rerun the fixture before attempting authorized private inputs."
+      }
+    ],
+    "next_lesson": {
+      "title": "Validation practice",
+      "url": "/practices/validation-checks/",
+      "experiment": "Choose one new split assumption, freeze it before fitting, and compare the same methods without tuning against held-out labels."
+    }
+  }
 }

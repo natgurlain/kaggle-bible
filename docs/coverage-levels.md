@@ -73,3 +73,7 @@ Use these labels in cards, filters, and page headers:
 | 3 | Full guide | Comparative, reviewed guidance is available for planning a next experiment |
 
 Do not call Level 3 “complete forever.” Historical sources, links, dependencies, and community corrections can change its maintenance status.
+
+### Project readiness is a separate axis
+
+Planned, runnable, actual-data verified and blocked project readiness is defined in [content-model.md](content-model.md#learning-project-readiness-incremental-version-1-extension). It does not change Levels 1–3. A runnable generated fixture does not satisfy actual-data readiness. Actual-data verified requires authorized input provenance, private-safe input fingerprints, frozen validation, successful measured baseline/change execution and durable diagnostic receipts. Neither state demonstrates reader learning or a historical solution reproduction, and improvement is not required.

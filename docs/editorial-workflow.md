@@ -55,3 +55,7 @@ Run external link checks weekly once automation exists; triage repeated failures
 If a source disappears, retain its bibliographic record and label the access problem. Prefer an author-provided replacement or a legitimately accessible archived revision; do not rewrite the claim as verified without evidence. If support becomes insufficient, flag or withdraw the claim and update dependent practices.
 
 Track source gaps, unresolved corrections, review age, and local acceptance failures. Keep the queue small enough to finish exact-head reviews; pause coverage expansion if corrections accumulate.
+
+## Publishing learning projects
+
+Use the [project readiness contract](content-model.md#learning-project-readiness-incremental-version-1-extension) independently of guide completeness. Inspect authorization and public artifact contents before publication: restricted data and private paths must never enter receipts, diagnostic summaries, Git or the built site. Planned/blocked projects name missing access, its owner and next action. A fixture receipt can support runnable workflow availability only. Actual-data verified requires a successful durable actual-data receipt, every pinned package/input fingerprint, fixed split/configuration, measured metrics/resources and diagnostic artifacts. Retain worse results and limits. If code or package pins change, demote readiness and rerun; never treat a stale receipt or self-reported completion as verification. Exact-head independent review remains the release gate.
