@@ -1,0 +1,24 @@
+---
+import { LinkButton } from '@astrojs/starlight/components';
+import { learningLibrary } from '../content/learning-library';
+import { recommendedFirstProject } from '../content/first-project-policy.js';
+const first=recommendedFirstProject(await learningLibrary());
+---
+<section id="first-project" class="first-project" aria-labelledby="first-project-heading">
+{first ? <>
+ <p class="evidence-label">{first.label}</p>
+ <h2 id="first-project-heading">{first.title}</h2>
+ <p><strong>Outcome:</strong> {first.outcome}</p>
+ <p><strong>Requirements:</strong> {first.requirements}</p>
+ <LinkButton href={first.href} icon="right-arrow">{first.action}</LinkButton>
+ <p class="evidence-limit">{first.limit} <a href="/milestones/">Read the evidence limits</a>.</p>
+</> : <>
+ <h2 id="first-project-heading">Choose a first lesson</h2>
+ <p>A published runnable Titanic project is not available yet.</p>
+ <LinkButton href="/path/" icon="right-arrow">Explore the learning path</LinkButton>
+</>}
+</section>
+<style>
+.first-project{border:1px solid var(--sl-color-gray-4);border-radius:.6rem;padding:1rem;margin:1rem 0;overflow-wrap:anywhere}
+.first-project h2{margin-top:.4rem}.first-project p{margin:.65rem 0}.evidence-label{font-size:.875rem;font-weight:700}.evidence-limit{font-size:.875rem}
+</style>
