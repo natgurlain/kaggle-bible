@@ -1,0 +1,7 @@
+Python==3.12.14
+Dependencies: Python standard library only
+Recorded platform: Darwin arm64
+Environment target only: no actual Titanic execution receipt exists.
+Imported helper: titanic-group-rules.py
+Imported helper SHA-256: f6c9251a09490dd775edab867fa326b09633fee5afc1846d2b590d46d78cf0dd
+No pip dependencies for the runner. A notebook frontend is optional and is not included in measured runtime.

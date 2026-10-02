@@ -104,6 +104,10 @@ Start with a repeatable split and a simple baseline. The official task predicts 
 
 [Run the passenger-rule exercise](/exercises/#exercise-titanic-group-rules). Compare a sex-group majority rule with one change: split groups by passenger class too. Use the same five stratified folds, seed and accuracy calculation; fit every group decision on training rows only. [claim:experiment-01] The default generated fixture needs no account, packages or competition data. Inspect each fold, retain a worse result, and explain any reversal before trying another change.
 
+## Actual-data package status
+
+The [new actual-data package and private setup instructions](https://github.com/natgurlain/kaggle-bible/blob/main/docs/titanic-actual-data-setup.md) are a blocked candidate tracked in [#67](https://github.com/natgurlain/kaggle-bible/issues/67). No authorized Titanic input has been run or verified. The notebook delegates to the new privacy-safe runner and pinned original computation helper; generated software tests are separate from actual-data evidence. Keep submissions private and inspect review candidates before any publication. The existing fixture exercise remains available with its original labels.
+
 ## Problem, data, and evaluation
 
 The target is survival as a binary label, and the competition metric is accuracy. [claim:task-01] The exercise reads Sex, Pclass and Survived from an authorized reader CSV; it deliberately ignores age, names and ticket relationships. Its generated fixture is not a Titanic data sample. Obtain official data through Kaggle after reviewing current access terms; this site does not distribute it or submit predictions.
