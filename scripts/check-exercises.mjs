@@ -22,7 +22,7 @@ for (const name of (await readdir(folder)).filter(x=>x.endsWith('.json'))) {
  if(data.status!=='published') {
   const {receipt,artifacts}=data.project && ['runnable','actual-data-verified'].includes(data.project.readiness) ? await loadExerciseArtifacts(data) : {receipt:null,artifacts:{}};
   const errors=projectContractErrors(data,receipt,artifacts);
-  if(data.project && errors.length) throw new Error(`${name}: ${errors.join('; ')}`);
+  if(errors.length) throw new Error(`${name}: ${errors.join('; ')}`);
   continue;
  }
  for (const [field,suffix] of [['script_path','\\.py'],['receipt_path','-receipt\\.json'],['data_path','-data\\.json']]) if(data[field]!==undefined && !new RegExp(`^/exercises/[a-z0-9-]+${suffix}$`).test(data[field]??'')) throw new Error(`${name}: unsafe asset path`);

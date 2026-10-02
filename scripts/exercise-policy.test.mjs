@@ -132,6 +132,28 @@ test('runnable nonfixture publishing rejects row artifacts, mismatched manifests
   assert.ok(projectContractErrors(house,raw.receipt,raw.artifacts).some(error=>error.includes('fingerprint-only')));
   assert.ok(projectContractErrors({...house,project:undefined},raw.receipt,raw.artifacts).some(error=>error.includes('fingerprint-only')),'an omitted optional project extension cannot bypass input privacy');
   const rejected=publishingCheck();assert.notEqual(rejected.status,0);assert.match(rejected.stderr,/fingerprint-only/);
+  // Planned/blocked records skip execution loading, so they must not declare input/receipt assets.
+  // Run the real publishing entry point for both drafts and published records.
+  const metadataPath=join(folder,'src/content/exercises',house.id+'.json');
+  for(const status of ['draft','published']) for(const readiness of ['planned','blocked']) {
+   const pending=structuredClone(house);pending.status=status;pending.project.readiness=readiness;pending.project.readiness_history=[readiness];
+   if(readiness==='blocked') pending.project.blocker={reason:'No authorized input',owner:'Maintainer (unassigned)',next_action:'Supply authorized private input'};
+   delete pending.data_path;delete pending.receipt_path;
+   assert.deepEqual(projectContractErrors(pending,null,{}),[]);
+   await writeFile(metadataPath,JSON.stringify(pending));const validPending=publishingCheck();assert.equal(validPending.status,0,validPending.stderr);
+   for(const field of ['data_path','receipt_path']) {
+    const declared={...pending,[field]:house[field]};
+    // Both existing artifacts contain generated row data here; never real competition data.
+    await writeFile(join(folder,'public',house[field]),rows);
+    assert.ok(projectContractErrors(declared,null,{}).some(error=>error.includes('must omit')));
+    await writeFile(metadataPath,JSON.stringify(declared));const rejectedPending=publishingCheck();
+    assert.notEqual(rejectedPending.status,0,`${status} ${readiness} ${field}`);assert.match(rejectedPending.stderr,/must omit public data and receipt artifact references/);
+   }
+  }
+  const omittedDraft={...house,status:'draft',project:undefined};
+  await writeFile(metadataPath,JSON.stringify(omittedDraft));const rejectedLegacyDraft=publishingCheck();
+  assert.notEqual(rejectedLegacyDraft.status,0);assert.match(rejectedLegacyDraft.stderr,/matching actual-data receipt/,'omitting the optional project extension cannot silence draft privacy errors');
+  await writeFile(metadataPath,JSON.stringify(house));
   // Canonical equality permits object-key reordering, but not a different manifest.
   const reordered={files:[{bytes:500,sha256:'d'.repeat(64),name:'train.csv'}],kind:'fingerprint-only'};
   const safe=await writeInput(JSON.stringify(reordered));assert.equal(safe.artifacts.input_manifest_matches_receipt,true);

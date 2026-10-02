@@ -60,6 +60,7 @@ export function projectContractErrors(metadata,receipt,artifacts={}) {
  const pkg=p?.package;
  const hasHelper=pkg?.helper_path!==undefined || pkg?.helper_sha256!==undefined;
  const actualInput=receipt?.evidence_type==='actual-data' || metadata.data_scope!=='generated-teaching-fixture';
+ if(actualInput && ['planned','blocked'].includes(projectReadiness(metadata)) && (metadata.data_path!==undefined || metadata.receipt_path!==undefined)) errors.push('nonfixture planned/blocked projects must omit public data and receipt artifact references');
  if(actualInput && receipt) {
   errors.push(...actualReceiptShapeErrors(receipt,hasHelper));
   if(metadata.data_scope==='generated-teaching-fixture' || receipt.data_scope!==metadata.data_scope || receipt.evidence_type!=='actual-data') errors.push('actual-data evidence and input scope must agree');
