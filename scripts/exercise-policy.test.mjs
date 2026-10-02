@@ -40,7 +40,7 @@ test('readiness transitions require runnable before verified and explicit blocke
 test('actual-data verification needs durable matching manifests, provenance, package and diagnostics; worse metrics remain valid',()=>{
  // Contract-only test values are not published runs or actual-data execution evidence.
  const actual=structuredClone(fixture);actual.data_scope='competition-data';actual.project.readiness='actual-data-verified';actual.project.readiness_history=['runnable','actual-data-verified'];actual.project.access.redistribution='private-input';
- const successful={...receipt,exercise:actual.slug,data_scope:actual.data_scope,execution_status:'succeeded',evidence_type:'actual-data',provenance_url:actual.project.access.provenance_url,authorization:'Test-only authorized-input statement',input_manifest:{kind:'fingerprint-only',files:[{name:'train.csv',sha256:'d'.repeat(64),bytes:500}]},code_fingerprints:actual.project.package,configuration:{baseline:actual.project.baseline,controlled_change:actual.project.controlled_change},diagnostics:actual.project.diagnostics.map((question,i)=>({question,path:`/exercises/test-diagnostic-${i}.json`,sha256:'e'.repeat(64)}))};
+ const successful={...receipt,exercise:actual.slug,data_scope:actual.data_scope,execution_status:'succeeded',evidence_type:'actual-data',provenance_url:actual.project.access.provenance_url,authorization:'Test-only authorized-input statement',input_manifest:{kind:'fingerprint-only',files:[{name:'train.csv',sha256:'d'.repeat(64),bytes:500}]},code_fingerprints:Object.fromEntries(['script','notebook','environment'].map(field=>[`${field}_sha256`,actual.project.package[`${field}_sha256`]])),configuration:{baseline:actual.project.baseline,controlled_change:actual.project.controlled_change},diagnostics:actual.project.diagnostics.map((question,i)=>({question,path:`/exercises/test-diagnostic-${i}.json`,sha256:'e'.repeat(64)}))};
  for(const field of ['script','notebook','environment']) successful.code_fingerprints[`${field}_sha256`]=actual.project.package[`${field}_sha256`];
  const artifacts={...execution.artifacts,fingerprint_only_input:true,diagnostics:Object.fromEntries(successful.diagnostics.map(row=>[row.path,row.sha256]))};
  assert.deepEqual(projectContractErrors(actual,successful,artifacts),[]);
@@ -68,4 +68,34 @@ test('a re-pinned notebook with independent computation or executable arguments 
    assert.ok(projectContractErrors(m,null,loaded.artifacts).some(error=>error.includes('delegate')));
   }
  } finally {await rm(base,{recursive:true,force:true});}
+});
+
+function actualContractTestValues() {
+ const actual=structuredClone(fixture);actual.data_scope='competition-data';actual.project.readiness='actual-data-verified';actual.project.readiness_history=['runnable','actual-data-verified'];
+ const successful={...structuredClone(receipt),exercise:actual.slug,data_scope:actual.data_scope,execution_status:'succeeded',evidence_type:'actual-data',provenance_url:actual.project.access.provenance_url,authorization:'Test-only authorized-input statement',input_manifest:{kind:'fingerprint-only',files:[{name:'train.csv',sha256:'d'.repeat(64),bytes:500}]},code_fingerprints:Object.fromEntries(['script','notebook','environment'].map(field=>[`${field}_sha256`,actual.project.package[`${field}_sha256`]])),configuration:{baseline:actual.project.baseline,controlled_change:actual.project.controlled_change},diagnostics:actual.project.diagnostics.map((question,i)=>({question,path:`/exercises/test-diagnostic-${i}.json`,sha256:'e'.repeat(64)}))};
+ const artifacts={...execution.artifacts,fingerprint_only_input:true,diagnostics:Object.fromEntries(successful.diagnostics.map(row=>[row.path,row.sha256]))};
+ return {actual,successful,artifacts};
+}
+test('actual-data receipts reject raw-data extras in every publishable object while legacy fixtures remain valid',()=>{
+ const {actual,successful,artifacts}=actualContractTestValues();assert.deepEqual(projectContractErrors(actual,successful,artifacts),[]);
+ const mutate=[r=>r.input_rows=[{PassengerId:1}],r=>r.diagnostics[0].raw_rows=[{PassengerId:1}],r=>r.input_manifest.raw_rows=[{PassengerId:1}],r=>r.input_manifest.files[0].raw_rows=[{PassengerId:1}],r=>r.configuration.input_rows=[{PassengerId:1}],r=>r.code_fingerprints.raw_rows=[{PassengerId:1}],r=>r.fold_results[0].raw_rows=[{PassengerId:1}],r=>r.fold_results[0].metrics.raw_rows=[{PassengerId:1}],r=>r.aggregate.raw_rows=[{PassengerId:1}],r=>r.limitations.push({raw_rows:[{PassengerId:1}]}),r=>r.hardware_scope={raw_rows:[{PassengerId:1}]}];
+ for(const update of mutate){const candidate=structuredClone(successful);update(candidate);assert.ok(projectContractErrors(actual,candidate,artifacts).length,String(update));}
+ const runnable=structuredClone(actual);runnable.project.readiness='runnable';runnable.project.readiness_history=['runnable'];
+ assert.ok(projectContractErrors(runnable,{...successful,input_rows:[{PassengerId:1}]},artifacts).length,'runnable actual-data receipt is also checked');
+ assert.deepEqual(projectContractErrors(fixture,execution.receipt,execution.artifacts),[]);
+});
+test('optional imported helper must be declared as a complete pair and match file and receipt fingerprints',async()=>{
+ const {actual,successful,artifacts}=actualContractTestValues();actual.project.package.helper_path='/exercises/titanic-group-rules.py';actual.project.package.helper_sha256=execution.artifacts.script_sha256;
+ successful.code_fingerprints.helper_sha256=actual.project.package.helper_sha256;artifacts.helper_sha256=actual.project.package.helper_sha256;
+ assert.deepEqual(projectContractErrors(actual,successful,artifacts),[]);
+ const runnable=structuredClone(fixture);runnable.project.package.helper_path=actual.project.package.helper_path;runnable.project.package.helper_sha256=actual.project.package.helper_sha256;
+ const loaded=await loadExerciseArtifacts(runnable);assert.equal(loaded.artifacts.helper_sha256,actual.project.package.helper_sha256);assert.deepEqual(projectContractErrors(runnable,loaded.receipt,loaded.artifacts),[]);
+ const noPath=structuredClone(actual);delete noPath.project.package.helper_path;assert.ok(projectContractErrors(noPath,successful,artifacts).some(error=>error.includes('helper')));
+ const noHash=structuredClone(actual);delete noHash.project.package.helper_sha256;assert.ok(projectContractErrors(noHash,successful,artifacts).some(error=>error.includes('helper')));
+ assert.ok(projectContractErrors(actual,successful,{...artifacts,helper_sha256:'f'.repeat(64)}).some(error=>error.includes('helper')));
+ const missingReceipt=structuredClone(successful);delete missingReceipt.code_fingerprints.helper_sha256;assert.ok(projectContractErrors(actual,missingReceipt,artifacts).length);
+ const staleReceipt=structuredClone(successful);staleReceipt.code_fingerprints.helper_sha256='f'.repeat(64);assert.ok(projectContractErrors(actual,staleReceipt,artifacts).some(error=>error.includes('helper')));
+ const undeclared=actualContractTestValues();undeclared.successful.code_fingerprints.helper_sha256=artifacts.helper_sha256;assert.ok(projectContractErrors(undeclared.actual,undeclared.successful,undeclared.artifacts).length);
+ const noFile=structuredClone(fixture);noFile.project.package.helper_path='/exercises/nonexistent-helper.py';noFile.project.package.helper_sha256='f'.repeat(64);
+ await assert.rejects(()=>loadExerciseArtifacts(noFile),/ENOENT/);
 });

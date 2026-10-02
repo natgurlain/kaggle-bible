@@ -33,6 +33,27 @@ export function projectTransitionErrors(previous,next) {
  const allowed={planned:['planned','runnable','blocked'],runnable:['runnable','actual-data-verified','blocked'], 'actual-data-verified':['actual-data-verified','runnable','blocked'],blocked:['blocked','planned','runnable']};
  return allowed[previous]?.includes(next) ? [] : ['invalid project readiness transition'];
 }
+const exactObject = (value, allowed, required=allowed) => value && typeof value==='object' && !Array.isArray(value) && Object.keys(value).every(key=>allowed.includes(key)) && required.every(key=>Object.hasOwn(value,key));
+const actualReceiptFields = ['schema_version','exercise','data_scope','data_sha256','script_sha256','executed_at','python','platform','dependencies','seed','split_definition','metric','direction','memory_scope','fold_results','aggregate','wall_seconds','peak_memory_bytes','limitations','hardware_scope','execution_status','evidence_type','input_manifest','provenance_url','authorization','code_fingerprints','configuration','diagnostics'];
+const actualRequiredFields = actualReceiptFields.filter(key=>key!=='hardware_scope');
+export function actualReceiptShapeErrors(receipt, hasHelper=false) {
+ const errors=[];
+ if(!exactObject(receipt,actualReceiptFields,actualRequiredFields)) return ['actual-data receipt has missing or unsupported fields'];
+ for(const field of ['exercise','data_scope','data_sha256','script_sha256','executed_at','python','platform','dependencies','split_definition','metric','direction','memory_scope','execution_status','evidence_type','provenance_url','authorization']) if(!text(receipt[field])) errors.push(`actual-data receipt ${field} must be text`);
+ if(receipt.schema_version!==1 || !Number.isInteger(receipt.seed) || !['wall_seconds','peak_memory_bytes'].every(key=>typeof receipt[key]==='number' && Number.isFinite(receipt[key]) && receipt[key]>=0)) errors.push('actual-data receipt identity or measured resource types are invalid');
+ if(receipt.hardware_scope!==undefined && !text(receipt.hardware_scope)) errors.push('hardware scope must be text');
+ if(!Array.isArray(receipt.limitations) || !receipt.limitations.length || !receipt.limitations.every(text)) errors.push('receipt limitations must contain only nonempty text');
+ const manifest=receipt.input_manifest;
+ if(!exactObject(manifest,['kind','files']) || manifest.kind!=='fingerprint-only' || !Array.isArray(manifest.files) || !manifest.files.length || !manifest.files.every(file=>exactObject(file,['name','sha256','bytes']) && text(file.name) && /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(file.name) && hash(file.sha256) && Number.isInteger(file.bytes) && file.bytes>0)) errors.push('input manifest has unsupported fields or invalid fingerprints');
+ if(!exactObject(receipt.configuration,['baseline','controlled_change']) || !text(receipt.configuration.baseline) || !text(receipt.configuration.controlled_change)) errors.push('configuration has unsupported fields or missing baseline/change');
+ const fingerprints=['script_sha256','notebook_sha256','environment_sha256',...(hasHelper ? ['helper_sha256'] : [])];
+ if(!exactObject(receipt.code_fingerprints,fingerprints) || !fingerprints.every(key=>hash(receipt.code_fingerprints[key]))) errors.push('code fingerprints have unsupported fields or missing pins');
+ if(!Array.isArray(receipt.diagnostics) || !receipt.diagnostics.length || !receipt.diagnostics.every(row=>exactObject(row,['question','path','sha256']) && text(row.question) && safeProjectAsset(row.path) && row.path.endsWith('.json') && hash(row.sha256))) errors.push('diagnostic references have unsupported fields or invalid pins');
+ const methods=receipt.aggregate && typeof receipt.aggregate==='object' && !Array.isArray(receipt.aggregate) ? Object.keys(receipt.aggregate) : [];
+ if(methods.length!==2 || !methods.every(key=>/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(key) && typeof receipt.aggregate[key]==='number' && Number.isFinite(receipt.aggregate[key]))) errors.push('actual-data aggregate needs exactly two named finite method metrics');
+ if(!Array.isArray(receipt.fold_results) || !receipt.fold_results.length || !receipt.fold_results.every(row=>exactObject(row,['split','train_size','validation_size','metrics']) && text(row.split) && Number.isInteger(row.train_size) && row.train_size>0 && Number.isInteger(row.validation_size) && row.validation_size>0 && exactObject(row.metrics,methods) && methods.every(key=>typeof row.metrics[key]==='number' && Number.isFinite(row.metrics[key])))) errors.push('split results have unsupported fields or invalid metrics');
+ return errors;
+}
 // Artifacts are supplied by the filesystem/build adapter, never inferred from a URL.
 export function projectContractErrors(metadata,receipt,artifacts={}) {
  const p=metadata.project; const errors=[];
@@ -55,6 +76,10 @@ export function projectContractErrors(metadata,receipt,artifacts={}) {
  for(const field of ['script','notebook','environment']) if(!hash(pkg?.[`${field}_sha256`]) || artifacts[`${field}_sha256`]!==pkg?.[`${field}_sha256`]) errors.push(`${field} package fingerprint is missing or stale`);
  if(!artifacts.environment_matches) errors.push('environment artifact does not match declared execution conditions');
  if(!artifacts.notebook_shared_script) errors.push('notebook must delegate all computation to the shared script');
+ const hasHelper=pkg?.helper_path!==undefined || pkg?.helper_sha256!==undefined;
+ if(hasHelper && (!safeProjectAsset(pkg?.helper_path) || !pkg.helper_path.endsWith('.py') || !hash(pkg?.helper_sha256) || artifacts.helper_sha256!==pkg?.helper_sha256)) errors.push('declared helper path/fingerprint pair is missing or stale');
+ if(receipt && (receipt.evidence_type==='actual-data' || metadata.data_scope!=='generated-teaching-fixture')) errors.push(...actualReceiptShapeErrors(receipt,hasHelper));
+ if(receipt && (receipt.evidence_type==='actual-data' || metadata.data_scope!=='generated-teaching-fixture') && hasHelper && receipt.code_fingerprints?.helper_sha256!==pkg?.helper_sha256) errors.push('receipt helper fingerprint does not match package');
  if(state!=='actual-data-verified') return errors;
  if(metadata.data_scope==='generated-teaching-fixture') errors.push('fixture cannot be actual-data verified');
  if(!receipt || receipt.execution_status!=='succeeded' || receipt.evidence_type!=='actual-data') errors.push('successful actual-data receipt is required');

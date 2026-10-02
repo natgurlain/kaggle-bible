@@ -228,7 +228,7 @@ export const projectSchema = z.object({
  outcome: projectText,
  prerequisites: z.array(projectText).min(1),
  access: z.object({ instructions: projectText, provenance_url: z.url(), authorization: projectText, redistribution: z.enum(['public-input', 'private-input']) }),
- package: z.object({ notebook_path: projectAsset, notebook_sha256: fingerprint, environment_path: projectAsset, environment_sha256: fingerprint, script_sha256: fingerprint }).optional(),
+ package: z.object({ notebook_path: projectAsset, notebook_sha256: fingerprint, environment_path: projectAsset, environment_sha256: fingerprint, script_sha256: fingerprint, helper_path: projectAsset.optional(), helper_sha256: fingerprint.optional() }).refine(pkg=>(pkg.helper_path===undefined)===(pkg.helper_sha256===undefined), 'Helper path and fingerprint must be declared together').optional(),
  baseline: projectText,
  controlled_change: projectText,
  diagnostics: z.array(projectText).min(1),

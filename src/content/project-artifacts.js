@@ -16,6 +16,7 @@ export async function loadExerciseArtifacts(metadata, base='public') {
  if(metadata.project && ['runnable','actual-data-verified'].includes(metadata.project.readiness)) {
   const pkg=metadata.project.package;
   const notebook=await read(pkg.notebook_path); const environment=await read(pkg.environment_path);
+  if(pkg.helper_path!==undefined) artifacts.helper_sha256=sha(await read(pkg.helper_path));
   artifacts.notebook_sha256=sha(notebook); artifacts.environment_sha256=sha(environment);
   const parsed=JSON.parse(notebook); const cells=parsed.cells?.filter(cell=>cell.cell_type==='code') ?? [];
   const basename=metadata.script_path.split('/').at(-1);

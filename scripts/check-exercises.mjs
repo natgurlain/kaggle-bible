@@ -36,7 +36,7 @@ for (const name of (await readdir(folder)).filter(x=>x.endsWith('.json'))) {
  if(process.env.CHECK_BUILT_CONTENT==='1') {
   await access(`dist/competitions/${parent.data.slug}/index.html`);
   if(data.project?.next_lesson?.url) await access(`dist${data.project.next_lesson.url.split('#')[0].replace(/\/$/,'')}/index.html`);
-  const paths=[data.script_path,data.receipt_path,data.data_path,data.project?.package?.notebook_path,data.project?.package?.environment_path,...(receipt?.diagnostics ?? []).map(row=>row.path)].filter(Boolean);
+  const paths=[data.script_path,data.receipt_path,data.data_path,data.project?.package?.notebook_path,data.project?.package?.environment_path,data.project?.package?.helper_path,...(receipt?.diagnostics ?? []).map(row=>row.path)].filter(Boolean);
   if(!data.project || ['runnable','actual-data-verified'].includes(data.project.readiness)) for(const asset of paths) await access(`dist${asset}`);
  }
  count++; if(receipt) receiptCount++; if(data.project?.readiness==='actual-data-verified') actualCount++;
