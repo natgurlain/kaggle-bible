@@ -1,8 +1,8 @@
 # Titanic actual-data package: blocked candidate
 
-This is the software portion of [#67](https://github.com/natgurlain/kaggle-bible/issues/67). No authorized Titanic files have been supplied or executed. The new exercise record is **draft / blocked**, and there is no actual-data receipt in this repository. Generated software tests verify parsing, computation, privacy and notebook delegation; they cannot satisfy actual-data acceptance. The existing generated passenger exercise and its measured fixture receipt stay unchanged.
+This is the software portion of [#67](https://github.com/natgurlain/kaggle-bible/issues/67). No authorized Titanic files have been supplied or executed. The new exercise record is **draft / blocked**, and there is no actual-data receipt in this repository. Generated-fixture tests establish the self-contained software package acceptance for #67 by checking parsing, computation, privacy and notebook delegation. They do not establish actual-data execution or actual-data verified readiness. Authorized private inputs are required only if a reader chooses the optional actual-data run below; they are not a software acceptance prerequisite. The existing generated passenger exercise and its measured fixture receipt stay unchanged.
 
-## Obtain private inputs yourself
+## Optional actual-data run: obtain private inputs yourself
 
 Open the [official Titanic data page](https://www.kaggle.com/competitions/titanic/data), inspect the [current rules](https://www.kaggle.com/competitions/titanic/rules), and follow Kaggle's current access prompts. This package neither accepts terms nor downloads files. If the account, rules or download process is unavailable, stop and retain the access blocker. Public source readability does not grant redistribution permission.
 
@@ -10,7 +10,7 @@ Use an authorized, unmodified `train.csv`; optional official `test.csv` enables 
 
 ## Official file-description receipt
 
-On 2026-10-02, a direct web open of the official data route returned a title with no readable body. Search retrieval exposed indexed text from the official [Titanic data page](https://www.kaggle.com/c/titanic/data), reported as crawled last week. `Dataset Description > Overview` identifies labeled `train.csv`, unlabeled `test.csv`, and `gender_submission.csv` as an example prediction file. `Metadata > License` says data is subject to competition rules, and the indexed data-explorer prompt requires signing in or registering and agreeing to the rules. This records official file roles and the indexed access prompt, not completed access, current rules inspection or permission to redistribute. The authorized-data and execution blockers remain.
+On 2026-10-02, a direct web open of the official data route returned a title with no readable body. Search retrieval exposed indexed text from the official [Titanic data page](https://www.kaggle.com/c/titanic/data), reported as crawled last week. `Dataset Description > Overview` identifies labeled `train.csv`, unlabeled `test.csv`, and `gender_submission.csv` as an example prediction file. `Metadata > License` says data is subject to competition rules, and the indexed data-explorer prompt requires signing in or registering and agreeing to the rules. This records official file roles and the indexed access prompt, not completed access, current rules inspection or permission to redistribute. Authorized access and execution remain unverified for an optional actual-data run.
 
 ## Download the pinned package
 
