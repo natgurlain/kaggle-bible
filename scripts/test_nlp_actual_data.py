@@ -121,6 +121,18 @@ class NLPActualDataTests(unittest.TestCase):
         with mock.patch.object(Path,'read_bytes',tamper):
             with self.assertRaisesRegex(ValueError,'helper fingerprint'):lab.load_helper()
 
+    def test_nonexistent_static_output_roots_and_resolved_symlinks_create_no_files(self):
+        for name in ('public', 'dist'):
+            output = self.base / name
+            for destination in (output, self.base / (name + '-link')):
+                if destination != output:
+                    destination.symlink_to(output, target_is_directory=True)
+                before = set(self.base.iterdir())
+                with self.assertRaises(ValueError):
+                    lab.run_project(self.train, destination, 'generated-test-data', True)
+                self.assertFalse(output.exists())
+                self.assertEqual(set(self.base.iterdir()), before)
+
     def test_submission_identity_binary_values_shape_and_private_location(self):
         test=self.base/'test.csv';rows=[{'id':str(0 if i==0 else 20000+i),'text':'novel test '+str(i)}for i in range(12)];write_csv(test,rows);self.run_generated(test_csv=test);path=self.base/'run/submission.csv';lab.validate_submission(path,rows);self.assertFalse((self.base/'run/safe-review/submission.csv').exists())
         with path.open()as stream:valid=list(csv.DictReader(stream))

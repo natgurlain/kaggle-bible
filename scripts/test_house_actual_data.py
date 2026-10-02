@@ -127,6 +127,18 @@ class HouseActualDataTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'new output'):self.run_generated()
         self.assertEqual((self.base/'run/safe-review/house-actual-data-receipt.json').read_bytes(),saved)
 
+    def test_nonexistent_static_output_roots_and_resolved_symlinks_create_no_files(self):
+        for name in ('public', 'dist'):
+            output = self.base / name
+            for destination in (output, self.base / (name + '-link')):
+                if destination != output:
+                    destination.symlink_to(output, target_is_directory=True)
+                before = set(self.base.iterdir())
+                with self.assertRaises(ValueError):
+                    lab.run_project(self.train, destination, 'generated-test-data', True)
+                self.assertFalse(output.exists())
+                self.assertEqual(set(self.base.iterdir()), before)
+
     def test_submission_shape_identity_finite_positive_and_private_location(self):
         test=self.base/'test.csv';rows=[{'Id':str(20000+i),'Neighborhood':'unseen'}for i in range(12)];write_csv(test,rows);self.run_generated(test_csv=test)
         submission=self.base/'run/submission.csv';lab.validate_submission(submission,rows);self.assertFalse((self.base/'run/safe-review/submission.csv').exists())
