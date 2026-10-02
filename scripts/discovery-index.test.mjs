@@ -21,7 +21,8 @@ test('pagination reaches the final record without gaps, clamps page, and handles
  assert.equal(paginateCatalog(rows,'nonsense').page,1);
  assert.deepEqual(paginateCatalog([],100),{page:1,pages:1,start:0,visible:[]});
 });
-test('direct completeness and filter links activate the archive, including empty Level 3',()=>{
+test('filter links preserve guide scope unless the archive view is explicit',()=>{
  assert.equal(usesArchiveView(''),false);
- for(const search of ['?level=1','?level=2','?level=3','?q=Home+Credit','?category=Featured','?state=active','?view=all']) assert.equal(usesArchiveView(search),true,search);
+ for(const search of ['?level=1','?level=2','?level=3','?q=Home+Credit','?category=Featured','?state=active']) assert.equal(usesArchiveView(search),false,search);
+ for(const search of ['?view=all','?view=all&level=3','?q=Titanic&view=all']) assert.equal(usesArchiveView(search),true,search);
 });

@@ -6,6 +6,9 @@ import {
 	getCatalogCardPresentation,
 	readCatalogFilters,
 	serializeCatalogFilters,
+    serializeCatalogState,
+    usesArchiveView,
+    filterCatalog,
 } from '../src/content/catalog-policy.js';
 
 test('unreviewed guide metadata never upgrades a catalog card or exposes a guide link', () => {
@@ -111,5 +114,47 @@ test('the catalog page uses the shared publication and URL filter policies', asy
 	const page = await readFile(new URL('../src/pages/competitions/index.astro', import.meta.url), 'utf8');
 	assert.match(page, /getCatalogCardPresentation\(competition\)/);
 	assert.match(page, /readCatalogFilters\(window\.location\.search\)/);
-	assert.match(page, /serializeCatalogFilters\(/);
+	assert.match(page, /serializeCatalogState\(/);
+});
+
+const publishedTitanic = {
+ id: '1', title: 'Titanic', slug: 'titanic', category: 'Getting Started', record_state: 'active',
+ completeness_level: '2', editorial_status: 'published', guide_slug: 'titanic',
+ reviewed_by: 'GPT-6 Luna Max', reviewed_at: '2026-10-01',
+};
+const rows = [publishedTitanic,
+ {...publishedTitanic, id: '2', title: 'Titanic archive', editorial_status: 'queued'},
+ {...publishedTitanic, id: '3', title: 'Titanic draft', editorial_status: 'in-review'},
+ {...publishedTitanic, id: '4', title: 'House Prices', slug: 'house-prices', guide_slug: 'house-prices'},
+];
+
+test('typing, filtering and clearing never widen available-guide scope', () => {
+ for (const query of ['T', 'Ti', 'Tit', 'Titanic', '']) {
+  const filters = {query, category: '', state: '', level: ''};
+  const url = serializeCatalogState(filters, false);
+  assert.equal(usesArchiveView(url), false);
+  const restored = readCatalogFilters(url);
+  assert.deepEqual(filterCatalog(rows, restored, usesArchiveView(url)).map(row=>row.id), query ? ['1'] : ['1', '4']);
+ }
+ for (const search of ['?category=Getting+Started', '?state=active', '?level=2', '?page=2&q=Titanic']) {
+  assert.equal(usesArchiveView(search), false);
+ }
+});
+
+test('only an explicit archive action widens scope and retains filters', () => {
+ const filters = {query:'Titanic', category:'Getting Started', state:'active', level:''};
+ const url = serializeCatalogState(filters, true, 2);
+ assert.equal(usesArchiveView(url), true);
+ assert.equal(new URLSearchParams(url).get('page'), '2');
+ assert.deepEqual(readCatalogFilters(url), filters);
+ assert.deepEqual(filterCatalog(rows, readCatalogFilters(url), true).map(row=>row.id), ['1', '2', '3']);
+ assert.equal(new URLSearchParams(serializeCatalogState(filters, false, 2)).has('page'), false);
+ assert.deepEqual(filterCatalog(rows, {...filters, level:'2'}, true).map(row=>row.id), ['1']);
+});
+
+test('guide-empty results remain empty until archive is explicitly selected', () => {
+ const archiveOnly = {...publishedTitanic, title:'Unpublished lesson', editorial_status:'draft'};
+ const filters = {query:'Unpublished', category:'', state:'', level:''};
+ assert.deepEqual(filterCatalog([archiveOnly], filters, false), []);
+ assert.deepEqual(filterCatalog([archiveOnly], filters, true), [archiveOnly]);
 });
