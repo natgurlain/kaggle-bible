@@ -1,7 +1,13 @@
 ---
 import { learningLibrary } from '../content/learning-library';
+import { libraryEvidenceCounts } from '../content/first-project-policy.js';
 const library = await learningLibrary();
+const counts=libraryEvidenceCounts(library);
 ---
-<p><strong>{library.guides.length} reviewed guides</strong> · {library.solutions.length} documented approaches · {library.practices.length} reviewed practices · <strong>{library.exercises.length} executed learning exercises</strong>.</p>
-<p>Exercise runs are counted separately from guide completeness. A teaching-fixture run validates the learning workflow; it establishes no competition score or historical solution reproduction.</p>
-<p><a href="/exercises/">Browse learning exercises</a> · <a href="/milestones/">What these milestones mean</a></p>
+<div class="library-evidence" data-guides={counts.guides} data-fixtures={counts.fixtures} data-actual={counts.actual}>
+ <p><strong>{counts.guides} reviewed guides</strong> · <strong>{counts.fixtures} executed fixture projects</strong> · <strong>{counts.actual} actual-data verified projects</strong>.</p>
+ <details><summary>What this evidence establishes</summary>
+  <p>{counts.approaches} documented approaches · {counts.practices} reviewed practices. Project runs are counted separately from guide completeness. A fixture run demonstrates the workflow; it establishes no competition score, historical reproduction or reader learning. Actual-data verification covers only its recorded scope.</p>
+  <p><a href="/exercises/">Browse learning projects</a> · <a href="/milestones/">What these milestones mean</a></p>
+ </details>
+</div>
