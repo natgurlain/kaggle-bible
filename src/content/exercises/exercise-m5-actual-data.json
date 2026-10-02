@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "id": "exercise-m5-actual-data",
+  "status": "draft",
+  "slug": "m5-actual-data",
+  "title": "Bounded M5 bottom-series comparison (blocked candidate)",
+  "competition_id": "competition-m5-forecasting-accuracy",
+  "summary": "Candidate private-input package for at most twelve frozen bottom series and three fixed 28-day horizons; no actual M5 input supplied or executed.",
+  "data_scope": "competition-data",
+  "script_path": "/exercises/m5-actual-data.py",
+  "platform": "Darwin arm64",
+  "expected_splits": [
+    "origin d_1829",
+    "origin d_1857",
+    "origin d_1885"
+  ],
+  "python_version": "3.12.14",
+  "dependencies": "Python standard library only",
+  "seed": 17,
+  "split_definition": "Frozen at most twelve bottom series; origins d_1829, d_1857 and d_1885; next 28 days validate; all forecasts/scales/weights use history through the origin.",
+  "metric": "mean absolute error (unweighted; not M5 WRMSSE)",
+  "direction": "minimize",
+  "memory_scope": "traced-python-allocations",
+  "command": "python3 m5-actual-data.py --acknowledge-authorized-data",
+  "environment": "Declared target: Python 3.12.14 standard library on Darwin arm64; no actual M5 run recorded. Set private input/output environment variables as documented before execution.",
+  "steps": [
+    "Supply authorized private sales, calendar, price and frozen scope files; inspect current access/rules and price-availability limitations.",
+    "Preserve at most twelve selected series, origins 1829/1857/1885 and horizon 28; compare unchanged seasonal-naive and four-week averaging forecasts.",
+    "Inspect every alias/origin diagnostic and retain zero-demand, undefined-scale/revenue and worse-method cases.",
+    "Compare notebook/script metrics exactly; keep the private series map and forecast/error rows outside safe-review. No full-hierarchy score or submission."
+  ],
+  "limitations": [
+    "No actual M5 competition input has been supplied or executed; generated software tables are not actual-data acceptance.",
+    "Unweighted MAE and optional bottom-slice RMSSE exclude full twelve-level official WRMSSE.",
+    "Historical price publication timing is unknown; weighting requires an explicit availability assumption.",
+    "Undefined scales, missing prices and zero revenue stay explicit without epsilon or silent exclusion.",
+    "Private series identifiers and sales/forecast rows are not public diagnostics.",
+    "Traced allocations are not RSS; no actual learner compute budget measured."
+  ],
+  "project": {
+    "readiness": "blocked",
+    "readiness_history": [
+      "planned",
+      "blocked"
+    ],
+    "outcome": "Explain the same-method forecast comparison across frozen horizons and the limits of slice scoring.",
+    "prerequisites": [
+      "Run local Python and configure private input/environment paths.",
+      "Explain forecast origins, 28-day horizons, MAE, scaled errors and revenue-weight limitations."
+    ],
+    "access": {
+      "instructions": "Inspect current M5 data/rules, supply authorized sales_train_validation.csv, calendar.csv, sell_prices.csv and private scope.json outside Git/public. Follow docs/m5-actual-data-setup.md. No automatic acquisition or submission.",
+      "provenance_url": "https://www.kaggle.com/competitions/m5-forecasting-accuracy/data",
+      "authorization": "Missing: no authorized learner-supplied competition inputs or access evidence received.",
+      "redistribution": "private-input"
+    },
+    "package": {
+      "notebook_path": "/exercises/m5-actual-data.ipynb",
+      "environment_path": "/exercises/m5-actual-data-environment.txt",
+      "helper_path": "/exercises/m5-rolling-origin.py",
+      "helper_sha256": "eb6c90b7a6f629e172107f7e74f41d777cd50bb29508c9b585c0941a9353543f",
+      "script_sha256": "26f2ad5595dee6f7d8d98b57eb3a318bdb3acb53d1949049a01b278ee08426c9",
+      "notebook_sha256": "6e95c86c33fc57e18f7626018d08ab2755e2167be2994621e7ca3b52ba6770a0",
+      "environment_sha256": "43f36b0cae0100982c41c730a9e7491f4972ff76fff7f55e77e2adff3c22ee34"
+    },
+    "baseline": "Repeat the last training week separately at each of the three fixed origins.",
+    "controlled_change": "Compare the fixed average of four prior weeks on identical series, origins and 28-day horizons.",
+    "diagnostics": [
+      "Do both methods differ consistently across all three frozen origins and selected bottom series?",
+      "Which slice RMSSE or revenue-weighted diagnostics are undefined, and what hierarchy/availability assumptions remain?"
+    ],
+    "troubleshooting": [
+      {
+        "symptom": "Missing authorized data or access failure",
+        "recovery": "Retain blocked status; the owner must supply private authorized paths and inspect access conditions before running."
+      },
+      {
+        "symptom": "Input/path/package validation failure",
+        "recovery": "Use the setup recovery table, restore pinned files and rerun into a new private output directory; never publish raw errors or inputs."
+      }
+    ],
+    "next_lesson": {
+      "title": "Validation checks",
+      "url": "/practices/validation-checks/",
+      "experiment": "Propose a separately reviewed full-hierarchy scoring experiment; all series/levels and official scoring-code parity remain unexecuted."
+    },
+    "blocker": {
+      "reason": "Authorized M5 sales/calendar/prices and frozen series scope, reviewed access/availability evidence and a successful safe actual-data receipt have not been supplied.",
+      "owner": "Unassigned: authorized data owner needed.",
+      "next_action": "Authorized data owner supplies private inputs and frozen scope, reviews availability assumptions, executes the pinned bounded package and obtains privacy/evidence review; retain blocked status until then."
+    }
+  }
+}

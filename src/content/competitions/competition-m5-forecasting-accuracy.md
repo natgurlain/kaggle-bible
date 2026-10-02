@@ -321,3 +321,7 @@ The task, data files, metric, horizons, and rules are linked to Kaggle's overvie
 - What validation origins, metric implementation, and selection rules supported the second-place team's stream alignment?
 - What were the final-pipeline runtime, memory, and resource costs for either approach?
 - Can the reported holdout windows be reproduced from pinned code and data, with all hierarchy levels scored identically?
+
+### Actual-data package status
+
+A separate [bounded private-input setup](https://github.com/natgurlain/kaggle-bible/blob/main/docs/m5-actual-data-setup.md) is a draft blocked candidate for [#72](https://github.com/natgurlain/kaggle-bible/issues/72). It compares the same seasonal forecasts on at most twelve frozen bottom series and three historical 28-day horizons. No authorized M5 input has been supplied or run. Its unweighted MAE and optional bottom-slice diagnostics do not establish full-hierarchy official WRMSSE, measured learner compute requirements or a winning reproduction. Generated checks do not satisfy actual-data acceptance.
