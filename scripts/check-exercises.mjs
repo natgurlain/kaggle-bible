@@ -20,8 +20,9 @@ for (const name of (await readdir(folder)).filter(x=>x.endsWith('.json'))) {
  if (ids.has(data.id) || slugs.has(data.slug) || name!==`${data.id}.json`) throw new Error(`${name}: exercise identity duplicated or filename mismatched`);
  ids.add(data.id);slugs.add(data.slug);
  if(data.status!=='published') {
-  const {receipt,artifacts}=data.project && ['runnable','actual-data-verified'].includes(data.project.readiness) ? await loadExerciseArtifacts(data) : {receipt:null,artifacts:{}};
+  const {receipt,artifacts}=data.receipt_path || data.data_path || (data.project && ['runnable','actual-data-verified'].includes(data.project.readiness)) ? await loadExerciseArtifacts(data) : {receipt:null,artifacts:{}};
   const errors=projectContractErrors(data,receipt,artifacts);
+  if(receipt) errors.push(...exerciseReceiptErrors(data,receipt,artifacts.script_sha256,artifacts.data_sha256));
   if(errors.length) throw new Error(`${name}: ${errors.join('; ')}`);
   continue;
  }

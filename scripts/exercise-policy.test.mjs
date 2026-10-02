@@ -152,7 +152,23 @@ test('runnable nonfixture publishing rejects row artifacts, mismatched manifests
   }
   const omittedDraft={...house,status:'draft',project:undefined};
   await writeFile(metadataPath,JSON.stringify(omittedDraft));const rejectedLegacyDraft=publishingCheck();
-  assert.notEqual(rejectedLegacyDraft.status,0);assert.match(rejectedLegacyDraft.stderr,/matching actual-data receipt/,'omitting the optional project extension cannot silence draft privacy errors');
+  assert.notEqual(rejectedLegacyDraft.status,0);assert.match(rejectedLegacyDraft.stderr,/scope must agree/,'omitting the optional project extension cannot silence draft privacy errors');
+  await writeFile(metadataPath,JSON.stringify(house));
+  // Loaded evidence controls scope checks even when metadata falsely calls the input a fixture.
+  await writeInput(rows);
+  for(const status of ['draft','published']) for(const readiness of ['planned','blocked','projectless']) {
+   const spoof=structuredClone(house);spoof.status=status;spoof.data_scope='generated-teaching-fixture';
+   if(readiness==='projectless') delete spoof.project;
+   else {spoof.project.readiness=readiness;spoof.project.readiness_history=[readiness];if(readiness==='blocked') spoof.project.blocker={reason:'Input unavailable',owner:'Maintainer (unassigned)',next_action:'Provide authorized input'};}
+   const loaded=await loadExerciseArtifacts(spoof,join(folder,'public'));
+   assert.equal(loaded.receipt.evidence_type,'actual-data');assert.equal(loaded.artifacts.fingerprint_only_input,false);
+   assert.ok(projectContractErrors(spoof,loaded.receipt,loaded.artifacts).some(error=>error.includes('scope must agree')));
+   await writeFile(metadataPath,JSON.stringify(spoof));const spoofCheck=publishingCheck();assert.notEqual(spoofCheck.status,0,`${status} ${readiness} false fixture label`);assert.match(spoofCheck.stderr,/scope must agree/);
+  }
+  // A real legacy fixture receipt stays valid even when its optional project extension is absent.
+  const legacy=JSON.parse(await readFile(join(root,'src/content/exercises/exercise-house-neighborhood.json')));delete legacy.project;legacy.status='draft';
+  await writeFile(join(folder,'public',legacy.receipt_path),JSON.stringify(recorded));await writeFile(metadataPath,JSON.stringify(legacy));
+  const legacyCheck=publishingCheck();assert.equal(legacyCheck.status,0,legacyCheck.stderr);
   await writeFile(metadataPath,JSON.stringify(house));
   // Canonical equality permits object-key reordering, but not a different manifest.
   const reordered={files:[{bytes:500,sha256:'d'.repeat(64),name:'train.csv'}],kind:'fingerprint-only'};
