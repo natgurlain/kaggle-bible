@@ -1,10 +1,10 @@
 # Disaster Tweets private-input package (blocked candidate)
 
-No authorized competition input has been supplied or executed. This software package and its generated tests do not complete [#71](https://github.com/natgurlain/kaggle-bible/issues/71); the published word-pair fixture remains separate and unchanged. Keep the candidate draft and blocked until access, duplicate policy and successful safe execution evidence have been reviewed.
+No authorized competition input has been supplied or executed. Generated-fixture tests establish the self-contained software package acceptance for [#71](https://github.com/natgurlain/kaggle-bible/issues/71), without establishing actual-data execution or actual-data verified readiness. Authorized private inputs are required only if a reader chooses an optional actual-data run; they are not a software acceptance prerequisite. The published word-pair fixture remains separate and unchanged. Keep the candidate draft and blocked until access, duplicate policy and successful safe execution evidence have been reviewed.
 
 ## Authorized private setup
 
-The data owner must inspect the current official [data page](https://www.kaggle.com/competitions/nlp-getting-started/data) and [rules](https://www.kaggle.com/competitions/nlp-getting-started/rules), obtain authorized files and provide private paths. This package does not acquire files, accept terms, contact a service or upload a submission. A fingerprint proves consistency, not origin or permission.
+For an optional actual-data run, the reader must inspect the current official [data page](https://www.kaggle.com/competitions/nlp-getting-started/data) and [rules](https://www.kaggle.com/competitions/nlp-getting-started/rules), obtain authorized files and use private paths. This package does not acquire files, accept terms, contact a service or upload a submission. A fingerprint proves consistency, not origin or permission.
 
 Copy four pinned files together outside Git, `public` and `dist`: `nlp-actual-data.py`, `nlp-actual-data.ipynb`, `nlp-actual-data-environment.txt`, and unchanged `nlp-word-pairs.py`. Use Python 3.12.14 and its standard library. Metadata pins all four hashes; the runner verifies and compiles the helper's exact bytes without cached bytecode. Do not use the legacy helper's `--csv` main for public evidence: it writes normalized raw input. The notebook delegates to the same runner, with no saved text outputs.
 
@@ -50,7 +50,7 @@ The candidates require independent privacy, source/access and exact-head review 
 
 | Failure | Recovery |
 | --- | --- |
-| Missing authorized data/access evidence | Keep acceptance blocked; the data owner supplies private paths and reviewed provenance. |
+| Missing authorized data/access evidence | Keep the optional actual-data run blocked until private paths and reviewed provenance are available. |
 | Git/web-root path or existing output folder | Move to private folders and select a fresh attempt; preserve prior artifacts. |
 | Helper fingerprint mismatch | Restore the exact pinned helper/environment; never bypass validation. |
 | Duplicate/token-empty text | Keep originals and the failure. Define a separate reviewed input/grouping policy without silent deletion. |

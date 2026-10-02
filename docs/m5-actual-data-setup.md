@@ -1,12 +1,12 @@
 # Bounded M5 private-input package (blocked candidate)
 
-No actual M5 data has been supplied or executed. This candidate and its generated table tests do not complete [#72](https://github.com/natgurlain/kaggle-bible/issues/72). The existing two-series teaching fixture stays unchanged. This package evaluates historical windows inside a declared 1913-day input, not the official d_1914-and-later holdout, full-hierarchy official WRMSSE, or a winning system.
+No actual M5 data has been supplied or executed. Generated-fixture table tests establish the self-contained software package acceptance for [#72](https://github.com/natgurlain/kaggle-bible/issues/72), without establishing actual-data execution or actual-data verified readiness. Authorized private inputs are required only if a reader chooses an optional actual-data run; they are not a software acceptance prerequisite. The existing two-series teaching fixture stays unchanged. This package evaluates historical windows inside a declared 1913-day input, not the official d_1914-and-later holdout, full-hierarchy official WRMSSE, or a winning system.
 
 ## Source and access receipt
 
 The original [M5 Competitors' Guide](https://storage.googleapis.com/kaggle-forum-message-attachments/772349/15032/M5-Competitors-Guide-Final-10-March-2020.pdf) was directly readable on 2026-10-02. Printed page 6 (`Point forecasts`) defines RMSSE scaling after the first nonzero demand and weights from the training sample's last 28 days of dollar sales. Printed pages 8–9 (`Weighting`) describe equal weighting across twelve hierarchy levels. This is historical official primary evidence, not an executed scoring benchmark or current access permission. The direct Kaggle [evaluation route](https://www.kaggle.com/competitions/m5-forecasting-accuracy/overview/evaluation) returned a title with no readable body in that inspection. Official scoring-code parity was not inspected or executed.
 
-The data owner must inspect current [data access](https://www.kaggle.com/competitions/m5-forecasting-accuracy/data) and [rules](https://www.kaggle.com/competitions/m5-forecasting-accuracy/rules), supply authorized private files and confirm provenance. No automatic downloads, terms acceptance, network calls or Kaggle submission occur. The unassigned authorized-data owner and successful safe execution receipt remain blockers.
+For an optional actual-data run, the reader must inspect current [data access](https://www.kaggle.com/competitions/m5-forecasting-accuracy/data) and [rules](https://www.kaggle.com/competitions/m5-forecasting-accuracy/rules), use authorized private files and confirm provenance. No automatic downloads, terms acceptance, network calls or Kaggle submission occur. Authorized access remains a prerequisite for that optional run; a successful safe execution receipt is required before any actual-data verified claim.
 
 ## Official file-description receipt
 
@@ -70,7 +70,7 @@ A defined weighted diagnostic normalizes revenue **only across the selected bott
 
 | Failure or undefined condition | Recovery |
 | --- | --- |
-| Missing authorized input/scope or access proof | Retain blocked acceptance; owner supplies private paths and frozen selection/provenance. |
+| Missing authorized input/scope or access proof | Keep the optional actual-data run blocked until private paths and frozen selection/provenance are available. |
 | Scope exceeds twelve, duplicate/unknown series or wrong daily range | Preserve source files; revise the predeclared scope/input version in a separate attempt before interpreting results. |
 | Input byte cap exceeded | Stop without truncation; review a separately declared private preparation/scope strategy. |
 | Nonfinite/negative sales, duplicate calendar/price keys or date gaps | Inspect originals privately and document corrections; do not silently remove or fill records. |

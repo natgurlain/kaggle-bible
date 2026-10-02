@@ -1,10 +1,10 @@
 # House Prices private-input package (blocked candidate)
 
-This software package is not a verified Ames run. No authorized competition input or receipt has been supplied. Generated software checks do not complete [#70](https://github.com/natgurlain/kaggle-bible/issues/70). The separate published neighborhood fixture remains unchanged.
+This software package is not a verified Ames run. No authorized competition input or receipt has been supplied. Generated-fixture checks establish the self-contained software package acceptance for [#70](https://github.com/natgurlain/kaggle-bible/issues/70), without establishing actual-data execution or actual-data verified readiness. Authorized private inputs are required only if a reader chooses an optional actual-data run; they are not a software acceptance prerequisite. The separate published neighborhood fixture remains unchanged.
 
 ## Access and scoring evidence
 
-The data owner must inspect the official [data page](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/data), [rules](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/rules) and [evaluation page](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/overview/evaluation) before supplying authorized private paths. No automatic download, terms acceptance, network call or upload occurs.
+For an optional actual-data run, the reader must inspect the official [data page](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/data), [rules](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/rules) and [evaluation page](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/overview/evaluation) before using authorized private paths. No automatic download, terms acceptance, network call or upload occurs.
 
 On 2026-10-02, direct web opens of the evaluation and overview/description routes returned titles with no readable body. Search retrieval exposed indexed text from the official [overview/description page](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/overview/description), reported as crawled last month. Its `Evaluation > Metric` section defines RMSE between logarithms of predicted and observed sale prices; `Submission File Format` specifies `Id,SalePrice`. This confirms the official log-price RMSE metric family from indexed primary-source text, not a fresh direct-body inspection. The retrieved wording does **not** specify the logarithm base. This package uses the unchanged helper's natural logarithm; exact official scoring implementation/base parity remains unverified. Mean fold RMSE also remains distinct from scoring one complete prediction set. Current access permission and rules acceptance are not established by this source receipt.
 
@@ -46,7 +46,7 @@ Inspect every candidate before proposing publication. Confirm input origin/acces
 
 | Failure | Recovery |
 | --- | --- |
-| Missing authorized input or unreadable official formula | Retain blocked acceptance; owner supplies authorized paths and inspected source locators. |
+| Missing authorized input or unreadable official formula | Keep the optional actual-data run blocked until authorized paths and inspected source locators are available. |
 | Input/output inside Git or a web root | Move the package, inputs and attempts to private folders outside those roots. |
 | Helper hash mismatch | Restore the exact pinned helper/environment; never bypass the check. |
 | CSV header, row shape, duplicate ID or price error | Inspect the private original locally, preserve source integrity and document any correction; do not silently discard rows. |
