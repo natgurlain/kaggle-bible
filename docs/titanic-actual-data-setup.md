@@ -8,6 +8,10 @@ Open the [official Titanic data page](https://www.kaggle.com/competitions/titani
 
 Use an authorized, unmodified `train.csv`; optional official `test.csv` enables local submission generation. Keep both files outside every Git checkout and outside directories named `public` or `dist`. The loader retains only PassengerId, Sex, Pclass and training Survived in memory. It ignores names, tickets and other columns; no normalized passenger artifact is written. Missing Sex/Pclass values become an explicit missing group. Unexpected nonmissing values, malformed rows, duplicate/noncanonical IDs and invalid targets stop the run.
 
+## Official file-description receipt
+
+On 2026-10-02, a direct web open of the official data route returned a title with no readable body. Search retrieval exposed indexed text from the official [Titanic data page](https://www.kaggle.com/c/titanic/data), reported as crawled last week. `Dataset Description > Overview` identifies labeled `train.csv`, unlabeled `test.csv`, and `gender_submission.csv` as an example prediction file. `Metadata > License` says data is subject to competition rules, and the indexed data-explorer prompt requires signing in or registering and agreeing to the rules. This records official file roles and the indexed access prompt, not completed access, current rules inspection or permission to redistribute. The authorized-data and execution blockers remain.
+
 ## Download the pinned package
 
 Keep these four files together in a local tools directory outside Git/public/dist:

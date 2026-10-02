@@ -5,7 +5,7 @@
   "slug": "house-actual-data",
   "title": "House Prices private-data comparison (blocked candidate)",
   "competition_id": "competition-house-prices-advanced-regression-techniques",
-  "summary": "Candidate private-input package comparing global log-price mean with fixed neighborhood smoothing; no authorized Ames run or official scoring-formula verification yet.",
+  "summary": "Candidate private-input package comparing global log-price mean with fixed neighborhood smoothing; no authorized Ames run or exact official scoring implementation/base verification yet.",
   "data_scope": "competition-data",
   "script_path": "/exercises/house-actual-data.py",
   "platform": "Darwin arm64",
@@ -26,14 +26,14 @@
   "command": "python3 house-actual-data.py --acknowledge-authorized-data",
   "environment": "Declared target: Python 3.12.14 standard library on Darwin arm64; no actual House Prices run recorded. Set private input/output environment variables as documented before execution.",
   "steps": [
-    "Obtain authorized private Ames training and optional test paths outside Git/public; inspect current data rules and official scoring formula.",
+    "Obtain authorized private Ames training and optional test paths outside Git/public; inspect current data rules and resolve exact official scoring implementation/base parity.",
     "Use the pinned package and private environment variables; preserve the same five random folds and fixed smoothing weight five.",
     "Inspect public aggregate candidates and private once-only OOF residuals; explain log and dollar units and retain worse changes.",
     "Compare notebook/script results exactly and validate private submission locally without uploading."
   ],
   "limitations": [
     "No actual Ames competition data has been supplied or executed; generated tests do not satisfy actual-data acceptance.",
-    "Official scoring-formula page returned no readable body in the preparation inspection; no official formula equivalence claimed.",
+    "Official indexed overview confirms log-price RMSE but does not specify logarithm base; direct page bodies were unavailable and exact scoring implementation/base parity remains unverified.",
     "Random folds do not establish spatial or temporal transfer.",
     "Mean fold natural-log RMSE is distinct from pooled OOF RMSE; dollar MAE is diagnostic only.",
     "Row residuals and submission IDs remain private; public slices below ten rows are suppressed.",
@@ -87,7 +87,7 @@
       "experiment": "Freeze one spatial split before fitting and compare the same two methods; this requires a separate authorized run."
     },
     "blocker": {
-      "reason": "Authorized Ames competition paths, inspected official scoring/access evidence and a successful privacy-reviewed actual-data receipt have not been supplied.",
+      "reason": "Authorized Ames competition paths, current access evidence, exact official scoring implementation/base parity and a successful privacy-reviewed actual-data receipt have not been supplied.",
       "owner": "Unassigned: authorized data owner needed.",
       "next_action": "Supply authorized private House Prices file paths and access provenance; run the pinned package, inspect safe candidates, and obtain exact-head review before readiness promotion."
     }

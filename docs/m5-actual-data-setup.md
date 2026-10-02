@@ -8,6 +8,10 @@ The original [M5 Competitors' Guide](https://storage.googleapis.com/kaggle-forum
 
 The data owner must inspect current [data access](https://www.kaggle.com/competitions/m5-forecasting-accuracy/data) and [rules](https://www.kaggle.com/competitions/m5-forecasting-accuracy/rules), supply authorized private files and confirm provenance. No automatic downloads, terms acceptance, network calls or Kaggle submission occur. The unassigned authorized-data owner and successful safe execution receipt remain blockers.
 
+## Official file-description receipt
+
+On 2026-10-02, a direct web open of the official data route returned a title with no readable body. Search retrieval exposed indexed text from the official [M5 data page](https://www.kaggle.com/c/m5-forecasting-accuracy/data), reported as crawled last week. `Files` identifies `sales_train_validation.csv` as historical daily product/store sales for d_1 through d_1913, `sales_train_evaluation.csv` as sales through d_1941, plus `calendar.csv`, `sell_prices.csv` and `sample_submission.csv`. `Metadata > License` says data is subject to competition rules. Supply the validation file for this pinned package's exact 1913-day contract; the later evaluation file is a different input version and is not accepted by this runner. The indexed description does not establish current access permission, historical price publication times, official scoring-code parity or an executed run.
+
 ## Pinned package and frozen scope
 
 Copy `m5-actual-data.py`, `m5-actual-data.ipynb`, `m5-actual-data-environment.txt` and unchanged `m5-rolling-origin.py` together into a private folder outside Git, `public` and `dist`. Use Python 3.12.14, standard library only. Metadata pins all four files, and the wrapper verifies/compiles the helper's exact bytes. The notebook delegates to the same runner with no saved results. Do not invoke the helper's legacy main: it exports normalized source data and evaluates different fixture origins.
