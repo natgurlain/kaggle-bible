@@ -45,9 +45,9 @@
     "readiness_history": [
       "runnable"
     ],
-    "outcome": "Compare raw-pixel nearest-class centroids with one per-image L2 change under a bounded CPU workflow. The original 200 geometric patterns are not real handwritten digits.",
+    "outcome": "Check 28 by 28 pixel layout and class coverage, fit class centroids inside training folds, and compare one per-image L2 change without treating generated patterns as handwriting.",
     "prerequisites": [
-      "Run a Python script locally and read per-split metric results."
+      "Read 784 flattened pixels, integer labels 0\u20139, vector length, class means and fold accuracy; run the pinned Python script locally."
     ],
     "access": {
       "instructions": "Use the generated teaching fixture with --fixture. Optional private inputs require your own authorized access; they have not been verified by this receipt.",
@@ -65,19 +65,27 @@
     "baseline": "Fit raw-centroids using training rows only on the fixed declared splits.",
     "controlled_change": "Compare image-l2-centroids on exactly the same splits; a worse metric is a valid outcome.",
     "diagnostics": [
-      "Inspect every recorded split and compare the direction and size of the method difference.",
-      "Explain the split assumption and at least one limit before choosing another experiment."
+      "Inspect label counts and blank-image behavior before fitting; explain why every fold needs all ten classes.",
+      "Compare raw and L2-normalized centroid accuracy on every unchanged fold and explain why the pattern-fixture result does not establish writer-held-out performance."
     ],
     "troubleshooting": [
       {
-        "symptom": "Python version or input-column error",
-        "recovery": "Use the pinned Python version, inspect the script error, and rerun the fixture before attempting authorized private inputs."
+        "symptom": "Wrong image shape, pixel range or label",
+        "recovery": "The validator requires exactly 784 finite pixel values in 0\u2013255 and an integer label 0\u20139. Fix the authorized input format; do not pad, reshape or clip silently."
+      },
+      {
+        "symptom": "CSV header or class-coverage failure",
+        "recovery": "Use label,pixel0,...,pixel783 in that order and a declared prefix cap between 50 and 1000 with at least five rows of every digit. If the scope cannot meet this, stop and document a new sample before rerunning both methods."
+      },
+      {
+        "symptom": "Blank image has zero L2 length",
+        "recovery": "Keep the script's zero-vector fallback; count blank images and inspect their effect without dividing by zero."
       }
     ],
     "next_lesson": {
-      "title": "Validation practice",
-      "url": "/practices/validation-checks/",
-      "experiment": "Choose one new split assumption, freeze it before fitting, and compare the same methods without tuning against held-out labels."
+      "title": "Digit actual-data preparation",
+      "url": "/competitions/digit-recognizer/#bounded-future-actual-data-experiment",
+      "experiment": "Record authorized input provenance and class coverage for a fixed prefix, then prepare a safe actual-data receipt adapter. Actual handwritten-digit execution is not yet verified."
     }
   }
 }
