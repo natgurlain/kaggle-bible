@@ -18,7 +18,7 @@ Every task below has an **unassigned contributor owner**. Claim a bounded task i
 
 **Gap:** the available passenger-rule fixture has an execution receipt, but that does not tell us whether your setup works. The actual-data project in [#67](https://github.com/natgurlain/kaggle-bible/issues/67) still needs authorized inputs and separately reviewed execution evidence.
 
-**Done:** run the exact [published fixture](/exercises/titanic-group-rules/) with its pinned environment. Record the command, environment, script hash and receipt, or the sanitized error and recovery attempt. State explicitly that the inputs were generated; a successful run does not establish comprehension or complete #67.
+**Done:** run the exact [published fixture](/exercises/#exercise-titanic-group-rules) with its pinned environment. Record the command, environment, script hash and receipt, or the sanitized error and recovery attempt. State explicitly that the inputs were generated; a successful run does not establish comprehension or complete #67.
 
 **Artifact:** a [run report](https://github.com/natgurlain/kaggle-bible/issues/new?template=exercise-result.yml&title=Titanic%20fixture%20setup%20report) linked to #67. **Owner:** unassigned. **Reviewer needed:** someone who can compare the report to the pinned fixture and distinguish setup evidence from actual-data verification. Do not attach competition rows or passenger IDs.
 
@@ -26,7 +26,7 @@ Every task below has an **unassigned contributor owner**. Claim a bounded task i
 
 **Gap:** a fold metric alone does not explain what the neighborhood rule does when a held-out category has no training examples.
 
-**Done:** inspect the [published fixture](/exercises/house-neighborhood/), its downloadable script and recorded input. Trace one unseen category through the fallback and compare it to the global log-price mean on the same fold. Report the fold and public fixture row locator, the rule used and one limit of random-fold validation. If no such row occurs, document that finding rather than inventing an example.
+**Done:** inspect the [published fixture](/exercises/#exercise-house-neighborhood), its downloadable script and recorded input. Trace one unseen category through the fallback and compare it to the global log-price mean on the same fold. Report the fold and public fixture row locator, the rule used and one limit of random-fold validation. If no such row occurs, document that finding rather than inventing an example.
 
 **Artifact:** a [focused correction or explanation](https://github.com/natgurlain/kaggle-bible/issues/new?template=correction.yml&title=House%20Prices%20unseen-neighborhood%20diagnostic), linked to [#70](https://github.com/natgurlain/kaggle-bible/issues/70). **Owner:** unassigned. **Reviewer needed:** someone who can trace training-only statistics, fallback behavior and log-RMSE scope. This task uses generated homes; it does not execute Ames data.
 
@@ -34,7 +34,7 @@ Every task below has an **unassigned contributor owner**. Claim a bounded task i
 
 **Gap:** the generated word-pair exercise preserves a neutral result, but its metric does not explain a specific template error.
 
-**Done:** inspect an error locator in the [published fixture](/exercises/nlp-word-pairs/) receipt and recorded input. Compare the two predictions on the same held-out text; explain the fitting boundary and one reason repeated templates limit transfer. If the selected fold has no recorded errors, retain that observation and choose another recorded fold.
+**Done:** inspect an error locator in the [published fixture](/exercises/#exercise-nlp-word-pairs) receipt and recorded input. Compare the two predictions on the same held-out text; explain the fitting boundary and one reason repeated templates limit transfer. If the selected fold has no recorded errors, retain that observation and choose another recorded fold.
 
 **Artifact:** a [text-error explanation](https://github.com/natgurlain/kaggle-bible/issues/new?template=correction.yml&title=NLP%20fixture%20error%20interpretation), linked to [#71](https://github.com/natgurlain/kaggle-bible/issues/71). **Owner:** unassigned. **Reviewer needed:** someone who can check the public error locator, training-fold vocabulary and positive-class F1 interpretation. No real tweet result is established by this task.
 
@@ -42,7 +42,7 @@ Every task below has an **unassigned contributor owner**. Claim a bounded task i
 
 **Gap:** a generated rolling-origin exercise cannot establish competition-scale WRMSSE or the historical systems' resource requirements.
 
-**Done:** inspect one origin in the [published fixture](/exercises/m5-rolling-origin/). Locate its training end, forecast horizon and method difference in the script and receipt; explain which observations the lag rule may use. State that the recorded metric is unweighted mean absolute error and that hierarchy aggregation and competition execution remain separate work.
+**Done:** inspect one origin in the [published fixture](/exercises/#exercise-m5-rolling-origin). Locate its training end, forecast horizon and method difference in the script and receipt; explain which observations the lag rule may use. State that the recorded metric is unweighted mean absolute error and that hierarchy aggregation and competition execution remain separate work.
 
 **Artifact:** a [forecast-origin explanation](https://github.com/natgurlain/kaggle-bible/issues/new?template=correction.yml&title=M5%20fixture%20forecast-origin%20audit), linked to [#72](https://github.com/natgurlain/kaggle-bible/issues/72). **Owner:** unassigned. **Reviewer needed:** someone who can check time boundaries and distinguish unweighted mean absolute error from WRMSSE. Keep a worse method result visible.
 
