@@ -61,7 +61,7 @@
       "environment_path": "/exercises/nlp-actual-data-environment.txt",
       "helper_path": "/exercises/nlp-word-pairs.py",
       "helper_sha256": "75ccbf247a955f3f06d08444c87fc79cf5eb3f46abae106204314bd5a278d599",
-      "script_sha256": "45ad15dbacd341851bd631961ea07fa9f82d9548d4e5ab4ef42159d3ab86e99b",
+      "script_sha256": "3f7a9662e10557a651867f78b2707289157848bec88a19678ac6d6acc37c292f",
       "notebook_sha256": "aff94655b8e82210afd18ef3d575fbe4f0fcc7eea45b4ce1b46fe29e21a9bd15",
       "environment_sha256": "2d7e4f14e7ad927716402427c4ac18f214a4bee22fefa7b46fec4386c5bb6dcf"
     },

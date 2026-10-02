@@ -129,6 +129,18 @@ class TitanicActualDataTests(unittest.TestCase):
         for path in [repository / 'train.csv', public / 'output', link / 'output']:
             with self.assertRaises(ValueError): lab.private_path(path)
 
+    def test_nonexistent_static_output_roots_and_resolved_symlinks_create_no_files(self):
+        for name in ('public', 'dist'):
+            output = self.base / name
+            for destination in (output, self.base / (name + '-link')):
+                if destination != output:
+                    destination.symlink_to(output, target_is_directory=True)
+                before = set(self.base.iterdir())
+                with self.assertRaises(ValueError):
+                    lab.run_project(self.train, destination, 'generated-test-data', True)
+                self.assertFalse(output.exists())
+                self.assertEqual(set(self.base.iterdir()), before)
+
     def test_input_change_during_evaluation_rejects_candidate_receipt(self):
         original = lab.evaluate
         def mutate(rows, helper):
