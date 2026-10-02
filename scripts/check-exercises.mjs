@@ -20,9 +20,10 @@ for (const name of (await readdir(folder)).filter(x=>x.endsWith('.json'))) {
  if (ids.has(data.id) || slugs.has(data.slug) || name!==`${data.id}.json`) throw new Error(`${name}: exercise identity duplicated or filename mismatched`);
  ids.add(data.id);slugs.add(data.slug);
  if(data.status!=='published') {
-  const {receipt,artifacts}=data.project && ['runnable','actual-data-verified'].includes(data.project.readiness) ? await loadExerciseArtifacts(data) : {receipt:null,artifacts:{}};
+  const {receipt,artifacts}=data.receipt_path || data.data_path || (data.project && ['runnable','actual-data-verified'].includes(data.project.readiness)) ? await loadExerciseArtifacts(data) : {receipt:null,artifacts:{}};
   const errors=projectContractErrors(data,receipt,artifacts);
-  if(data.project && errors.length) throw new Error(`${name}: ${errors.join('; ')}`);
+  if(receipt) errors.push(...exerciseReceiptErrors(data,receipt,artifacts.script_sha256,artifacts.data_sha256));
+  if(errors.length) throw new Error(`${name}: ${errors.join('; ')}`);
   continue;
  }
  for (const [field,suffix] of [['script_path','\\.py'],['receipt_path','-receipt\\.json'],['data_path','-data\\.json']]) if(data[field]!==undefined && !new RegExp(`^/exercises/[a-z0-9-]+${suffix}$`).test(data[field]??'')) throw new Error(`${name}: unsafe asset path`);

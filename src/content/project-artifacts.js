@@ -8,7 +8,7 @@ export async function loadExerciseArtifacts(metadata, base='public') {
   if(!safeProjectAsset(path)) throw new Error('unsafe project artifact path');
   return readFile(`${base}${path}`);
  };
- if(metadata.project && ['planned','blocked'].includes(metadata.project.readiness)) return {receipt:null,artifacts:{script_sha256:null,data_sha256:null}};
+ if(metadata.project && ['planned','blocked'].includes(metadata.project.readiness) && !metadata.receipt_path && !metadata.data_path) return {receipt:null,artifacts:{script_sha256:null,data_sha256:null}};
  const script=await read(metadata.script_path);
  const receipt=metadata.receipt_path ? JSON.parse(await read(metadata.receipt_path)) : null;
  const input=metadata.data_path ? await read(metadata.data_path) : null;
@@ -30,17 +30,18 @@ export async function loadExerciseArtifacts(metadata, base='public') {
   }
   artifacts.notebook_shared_script=[2,3].includes(lines.length) && lines[0]==='import runpy, sys' && lines.at(-1)===`runpy.run_path("${basename}", run_name="__main__")` && argsValid;
   artifacts.environment_matches=environment.toString().includes(`Python==${metadata.python_version}\n`) && environment.toString().includes(`Dependencies: ${metadata.dependencies}\n`) && environment.toString().includes(`Recorded platform: ${metadata.platform}\n`);
-  artifacts.diagnostics={}; artifacts.diagnostics_valid=true;
-  for(const item of receipt?.diagnostics ?? []) {
-   const raw=await read(item.path); artifacts.diagnostics[item.path]=sha(raw);
-   const output=JSON.parse(raw);
-   if(!output || Array.isArray(output) || !Object.keys(output).every(key=>['summary','observations','limitations'].includes(key)) || typeof output.summary!=='string' || !output.summary.trim() || !['observations','limitations'].every(key=>Array.isArray(output[key]) && output[key].length && output[key].every(value=>typeof value==='string' && value.trim()))) artifacts.diagnostics_valid=false;
-  }
-  if(input) {
-   const manifest=JSON.parse(input);
-   artifacts.fingerprint_only_input=manifest.kind==='fingerprint-only' && Object.keys(manifest).every(key=>['kind','files'].includes(key)) && Array.isArray(manifest.files) && manifest.files.every(file=>Object.keys(file).every(key=>['name','sha256','bytes'].includes(key)));
-   if(receipt?.input_manifest && canonical(receipt.input_manifest)!==canonical(manifest)) artifacts.fingerprint_only_input=false;
-  }
+ }
+ artifacts.diagnostics={}; artifacts.diagnostics_valid=true;
+ for(const item of receipt?.diagnostics ?? []) {
+  const raw=await read(item.path); artifacts.diagnostics[item.path]=sha(raw);
+  const output=JSON.parse(raw);
+  if(!output || Array.isArray(output) || !Object.keys(output).every(key=>['summary','observations','limitations'].includes(key)) || typeof output.summary!=='string' || !output.summary.trim() || !['observations','limitations'].every(key=>Array.isArray(output[key]) && output[key].length && output[key].every(value=>typeof value==='string' && value.trim()))) artifacts.diagnostics_valid=false;
+ }
+ if(input) {
+  const manifest=JSON.parse(input);
+  artifacts.fingerprint_only_input=manifest.kind==='fingerprint-only' && Object.keys(manifest).every(key=>['kind','files'].includes(key)) && Array.isArray(manifest.files) && manifest.files.every(file=>Object.keys(file).every(key=>['name','sha256','bytes'].includes(key)));
+  artifacts.input_manifest_matches_receipt=Boolean(receipt?.input_manifest) && canonical(receipt.input_manifest)===canonical(manifest);
+  if(receipt?.input_manifest && !artifacts.input_manifest_matches_receipt) artifacts.fingerprint_only_input=false;
  }
  return {receipt,artifacts};
 }

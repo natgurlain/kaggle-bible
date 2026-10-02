@@ -57,7 +57,21 @@ export function actualReceiptShapeErrors(receipt, hasHelper=false) {
 // Artifacts are supplied by the filesystem/build adapter, never inferred from a URL.
 export function projectContractErrors(metadata,receipt,artifacts={}) {
  const p=metadata.project; const errors=[];
- if(!p) return errors; // Version-1 legacy execution receipts remain valid.
+ const pkg=p?.package;
+ const hasHelper=pkg?.helper_path!==undefined || pkg?.helper_sha256!==undefined;
+ const actualInput=receipt?.evidence_type==='actual-data' || metadata.data_scope!=='generated-teaching-fixture';
+ if(actualInput && ['planned','blocked'].includes(projectReadiness(metadata)) && (metadata.data_path!==undefined || metadata.receipt_path!==undefined)) errors.push('nonfixture planned/blocked projects must omit public data and receipt artifact references');
+ if(actualInput && receipt) {
+  errors.push(...actualReceiptShapeErrors(receipt,hasHelper));
+  if(metadata.data_scope==='generated-teaching-fixture' || receipt.data_scope!==metadata.data_scope || receipt.evidence_type!=='actual-data') errors.push('actual-data evidence and input scope must agree');
+  if(artifacts.diagnostics_valid!==true) errors.push('diagnostic artifact must contain only nonempty summary, observations and limitations');
+ }
+ if(actualInput && (receipt || ['runnable','actual-data-verified'].includes(projectReadiness(metadata)))) {
+  if(!receipt) errors.push('nonfixture runnable project needs a matching actual-data receipt');
+  if(artifacts.fingerprint_only_input!==true) errors.push('actual-data inputs must use a matching fingerprint-only public artifact');
+  if(artifacts.input_manifest_matches_receipt!==true) errors.push('public input manifest must exactly match the receipt input manifest');
+ }
+ if(!p) return errors; // Version-1 legacy generated-fixture receipts remain valid.
  const state=p.readiness;
  if(!Object.hasOwn(projectReadinessLabels,state)) errors.push('unknown project readiness');
  const history=p.readiness_history;
@@ -71,15 +85,12 @@ export function projectContractErrors(metadata,receipt,artifacts={}) {
  if(!text(p.next_lesson?.title) || !text(p.next_lesson?.experiment) || !/^\/(?!\/)[a-z0-9/#-]+$/.test(p.next_lesson?.url ?? '')) errors.push('next lesson and experiment are missing');
  if(state==='blocked' && !['reason','owner','next_action'].every(key=>text(p.blocker?.[key]))) errors.push('blocked project needs reason, owner and next action');
  if(!['runnable','actual-data-verified'].includes(state)) return errors;
- const pkg=p.package;
  if(!pkg || !safeProjectAsset(pkg.notebook_path) || !pkg.notebook_path.endsWith('.ipynb') || !safeProjectAsset(pkg.environment_path) || !pkg.environment_path.endsWith('.txt')) errors.push('pinned notebook/environment package paths are missing');
  for(const field of ['script','notebook','environment']) if(!hash(pkg?.[`${field}_sha256`]) || artifacts[`${field}_sha256`]!==pkg?.[`${field}_sha256`]) errors.push(`${field} package fingerprint is missing or stale`);
  if(!artifacts.environment_matches) errors.push('environment artifact does not match declared execution conditions');
  if(!artifacts.notebook_shared_script) errors.push('notebook must delegate all computation to the shared script');
- const hasHelper=pkg?.helper_path!==undefined || pkg?.helper_sha256!==undefined;
  if(hasHelper && (!safeProjectAsset(pkg?.helper_path) || !pkg.helper_path.endsWith('.py') || !hash(pkg?.helper_sha256) || artifacts.helper_sha256!==pkg?.helper_sha256)) errors.push('declared helper path/fingerprint pair is missing or stale');
- if(receipt && (receipt.evidence_type==='actual-data' || metadata.data_scope!=='generated-teaching-fixture')) errors.push(...actualReceiptShapeErrors(receipt,hasHelper));
- if(receipt && (receipt.evidence_type==='actual-data' || metadata.data_scope!=='generated-teaching-fixture') && hasHelper && receipt.code_fingerprints?.helper_sha256!==pkg?.helper_sha256) errors.push('receipt helper fingerprint does not match package');
+ if(receipt && actualInput && hasHelper && receipt.code_fingerprints?.helper_sha256!==pkg?.helper_sha256) errors.push('receipt helper fingerprint does not match package');
  if(state!=='actual-data-verified') return errors;
  if(metadata.data_scope==='generated-teaching-fixture') errors.push('fixture cannot be actual-data verified');
  if(!receipt || receipt.execution_status!=='succeeded' || receipt.evidence_type!=='actual-data') errors.push('successful actual-data receipt is required');
@@ -90,7 +101,5 @@ export function projectContractErrors(metadata,receipt,artifacts={}) {
  for(const field of ['script','notebook','environment']) if(receipt.code_fingerprints?.[`${field}_sha256`]!==pkg?.[`${field}_sha256`]) errors.push('receipt package fingerprints do not match project');
  if(!Array.isArray(receipt.diagnostics) || !receipt.diagnostics.length || !p.diagnostics.every(question=>receipt.diagnostics.some(row=>row?.question===question)) || !receipt.diagnostics.every(row=>text(row?.question)&&safeProjectAsset(row.path)&&hash(row.sha256)&&artifacts.diagnostics?.[row.path]===row.sha256)) errors.push('durable diagnostic outputs are missing or stale');
  if(!metadata.receipt_path || !metadata.data_path) errors.push('verified project receipt and manifest references are required');
- if(!artifacts.diagnostics_valid) errors.push('diagnostic artifact must contain only nonempty summary, observations and limitations');
- if(!artifacts.fingerprint_only_input) errors.push('actual-data inputs must use a matching fingerprint-only public artifact');
  return errors;
 }
