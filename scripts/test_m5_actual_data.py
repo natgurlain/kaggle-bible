@@ -161,6 +161,17 @@ class M5ActualDataTests(unittest.TestCase):
         with mock.patch.object(lab,'sha',aftercheck):receipt=self.run_generated()
         self.assertTrue(mutated);self.assertEqual(receipt['input_manifest']['files'][3],{'name':'scope.json','sha256':hashlib.sha256(captured).hexdigest(),'bytes':len(captured)})
 
+    def test_nonexistent_forbidden_output_roots_are_rejected_before_writes(self):
+        for name in ['public', 'dist', '.git']:
+            for output in [self.base/name, self.base/name/'nested-run']:
+                with self.subTest(output=output):
+                    self.assertFalse(output.exists())
+                    with self.assertRaisesRegex(ValueError, 'public/dist/.git'):
+                        lab.run_project(self.sales,self.calendar,self.prices,self.scope,output,'generated-test-data',True)
+                    self.assertFalse((self.base/name).exists())
+                    self.assertFalse((output/'private-forecasts.csv').exists())
+                    self.assertFalse((output/'private-series-map.json').exists())
+
     def test_private_paths_authorization_helper_hash_cap_and_no_overwrite(self):
         with self.assertRaisesRegex(ValueError,'Confirm'):lab.run_project(self.sales,self.calendar,self.prices,self.scope,self.base/'run','generated-test-data',False)
         repo=self.base/'repo';repo.mkdir();(repo/'.git').mkdir();web=self.base/'public';web.mkdir();link=self.base/'link';link.symlink_to(web,target_is_directory=True)

@@ -70,8 +70,8 @@ def private_path(path):
     if any((parent / '.git').exists() for parent in [resolved, *resolved.parents]):
         raise ValueError('Inputs and outputs must be outside every Git checkout.')
     # A copied package may also be inside a static web root without a .git directory.
-    if any(parent.name in ('public', 'dist') for parent in resolved.parents):
-        raise ValueError('Inputs and outputs must be outside public/dist directories.')
+    if any(part.name in ('public', 'dist', '.git') for part in [resolved, *resolved.parents]):
+        raise ValueError('Inputs and outputs must be outside public/dist/.git directories.')
     return resolved
 
 

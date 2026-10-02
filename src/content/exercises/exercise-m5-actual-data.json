@@ -59,7 +59,7 @@
       "environment_path": "/exercises/m5-actual-data-environment.txt",
       "helper_path": "/exercises/m5-rolling-origin.py",
       "helper_sha256": "eb6c90b7a6f629e172107f7e74f41d777cd50bb29508c9b585c0941a9353543f",
-      "script_sha256": "26f2ad5595dee6f7d8d98b57eb3a318bdb3acb53d1949049a01b278ee08426c9",
+      "script_sha256": "af5f2abb11513b76fe16656e2e09dbd231dbb714438196985127b45deff2d1e7",
       "notebook_sha256": "6e95c86c33fc57e18f7626018d08ab2755e2167be2994621e7ca3b52ba6770a0",
       "environment_sha256": "43f36b0cae0100982c41c730a9e7491f4972ff76fff7f55e77e2adff3c22ee34"
     },
