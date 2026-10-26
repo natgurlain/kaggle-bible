@@ -2,11 +2,11 @@
 schema_version: 1
 id: practice-experiment-receipts
 slug: experiment-receipts
-status: draft
+status: published
 title: Keep a receipt with every validation score
 summary: What to record with each experiment so a score can be compared, rerun and trusted, based on gaps that recur across inspected write-ups.
-reviewed_by: null
-reviewed_at: null
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 topic: experiment-tracking
 evidence_scope: recurring
 modalities:
@@ -30,6 +30,7 @@ evidence_claim_refs:
   - "solution-house-thinkrunner#validation-01"
   - "solution-digits-land#approach-01"
   - "solution-digits-land#validation-01"
+  - "competition-titanic#experiment-01"
 source_ids:
   - source-home-credit-8th
   - source-home-credit-12th
@@ -38,6 +39,7 @@ source_ids:
   - source-titanic-agconti
   - source-house-thinkrunner
   - source-digits-land
+  - source-titanic-official
 claims:
   - id: recommendation-01
     statement: Store each result with its hypothesis, data version, split definition and seeds, configuration, metric implementation, per-fold scores and the next decision, so the score can be compared and rerun.
@@ -61,6 +63,7 @@ claims:
       - "solution-house-thinkrunner#validation-01"
       - "solution-digits-land#approach-01"
       - "solution-digits-land#validation-01"
+      - "competition-titanic#experiment-01"
     reproduction_ids: []
     conditions: The experiment is driven by code whose configuration and timings can be captured automatically.
     limitations: Two README-versus-code mismatches and one CPU-time measurement are code-inspection observations; their consequences for the authors' scores were not measured.
@@ -98,7 +101,7 @@ Pick an old receipt and try to rerun it: the rerun should reproduce the recorded
 
 Missing protocol detail recurs across the inspected reports. The Home Credit eighth-place team names stratified 10-fold CV without fold assignments or seeds; the twelfth-place authors report local-CV AUC 0.8047 without a complete split recipe. [8th validation](/competitions/home-credit-default-risk/#evidence-solution-home-credit-8th-validation-01) [12th CV](/competitions/home-credit-default-risk/#evidence-solution-home-credit-12th-cv-result-01) [Home Credit gaps](/competitions/home-credit-default-risk/#evidence-gaps-01) The M5 fourth-place author lists five dated holdouts but no aggregate scores, and neither M5 report supplies a shared numeric validation result or code-and-data receipt. [M5 holdouts](/competitions/m5-forecasting-accuracy/#evidence-solution-m5-4th-validation-01) [M5 gaps](/competitions/m5-forecasting-accuracy/#evidence-gaps-01)
 
-Prose and code also diverge. Conti's Titanic README describes K-fold evaluation while the inspected SVM block uses a 90/10 holdout; thinkrunner's House Prices README claims fold-only fitting while its notebook fits target encoding before CV. [Titanic mismatch](/competitions/titanic/#evidence-solution-titanic-agconti-validation-01) [House mismatch](/competitions/house-prices-advanced-regression-techniques/#evidence-solution-house-thinkrunner-validation-01) In Digit Recognizer, John Land times training with `process_time`, which is CPU time rather than wall time, and the convolutional model's 15 epochs come from three consecutive fit calls that a summary could easily misreport. [Digits timing](/competitions/digit-recognizer/#evidence-solution-digits-land-validation-01) [Digits budgets](/competitions/digit-recognizer/#evidence-solution-digits-land-approach-01)
+Prose and code also diverge. Conti's Titanic README describes K-fold evaluation while the inspected SVM block uses a 90/10 holdout; thinkrunner's House Prices README claims fold-only fitting while its notebook fits target encoding before CV. [Titanic mismatch](/competitions/titanic/#evidence-solution-titanic-agconti-validation-01) [House mismatch](/competitions/house-prices-advanced-regression-techniques/#evidence-solution-house-thinkrunner-validation-01) In Digit Recognizer, John Land times training with `process_time`, which is CPU time rather than wall time, and the convolutional model's 15 epochs come from three consecutive fit calls. [Digits timing](/competitions/digit-recognizer/#evidence-solution-digits-land-validation-01) [Digits budgets](/competitions/digit-recognizer/#evidence-solution-digits-land-approach-01)
 
 These are gaps in published material, not evidence of private record-keeping practice or of incorrect results.
 
@@ -108,8 +111,8 @@ Writing a receipt is editorially expected to be cheap once automated, but the so
 
 ## Next experiment
 
-Take one existing experiment you have run and write its receipt from memory, then rerun it from the receipt alone. List every field you could not fill or that produced a different split. Add those fields to the automated receipt before the next comparison. This is a process check, not a modeling result. See the companion practice records `practice-validation-checks` and `practice-compute-planning`.
+Use the Titanic evidence map's proposed experiment: a sex-group majority baseline against a sex-and-passenger-class group rule on the same five stratified folds, with group decisions fitted on training rows only. [Titanic experiment](/competitions/titanic/#evidence-experiment-01) Write a receipt for each run with the fold assignments, seed, rule, accuracy calculation and per-fold accuracy, then rerun both arms from the receipts alone. List every field that was missing or that produced a different split, and add it to the automated receipt before the next comparison. This is a process check, not a modeling result. See the [Titanic evidence map](/competitions/titanic/) and the companion practice records `practice-validation-checks` and `practice-compute-planning`.
 
 ## Sources and review notes
 
-Evidence is participant write-ups, pinned author notebooks and evidence-map gap claims linked above. No primary documentation on tracking tools is cited. Draft awaiting independent review.
+Evidence is participant write-ups, pinned author notebooks and evidence-map gap claims linked above. No primary documentation on tracking tools is cited. Evidence scope is recurring because missing protocol detail or prose-code mismatches appear in Home Credit, M5, Titanic, House Prices and Digit Recognizer sources.

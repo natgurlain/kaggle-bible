@@ -2,11 +2,11 @@
 schema_version: 1
 id: practice-model-comparison
 slug: model-comparison
-status: draft
+status: published
 title: Compare models on one frozen split, metric and budget
 summary: How to decide whether a more complex model is worth it when published comparisons mix splits, training budgets and objectives.
-reviewed_by: null
-reviewed_at: null
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 topic: modeling
 evidence_scope: recurring
 modalities:
@@ -35,6 +35,7 @@ evidence_claim_refs:
   - "solution-house-thinkrunner#validation-01"
   - "solution-m5-4th#approach-01"
   - "solution-m5-4th#metric-priority-01"
+  - "solution-m5-4th#validation-01"
   - "competition-m5-forecasting-accuracy#lesson-01"
 source_ids:
   - source-digits-land
@@ -54,6 +55,7 @@ claims:
       - "solution-nlp-gehad#approach-01"
       - "solution-nlp-krause#approach-01"
       - "solution-titanic-wehrley#approach-01"
+      - "solution-m5-4th#validation-01"
       - "competition-m5-forecasting-accuracy#lesson-01"
     reproduction_ids: []
     conditions: The candidate models can be trained on identical rows and evaluated on identical held-out rows, and their epochs, search spaces or iteration counts can be recorded.
@@ -84,7 +86,7 @@ Choosing between a linear model, gradient boosting, a neural network or a pretra
 
 ## Avoid or adapt when
 
-Equal budgets are not always meaningful: a pretrained transformer and a TF-IDF model differ in what "one epoch" or "one search" means. In that case record each model's budget explicitly and compare at a budget the reader could actually afford, rather than forcing a nominal match. If folds disagree strongly, as M5 holdouts did for one author, a single comparison cannot settle the choice.
+Equal budgets are not always meaningful: a pretrained transformer and a TF-IDF model differ in what "one epoch" or "one search" means. In that case record each model's budget explicitly and compare at a budget the reader could actually afford, rather than forcing a nominal match. If folds disagree strongly, as the M5 fourth-place author reports for dated holdouts whose scores varied significantly over time, a single comparison cannot settle the choice. [M5 holdouts](/competitions/m5-forecasting-accuracy/#evidence-solution-m5-4th-validation-01)
 
 ## Procedure
 
@@ -117,4 +119,4 @@ On authorized Disaster Tweets data, freeze five stratified folds and positive-cl
 
 ## Sources and review notes
 
-Evidence is drawn from pinned author notebooks and participant write-ups linked above. No model comparison has been rerun. Draft awaiting independent review.
+Evidence is drawn from pinned author notebooks and participant write-ups linked above. No model comparison has been rerun. Evidence scope is recurring because unequal or unrecorded budgets and objective-metric mismatches appear in Digit Recognizer, Disaster Tweets, Titanic, House Prices and M5 sources.

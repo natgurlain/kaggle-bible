@@ -2,13 +2,13 @@
 schema_version: 1
 id: practice-feature-families
 slug: feature-family-ablation
-status: draft
+status: published
 title: Add one feature family at a time on frozen folds
 summary: A way to turn feature ideas from winning write-ups into controlled tests, because the reports list feature families without isolating their gains.
-reviewed_by: null
-reviewed_at: null
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 topic: feature-engineering
-evidence_scope: recurring
+evidence_scope: single-case
 modalities:
   - tabular
 tasks:
@@ -92,7 +92,7 @@ Compare per-fold scores against the frozen baseline, not against a leaderboard. 
 
 ## Competition evidence and disagreements
 
-Home Credit's official data has one application row per loan plus separate files for bureau credit, monthly balances, previous applications and installment payments. [Home Credit files](/competitions/home-credit-default-risk/#evidence-data-structure-01) The eighth-place write-up reports grouping history tables by applicant, and the twelfth-place write-up reports cross-table aggregates plus model-derived history features. [8th approach](/competitions/home-credit-default-risk/#evidence-approach-8th-01) [12th approach](/competitions/home-credit-default-risk/#evidence-solution-home-credit-12th-approach-01) Neither isolates these features, so the evidence map treats them as hypotheses to test. [Home Credit lesson](/competitions/home-credit-default-risk/#evidence-lesson-01)
+Home Credit's official data has one application row per loan plus separate prior-credit, balance, previous-application, and installment-payment files. [Home Credit files](/competitions/home-credit-default-risk/#evidence-data-structure-01) The eighth-place write-up reports grouping history tables by applicant, and the twelfth-place write-up reports cross-table aggregates plus model-derived history features. [8th approach](/competitions/home-credit-default-risk/#evidence-approach-8th-01) [12th approach](/competitions/home-credit-default-risk/#evidence-solution-home-credit-12th-approach-01) Neither isolates these features, so the evidence map treats them as hypotheses to test. [Home Credit lesson](/competitions/home-credit-default-risk/#evidence-lesson-01)
 
 In House Prices, massquantity investigates feature engineering and PCA, and thinkrunner uses category target encoding before stacking; neither result is a controlled common-split benchmark here. [massquantity](/competitions/house-prices-advanced-regression-techniques/#evidence-solution-house-massquantity-approach-01) [thinkrunner](/competitions/house-prices-advanced-regression-techniques/#evidence-solution-house-thinkrunner-approach-01)
 
@@ -104,8 +104,8 @@ Each family adds a full fold rerun, and aggregations over large history tables m
 
 ## Next experiment
 
-On authorized Home Credit data, freeze an application-table gradient-boosting baseline on stratified folds and AUC. Add count, mean and maximum aggregates from one history table, grouped by applicant, and record per-fold AUC changes. Keep the family only if the predefined rule is met, then test the next table. No expected gain is known. See the [Home Credit evidence map](/competitions/home-credit-default-risk/) and the companion practice record `practice-validation-checks`.
+On authorized Home Credit data, freeze an application-table baseline on stratified folds and AUC; using gradient boosting for that baseline is an editorial choice, not a reported team setting. Add one small aggregate family from one history table, such as counts, means and maxima (also an editorial choice), grouped by applicant, and record per-fold AUC changes. Keep the family only if the predefined rule is met, then test the next table. No expected gain is known. See the [Home Credit evidence map](/competitions/home-credit-default-risk/) and the companion practice record `practice-validation-checks`.
 
 ## Sources and review notes
 
-All evidence is participant reports, author notebooks, the official data description and editorial experiment designs linked above. No feature gain has been reproduced. Draft awaiting independent review.
+All evidence is participant reports, author notebooks, the official data description and editorial experiment designs linked above. No feature gain has been reproduced. Evidence scope is single-case: the entity-aggregate guidance rests on Home Credit alone, and House Prices only repeats the general observation that feature families are reported without isolated gains, the same shape of evidence that keeps `practice-validation-checks` single-case.

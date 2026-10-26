@@ -2,11 +2,11 @@
 schema_version: 1
 id: practice-leakage-boundaries
 slug: leakage-fit-boundaries
-status: draft
+status: published
 title: Fit data-dependent steps inside the validation boundary
 summary: An audit for preprocessing, target-derived features, and external data that can carry held-out information into a validation score.
-reviewed_by: null
-reviewed_at: null
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 topic: leakage
 evidence_scope: recurring
 modalities:
@@ -61,7 +61,7 @@ claims:
     conditions: The reader wants a validation score that estimates performance on rows whose targets were not available while fitting. The fitting order is inspectable in code.
     limitations: The inspected sources show code order only. No record measures how much any ordering inflated a score, and unsupervised transforms fitted on all rows may matter much less than target-derived ones on a given dataset.
   - id: recommendation-02
-    statement: Record the provenance and permission of any external data before it enters a feature, and keep it out of the pipeline if the competition terms cannot be satisfied.
+    statement: Treat external data as a leakage boundary too, recording its provenance, permission and when its values would have been available before it enters a feature, and keep it out of the pipeline if the competition terms cannot be satisfied.
     kind: editorial-inference
     evidence: []
     supports_claim_refs:
@@ -69,7 +69,7 @@ claims:
       - "competition-m5-forecasting-accuracy#rules-data-01"
     reproduction_ids: []
     conditions: The competition's rules define what external data is allowed and under which sharing obligations.
-    limitations: Two historical rule sets are summarized; they are not legal advice and differ from each other, so later competitions must be checked individually.
+    limitations: Two historical rule sets are summarized; they are not legal advice and differ from each other, so later competitions must be checked individually. The availability-time check is editorial reasoning; neither rule set addresses it, and no cited solution reports leakage through external data.
 ---
 
 # Fit data-dependent steps inside the validation boundary
@@ -92,7 +92,7 @@ Fixed, row-local transformations such as dividing pixels by a constant or taking
 2. Put fitted steps inside a per-fold pipeline so each fold refits them on its training rows only.
 3. For model-derived features, generate training-row values from models that did not see those rows, and test-row values from models fitted on training data.
 4. Write down which rows each step may see at inference, including whether test inputs are used for unsupervised fitting.
-5. List every external dataset with its source, licence or permission, and the competition rule that allows it. [claim:recommendation-02]
+5. Apply the same boundary to external data: list each dataset's source, licence or permission, the competition rule that allows it, and when its values would have been known relative to the prediction, so it cannot import information the model would not have had. [claim:recommendation-02]
 
 ## Diagnostics and success criteria
 
@@ -100,11 +100,11 @@ Read the code order, not only the description: the fit call for each learned ste
 
 ## Competition evidence and disagreements
 
-Several inspected notebooks fit steps before the split. In House Prices, thinkrunner fits target encoding, preprocessing and feature selection before five-fold `cross_validate`, although the README describes fold-only fitting; massquantity fits its feature pipeline and PCA before model scoring, even though its stacking class clones base models inside folds. [thinkrunner order](/competitions/house-prices-advanced-regression-techniques/#evidence-solution-house-thinkrunner-validation-01) [massquantity order](/competitions/house-prices-advanced-regression-techniques/#evidence-solution-house-massquantity-validation-01)
+Several inspected notebooks fit steps before the split. In House Prices, thinkrunner fits target encoding, preprocessing and feature selection before five-fold `cross_validate`, although the README describes fold-only fitting; massquantity fits its feature pipeline and PCA before model scoring, even though its stacking stage uses fold-trained base models; fold-trained base models do not make the earlier preprocessing fold-isolated. [thinkrunner order](/competitions/house-prices-advanced-regression-techniques/#evidence-solution-house-thinkrunner-validation-01) [massquantity order](/competitions/house-prices-advanced-regression-techniques/#evidence-solution-house-massquantity-validation-01)
 
-The same pattern appears with smaller stakes elsewhere: a Digit Recognizer notebook fits a MinMaxScaler before its validation split, and both Titanic tutorials prepare data before holding out rows. [Digits scaler](/competitions/digit-recognizer/#evidence-solution-digits-land-validation-01) [Titanic holdout](/competitions/titanic/#evidence-solution-titanic-wehrley-validation-01) [Titanic SVM split](/competitions/titanic/#evidence-solution-titanic-agconti-validation-01) A Disaster Tweets tutorial is the counterexample: it splits first and fits TF-IDF on training rows inside the search pipeline. [Tweets order](/competitions/nlp-getting-started/#evidence-solution-nlp-krause-validation-01)
+Elsewhere, preparation also precedes the split: a Digit Recognizer notebook fits a MinMaxScaler before its validation split, and in both Titanic tutorials data cleaning or munging comes before rows are held out. [Digits scaler](/competitions/digit-recognizer/#evidence-solution-digits-land-validation-01) [Titanic holdout](/competitions/titanic/#evidence-solution-titanic-wehrley-validation-01) [Titanic SVM split](/competitions/titanic/#evidence-solution-titanic-agconti-validation-01) A Disaster Tweets tutorial is the counterexample: it splits first and fits TF-IDF on training rows inside the search pipeline. [Tweets order](/competitions/nlp-getting-started/#evidence-solution-nlp-krause-validation-01)
 
-These are code-order observations, not measured leakage effects; none of the records reports how much a score changed. The Home Credit evidence map proposes out-of-fold generation for model-derived features as an editorial experiment, not as a reported team result. [Home Credit experiment](/competitions/home-credit-default-risk/#evidence-experiment-01) Home Credit and M5 imposed different external-data conditions. [Home Credit rules](/competitions/home-credit-default-risk/#evidence-rules-data-01) [M5 rules](/competitions/m5-forecasting-accuracy/#evidence-rules-data-01)
+These are code-order observations, not measured leakage effects; none of the records reports how much a score changed. The Home Credit evidence map proposes out-of-fold generation for model-derived features as an editorial experiment, not as a reported team result. [Home Credit experiment](/competitions/home-credit-default-risk/#evidence-experiment-01) For external data, Home Credit and M5 imposed different permission conditions; neither rule set addresses availability timing, which this practice adds as an editorial leakage check. [Home Credit rules](/competitions/home-credit-default-risk/#evidence-rules-data-01) [M5 rules](/competitions/m5-forecasting-accuracy/#evidence-rules-data-01)
 
 ## Cost and alternatives
 
@@ -116,4 +116,4 @@ On data you are authorized to use, take the House Prices task and compare a neig
 
 ## Sources and review notes
 
-Evidence comes from inspected author notebooks and historical competition rules linked above. No primary technical documentation is cited and no leakage magnitude has been measured or reproduced. Draft awaiting independent review.
+Evidence comes from inspected author notebooks and historical competition rules linked above. No primary technical documentation is cited and no leakage magnitude has been measured or reproduced. Evidence scope is recurring because fitting or preparation before the split appears in inspected notebooks from House Prices, Digit Recognizer and Titanic.
