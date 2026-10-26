@@ -1,0 +1,16 @@
+schema_version: 1
+id: source-lmsys-rules
+title: LMSYS - Chatbot Arena Human Preference Predictions official rules
+url: https://www.kaggle.com/competitions/lmsys-chatbot-arena/rules
+kind: official-competition
+authors:
+  - Kaggle
+  - Sky Computing Lab
+published_at: null
+accessed_at: '2026-10-26'
+revision: null
+locator_notes: Rules summary (Team Limits; Submission Limits); Competition-Specific Terms (Winner License Type; Data Access and Use); B.7.A Data Access and Use; B.7.C External Data; B.9 Determining Winners.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Full rules text read directly on 2026-10-26. Historical contest terms, not legal advice or a statement of current data-use rights.

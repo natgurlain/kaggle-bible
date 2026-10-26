@@ -10,3 +10,4 @@ id,completeness_level,editorial_status,priority,work_order,learning_path_stage,g
 12500,1,queued,path,9,advanced,,,,Advanced text case: composite metric and subgroup diagnostics.
 20270,1,queued,path,10,advanced,,,,Advanced vision case: imbalance, external data, and rank averaging.
 13836,1,queued,path,11,advanced,,,,Advanced vision case: domain-specific pretraining and ensemble diversity.
+66631,1,in-progress,,,,,,,"Level 2 evidence-map draft prepared; awaiting independent exact-head review before any guide link."

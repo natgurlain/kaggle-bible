@@ -1,0 +1,17 @@
+schema_version: 1
+id: source-lmsys-2nd
+title: 2nd place solution (LMSYS Chatbot Arena)
+url: https://www.kaggle.com/competitions/lmsys-chatbot-arena/writeups/rist-pref-no-leak-2nd-place-solution
+kind: author-writeup
+authors:
+  - sakaku (liushuzhi)
+  - kapenon
+  - tascj (tascj0)
+published_at: '2024-08-14'
+accessed_at: '2026-10-26'
+revision: null
+locator_notes: Solution (Baseline; Full Swap; Steps to Train the Final Model - Stage 1, Stage 2, Stage 3; Faster training; Faster inference); topic-author reply by tascj on the final inference models and token length.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Participant-authored Kaggle write-up labelled "Solution Writeup · 2nd place · Aug 14, 2024". It links the training repository registered as source-lmsys-2nd-code and a Kaggle inference notebook that was not inspected.

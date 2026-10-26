@@ -12,7 +12,7 @@ const exercises=await Promise.all((await readdir('src/content/exercises')).filte
 }));
 test('all six authored guide cards have distinct outcomes and preserve actual-data access gaps',()=>{
  const cards=guides.map(guide=>guideCardMetadata(guide,exercises));
- assert.equal(cards.length,6);assert.equal(new Set(cards.map(card=>card.outcome)).size,6);
+ assert.equal(guides.filter(guide=>guide.data.status==='published').length,6);assert.equal(new Set(cards.map(card=>card.outcome)).size,cards.length);
  for(const card of cards){assert.ok(card.prerequisites.length);assert.match(card.actual_data_access.url,/^https:\/\/www.kaggle.com\/competitions\/[^/]+\/data$/);assert.match(card.actual_data_access.instructions,/authorized/);assert.equal(card.actual_data_verified,false);}
  const credit=cards.find(card=>card.kaggle_slug==='home-credit-default-risk');assert.equal(credit.projects.length,0);assert.match(credit.readiness,/Guide only/);assert.match(renderGuideCardDetails(credit),/Unknown; no executed learner project/);
  assert.equal(cards.reduce((sum,card)=>sum+card.projects.length,0),5);
