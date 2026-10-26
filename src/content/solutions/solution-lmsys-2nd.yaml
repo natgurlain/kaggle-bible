@@ -1,0 +1,193 @@
+schema_version: 1
+id: solution-lmsys-2nd
+status: published
+title: Second-place LMSYS solution - full-parameter fine-tuning, paired swaps and pseudo-labels
+summary: The [Rist] pref team fully fine-tuned Gemma2 and Llama3-based reward models with paired response-swap augmentation, pseudo-labelled about 240k external conversations, and submitted a two-model Gemma2-9B plus ArmoRM-Llama3-8B ensemble.
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
+competition_id: competition-lmsys-chatbot-arena
+team: "[Rist] pref(no leak)"
+authors:
+  - sakaku (liushuzhi)
+  - kapenon
+  - tascj (tascj0)
+source_ids:
+  - source-lmsys-2nd
+  - source-lmsys-2nd-code
+  - source-lmsys-leaderboard
+rank:
+  value: 2
+  basis: official-final-private
+  source_id: source-lmsys-leaderboard
+scores:
+  - metric_id: log-loss
+    value: 0.97425
+    split: private-lb
+    configuration: Final official private leaderboard entry for team "[Rist] pref(no leak)", after the host announced replacing the private test data and rerunning submissions; the inspected sources do not directly confirm completion.
+    fold_summary: null
+    claim_id: final-result-01
+  - metric_id: log-loss
+    value: 0.876
+    split: local-cv
+    configuration: Author-reported stage-3 average ensemble of Gemma2-9B and ArmoRM-Llama3-8B on the 20% prompt-grouped validation split (reported as 0.876 to 0.877).
+    fold_summary: Single 20% holdout; component models 0.884 and 0.890.
+    claim_id: results-01
+  - metric_id: log-loss
+    value: 0.868
+    split: public-lb
+    configuration: Author-reported "old LB" for the final two-model ensemble with 2:1 weighting after training ArmoRM-Llama3-8B on all data, which the authors label "old LB", i.e. before the announced private-test replacement.
+    fold_summary: null
+    claim_id: results-01
+validation:
+  strategy: group-kfold
+  details: StratifiedGroupKFold with five splits (random_state=0) on the three-way label, grouped by the prompt text; one fold, 20% of the Kaggle training rows, is held out as validation. External and pseudo-labelled rows are training-only in the described stages. Only a single held-out fold is reported, not a five-fold average.
+  source_ids:
+    - source-lmsys-2nd
+    - source-lmsys-2nd-code
+techniques:
+  - transformer
+  - training-augmentation
+  - pseudo-labeling
+  - blending
+resources:
+  - id: training
+    scope: training
+    hardware_class: multi-gpu
+    accelerator_model: NVIDIA A100 80GB
+    accelerator_count: 4
+    vram_gb_per_device: 80
+    ram_gb: null
+    wall_hours: null
+    accelerator_hours: null
+    basis: source-reported
+    claim_id: resources-training-01
+  - id: inference
+    scope: inference
+    hardware_class: multi-gpu
+    accelerator_model: NVIDIA T4
+    accelerator_count: 2
+    vram_gb_per_device: null
+    ram_gb: null
+    wall_hours: null
+    accelerator_hours: null
+    basis: source-reported
+    claim_id: resources-inference-01
+reproducibility:
+  code_url: https://github.com/tascj/kaggle-lmsys-chatbot-arena
+  code_revision: 83cd93d50b9283c18711e8c63e4e1c6399c7b9ce
+  status: code-available
+  reproduction_ids: []
+  notes: Pinned README and fold-preparation script inspected as text; stage configs listed but not read in full; nothing executed. The linked Kaggle inference notebook was not inspected. Repository license is Apache-2.0.
+claims:
+  - id: approach-01
+    statement: The team fully fine-tuned google/gemma-2-9b-it, google/gemma-2-27b-it and RLHFlow/ArmoRM-Llama3-8B-v0.1 with a re-initialized two-layer classification head, without LoRA, adding 21k rows from a deduplicated external 33k dataset to the Kaggle training data.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-2nd
+        locator: Baseline; Steps to Train the Final Model - Stage 1
+        support_summary: The write-up describes the external rows, the prompt formats, the custom head, full-parameter BF16 training and the three stage-1 models.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Participant report of the final training recipe.
+    limitations: Head re-initialization and full-parameter training are reported design choices, not isolated comparisons against LoRA or a default head.
+  - id: swap-01
+    statement: The authors report that including both each training sample and its response-swapped copy, with both gradients accumulated into the same optimizer step, gave a stable 0.003 log-loss improvement for gemma2-9b compared with random swapping; adding both prompt formats the same way gave about 0.001.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-2nd
+        locator: Full Swap
+        support_summary: The write-up compares random swap augmentation with full (paired) swap and reports a stable 0.003 improvement for gemma2-9b, plus a 0.001 improvement from paired input-format augmentation.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Reported validation log loss for gemma2-9b, presumably on the team's 20% prompt-grouped holdout; the baseline is random swapping, not no augmentation. Training time doubles.
+    limitations: Number of runs, seeds and variance behind "stable" are not reported; the comparison is author-reported and not reproduced.
+  - id: pseudo-01
+    statement: The stage-1 ensemble generated pseudo labels for about 240k external conversations (110k from lmsys-1m and 130k from other datasets); gemma-2-9b and ArmoRM-Llama3-8B were trained on them in stage 2 and then fine-tuned on the 55k Kaggle plus 21k external labelled rows in stage 3.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-2nd
+        locator: Stage 2 (pseudo labeling); Stage 3
+        support_summary: The write-up describes the pseudo-label sources and counts, the stage-2 models and stage-3 fine-tuning from the stage-2 checkpoints.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Three-stage training reported for the final models; the authors note TTA was not applied when generating pseudo labels.
+    limitations: No stage-3 result without stage-2 pretraining is reported, so the pseudo-labelling gain is not isolated; overlap between pseudo-labelled conversations and validation or test prompts is not discussed.
+  - id: validation-01
+    statement: The team used StratifiedGroupKFold grouped by prompt to reserve 20% of the Kaggle training rows as validation; the pinned script builds five folds with random_state=0 on the three-way label.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-2nd
+        locator: Baseline
+        support_summary: The write-up states StratifiedGroupKFold based on prompt with 20% reserved for validation.
+      - source_id: source-lmsys-2nd-code
+        locator: scripts/prepare_dataset.py lines 6-13
+        support_summary: The script groups by the prompt column, stratifies on the argmax label and writes a fold column for five splits.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Observed code at the pinned commit and the write-up description.
+    limitations: Grouping by exact prompt text does not group near-duplicate prompts; only one holdout fold is reported.
+  - id: results-01
+    statement: The authors report stage-1 validation log loss 0.891 (gemma-2-9b), 0.883 (gemma-2-27b) and 0.899 (ArmoRM-Llama3-8B) with an average ensemble of 0.876; stage-3 models scored 0.884 and 0.890 with an ensemble of 0.876 to 0.877; the swapped-input ArmoRM model scored 0.873 on the old LB, 0.869 after all-data training, and the 2:1 ensemble 0.868.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-2nd
+        locator: Stage 1; Stage 3
+        support_summary: The write-up lists these validation and old-leaderboard log-loss values for the named models and ensembles.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Log loss, lower is better. Validation values use the 20% holdout without TTA; "old LB" is the authors' label for the public leaderboard before the announced private-test replacement.
+    limitations: Values are not reproduced and should not be compared with final private scores, which were presumably computed on the announced replacement test data.
+  - id: final-result-01
+    statement: Kaggle's final leaderboard lists team "[Rist] pref(no leak)", with members tascj0, liushuzhi and kapenon, at rank 2 with log loss 0.97425 and links the row to this write-up.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-leaderboard
+        locator: Final standings; rank 2 row
+        support_summary: The completed leaderboard shows rank 2, score 0.97425, member links to the three authors and a link to the 2nd-place write-up.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Final private leaderboard entry for the official log-loss metric.
+    limitations: A leaderboard row does not reproduce the pipeline or attribute the score to any component.
+  - id: resources-training-01
+    statement: The write-up says 7B models can be fully fine-tuned on a single A100 80G and 9B models need two, and that A100 80G x4 was used for all experiments in the last 10 days; the repository README lists A100 SXM 80G x4.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-2nd
+        locator: Baseline (full-parameter training and hardware paragraph)
+        support_summary: The authors state the per-model GPU needs with BF16 and a Kahan-summation optimizer, and the four-A100 setup for the final 10 days. In a topic-author reply, tascj says they tried 4 or 5 learning rates.
+      - source_id: source-lmsys-2nd-code
+        locator: README.md, Requirements - Hardware
+        support_summary: The README lists A100 SXM 80G x4.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Author-stated hardware for experiments and training.
+    limitations: Hardware before the last 10 days, total wall time, accelerator hours and cost are not reported. Apart from the 4 or 5 learning rates tried, the total number of runs is not given.
+  - id: resources-inference-01
+    statement: The write-up says two T4 GPUs are sufficient to run the 7B-9B models in fp16 by splitting each model across the two GPUs with custom Triton kernels and padding-free sequence packing; the final submission ran one Gemma2-9B and one Llama3-8B model with about 4340 tokens maximum input for Gemma2-9B.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-2nd
+        locator: Faster inference; Topic Author reply on the final inference models
+        support_summary: The write-up describes the T4x2 pipelined inference setup and kernels, and the author reply lists the two final models, no TTA, and the token limit.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Kaggle notebook submission under the competition's 9-hour GPU limit.
+    limitations: Measured inference runtime and memory are not reported.
+  - id: failure-01
+    statement: The author reports spending considerable time on gemma-2-27b without good results until batch size was changed to 80 and gradient clipping turned off.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-2nd
+        locator: Stage 1 (gemma-2-27b paragraph)
+        support_summary: The write-up describes failed early gemma-2-27b training and the two settings changed before it trained successfully.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Stage-1 training of gemma-2-27b in this team's setup.
+    limitations: The failing settings, number of attempts and which change mattered are not reported; gemma-2-27b is not in the final two-model submission.
+unsuccessful_attempts:
+  - description: Early gemma-2-27b fine-tuning gave poor results until batch size 80 and no gradient clipping were used.
+    claim_id: failure-01
+    conditions: Stage-1 full-parameter fine-tuning in this team's environment.
+transfer_limits:
+  - The 0.003 paired-swap gain is one model on one holdout fold with random swapping as the baseline; it is not established for other models, tasks or seeds.
+  - Full-parameter fine-tuning of 7B-27B models used A100 80GB GPUs; the T4 inference setup does not make training low-compute.

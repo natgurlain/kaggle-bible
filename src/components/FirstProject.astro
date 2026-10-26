@@ -9,9 +9,12 @@ const first=recommendedFirstProject(await learningLibrary());
  <p class="evidence-label">{first.label}</p>
  <h2 id="first-project-heading">{first.title}</h2>
  <p><strong>Outcome:</strong> {first.outcome}</p>
- <p><strong>Requirements:</strong> {first.requirements}</p>
  <LinkButton href={first.href} icon="right-arrow">{first.action}</LinkButton>
- <p class="evidence-limit">{first.limit} <a href="/milestones/">Read the evidence limits</a>.</p>
+ <details class="evidence-limit">
+  <summary>Requirements and evidence limits</summary>
+  <p><strong>Requirements:</strong> {first.requirements}</p>
+  <p>{first.limit} <a href="/milestones/">Read the evidence limits</a>.</p>
+ </details>
 </> : <>
  <h2 id="first-project-heading">Choose a first lesson</h2>
  <p>A published runnable Titanic project is not available yet.</p>
@@ -20,5 +23,5 @@ const first=recommendedFirstProject(await learningLibrary());
 </section>
 <style>
 .first-project{border:1px solid var(--sl-color-gray-4);border-radius:.6rem;padding:1rem;margin:1rem 0;overflow-wrap:anywhere}
-.first-project h2{margin-top:.4rem}.first-project p{margin:.65rem 0}.evidence-label{font-size:.875rem;font-weight:700}.evidence-limit{font-size:.875rem}
+.first-project h2{margin-top:.4rem}.first-project p{margin:.65rem 0}.evidence-label{font-size:.875rem;font-weight:700}.evidence-limit{font-size:.875rem;margin-top:.75rem}.evidence-limit summary{cursor:pointer;font-weight:600}
 </style>

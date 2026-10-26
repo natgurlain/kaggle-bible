@@ -78,7 +78,6 @@ const citationSource = (reference: unknown) => {
 	const id = idOf(reference);
 	return id ? sourcesById.get(id) : undefined;
 };
-const reviewedDate = practice.data.reviewed_at ?? 'Not reported';
 const topicLabel = practice.data.topic.replaceAll('-', ' ');
 ---
 
@@ -101,7 +100,7 @@ const topicLabel = practice.data.topic.replaceAll('-', ' ');
 				<p class="eyebrow">Reviewed practice · {topicLabel}</p>
 				<h1 data-pagefind-meta="title">{practice.data.title}</h1>
 				<p class="lede">{practice.data.summary}</p>
-				<p class="review-note">Evidence reviewed by {practice.data.reviewed_by} on {reviewedDate} · Evidence scope: {practice.data.evidence_scope.replaceAll('-', ' ')}</p>
+				<p class="review-note">Evidence scope: {practice.data.evidence_scope.replaceAll('-', ' ')}</p>
 			</header>
 
 			<article class="practice-content" aria-label="Practice guidance" set:html={practiceBodyHTML} />

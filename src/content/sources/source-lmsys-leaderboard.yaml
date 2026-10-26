@@ -1,0 +1,15 @@
+schema_version: 1
+id: source-lmsys-leaderboard
+title: LMSYS - Chatbot Arena Human Preference Predictions final leaderboard
+url: https://www.kaggle.com/competitions/lmsys-chatbot-arena/leaderboard
+kind: official-competition
+authors:
+  - Kaggle
+published_at: null
+accessed_at: '2026-10-26'
+revision: null
+locator_notes: Private tab header notes; rank 1 row "BlackPearl (no leak)" 0.96898 with member link sayoulala and a link to the 1st-place write-up; rank 2 row "[Rist] pref(no leak)" 0.97425 with member links tascj0, liushuzhi and kapenon and a link to the 2nd-place write-up.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: The page states that the competition has completed, that the leaderboard reflects the final standings, and that the private leaderboard is calculated with approximately 45% of the test data. Team-member and write-up links were read from the rendered row markup.

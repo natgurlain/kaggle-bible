@@ -1,0 +1,15 @@
+schema_version: 1
+id: source-lmsys-leak-followup
+title: "Follow-up on the leak: new test set (competition host post)"
+url: https://www.kaggle.com/competitions/lmsys-chatbot-arena/discussion/524374
+kind: official-competition
+authors:
+  - Lisa Dunlap
+published_at: null
+accessed_at: '2026-10-26'
+revision: null
+locator_notes: "Pinned host post sections: What was the leak?; Why did this happen?; What are we doing to fix it?"
+access_status: accessible
+content_reviewed: true
+license: null
+notes: The post is badged "Competition Host" and pinned in the competition forum. Only the host post is used as evidence; participant comments are not. The page shows the posting time only as "2 years ago", so the exact date is unknown.

@@ -10,14 +10,14 @@ Prioritize candidates with two independently authored detailed solutions, a usef
 
 ## Extract, synthesize, and review
 
-Publication is self-contained: a content record may be published when its evidence review is complete, its required fields and references validate, and `status` plus `editorial_status` are `published`. The `reviewed_by` and `reviewed_at` fields record the content/evidence review; for this project, the independent release review is performed by a GPT-6 Luna Max Codex subagent on the exact pull-request head. There is no separate human sign-off receipt.
+Publication is self-contained: a content record may be published when its evidence review is complete, its required fields and references validate, and `status` plus `editorial_status` are `published`. The `reviewed_by` and `reviewed_at` fields record the content/evidence review; for this project, the independent release review is performed by a Claude Sonnet high-effort Claude Code subagent on the exact pull-request head. There is no separate human sign-off receipt.
 
 1. **Register sources.** Use the source template. Record author, access date, revision when available, exact relevant location, and whether the content was inspected. A blocked page stays a research lead until its relevant content is available to the reviewer.
 2. **Extract atomic claims.** Preserve the author's split, model configuration, conditions, resource scope, and limitations. Separate official rank verification from author attribution. Make missing information explicit.
 3. **Write solution records.** Capture scores and training/inference resources separately. Link each numerical result or proposed decisive technique to its supporting claim. Distinguish a component's presence from an isolated improvement.
 4. **Write competition synthesis.** Compare compatible evidence, explain disagreements, and identify transferable hypotheses. Mark synthesis as editorial inference and link the exact supporting claims. Avoid attributing an ensemble score to its simplest component.
 5. **Connect practices.** Add or amend conditional guidance with backlinks to specific competition evidence. Single-case observations do not become universal rules.
-6. **Review.** GPT-6 Luna Max as a Codex subagent checks evidence, factual claims, missing information, applicability, and rendered behavior on the exact PR head. Record its verdict and reviewed commit. Any later change requires a fresh review.
+6. **Review.** Claude Sonnet at high reasoning effort as a Claude Code subagent checks evidence, factual claims, missing information, applicability, and rendered behavior on the exact PR head. Record its verdict and reviewed commit. Any later change requires a fresh review.
 7. **Publish.** Move `draft` to `in-review` to `published` only after the exact-head review approves, evidence and content checks pass, and required fields and references validate. The common `reviewed_by` and `reviewed_at` fields record the content/evidence review. No separate human approval receipt or recruited reviewer is required. Templates and drafts never enter public routes or search.
 
 AI can propose extractions and prose with citations, but cannot silently upgrade an author report into a reproduction or substitute a confident summary for inaccessible evidence. Every generated draft follows the same publication gate.
