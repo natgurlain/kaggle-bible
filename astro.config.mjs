@@ -13,6 +13,14 @@ export default defineConfig({
 			title: 'Kaggle Bible',
 			components: { Header: './src/components/DocsHeader.astro' },
 			favicon: 'https://www.kaggle.com/static/images/favicon.ico',
+			head: [
+				{ tag: 'meta', attrs: { property: 'og:image', content: 'https://kaggle-bible.vercel.app/og-image.png' } },
+				{ tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
+				{ tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
+				{ tag: 'meta', attrs: { property: 'og:image:alt', content: 'Kaggle Bible: learn from what Kaggle competitors actually tried.' } },
+				{ tag: 'meta', attrs: { name: 'twitter:image', content: 'https://kaggle-bible.vercel.app/og-image.png' } },
+				{ tag: 'meta', attrs: { name: 'twitter:image:alt', content: 'Kaggle Bible: learn from what Kaggle competitors actually tried.' } },
+			],
 			social: [
 				{
 					icon: 'github',
