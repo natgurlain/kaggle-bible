@@ -44,7 +44,7 @@ Required:
 - Clear separation of source-reported results, reproduced results, and editorial inference.
 - Metric and validation explanation, top-solution comparison, decisive versus merely present techniques, documented unsuccessful attempts where available, compute/reproducibility status, transfer limits, and a suggested first experiment.
 - At least one linked practice page that has passed its publication review, plus an evidence-backed explanation of when the lesson does and does not transfer.
-- GPT-6 Luna Max exact-head review, complete references, passing structural checks, and a current review date.
+- Claude Sonnet high-effort exact-head review, complete references, passing structural checks, and a current review date.
 
 Reproduction is strongly preferred for a Level 3 guide when it can change the reader’s decision, but it is not a universal requirement. A Level 3 guide may say “not reproduced” or “blocked” when that is the documented state. A reproduction of one component does not upgrade the full solution or validate a leaderboard rank.
 

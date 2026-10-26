@@ -4,6 +4,7 @@ import { satteri } from '@astrojs/markdown-satteri';
 import claimReferenceLinks from './src/markdown/claim-reference-links.js';
 
 export default defineConfig({
+	site: 'https://kaggle-bible.vercel.app',
 	markdown: {
 		processor: satteri({ mdastPlugins: [claimReferenceLinks] }),
 	},
