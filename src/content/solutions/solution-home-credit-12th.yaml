@@ -1,12 +1,12 @@
 schema_version: 1
 id: solution-home-credit-12th
 status: published
-title: Author-reported 12th-place Home Credit solution
-summary: A reported ensemble of relational aggregates, model-derived history features, and diverse model stacking.
+title: Twelfth-place Home Credit solution
+summary: A reported ensemble of relational aggregates, model-derived history features, feature-subsampled LightGBM blending, and multi-family stacking.
 reviewed_by: GPT-6 Luna Max
 reviewed_at: '2026-09-24'
 competition_id: competition-home-credit-default-risk
-team: Unknown
+team: '楼上神仙打架 ¯\_(ツ) _/¯'
 authors:
   - zr
   - ouyangxuan
@@ -16,26 +16,27 @@ authors:
   - YL
 source_ids:
   - source-home-credit-12th
+  - source-home-credit-leaderboard
 rank:
   value: 12
-  basis: author-report
-  source_id: source-home-credit-12th
+  basis: official-final-private
+  source_id: source-home-credit-leaderboard
 scores:
+  - metric_id: auc
+    value: 0.80329
+    split: private-lb
+    configuration: Final official leaderboard entry for the team linked to the #12 solution write-up
+    fold_summary: null
+    claim_id: final-result-01
   - metric_id: auc
     value: 0.8047
     split: local-cv
-    configuration: Final blended/stacked system reported in the Model Ensemble section
+    configuration: Final average of the blending and stacking results reported in the Model Ensemble section
     fold_summary: null
     claim_id: cv-result-01
-  - metric_id: auc
-    value: 0.803
-    split: public-lb
-    configuration: Author-reported public leaderboard score for the described final blend
-    fold_summary: null
-    claim_id: public-result-01
 validation:
   strategy: null
-  details: The authors report final blended/stacked local-CV AUC 0.8047; the audited write-up does not specify fold construction, seeds, or a complete split recipe.
+  details: The authors report local-CV AUC at each stage (best single model 0.8021; final average about 0.8047) but do not specify the fold count, stratification, seeds, or whether one split was shared across teammates. The blending models used random k-fold seeds.
   source_ids:
     - source-home-credit-12th
 techniques:
@@ -43,6 +44,7 @@ techniques:
   - gradient-boosting
   - stacking
   - blending
+  - random-forest
 resources:
   - id: final-pipeline
     scope: full-pipeline
@@ -60,7 +62,7 @@ reproducibility:
   code_revision: null
   status: not-assessed
   reproduction_ids: []
-  notes: No matching code repository was established during the source audit; no reproduction was attempted.
+  notes: No team code repository, hardware, or runtime is given; the author points to public kernels as similar to their NN code without publishing their own. No reproduction was attempted.
 claims:
   - id: approach-01
     statement: The authors describe relational-table aggregates, model-derived history features, and a diverse LightGBM, XGBoost, random-forest, and linear-model ensemble.
@@ -74,38 +76,86 @@ claims:
     conditions: These are components reported for this team's Home Credit approach.
     limitations: Their individual contributions are not isolated by the inspected source.
   - id: rank-01
-    statement: The Kaggle write-up displays a 12th-place label; this record treats the placement as author-reported.
+    statement: The official final leaderboard row 12 links the #12 solution write-up as its solution, and its displayed members include four of the write-up's authors.
     kind: source-reported
     evidence:
+      - source_id: source-home-credit-leaderboard
+        locator: Final standings; rank 12 row, member avatars and solution link
+        support_summary: The rank-12 row shows avatars for Yifan Xie, cxlcc, Zhiqiang Zhong and YL plus two further members, and its solution link targets the #12 solution write-up.
       - source_id: source-home-credit-12th
-        locator: Write-up title and placement label
-        support_summary: The Kaggle write-up is labeled 12th place.
+        locator: Write-up title, placement label and author list
+        support_summary: The write-up is labeled 12th place and lists the six authors.
     supports_claim_refs: []
     reproduction_ids: []
-    conditions: This is the placement label shown with the participant write-up.
-    limitations: The source audit did not reliably match the authors to an official final private-leaderboard row.
+    conditions: This matches the write-up to the official final row as displayed on 2026-10-26.
+    limitations: Two members are shown only as a count, so the full team roster is matched through the solution link rather than by name.
+  - id: final-result-01
+    statement: The official final leaderboard shows the rank-12 team at private AUC 0.80329 after 189 entries.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-leaderboard
+        locator: Final standings; rank 12 row
+        support_summary: The completed leaderboard displays score 0.80329 and 189 entries for rank 12.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This is the team's final private leaderboard entry for the official AUC metric.
+    limitations: It does not reproduce the pipeline or identify which ensemble produced the selected submission; entry count is not a compute measurement.
   - id: cv-result-01
-    statement: The authors report a final blended/stacked local-CV AUC of 0.8047.
+    statement: The authors report a final local-CV AUC of about 0.8047 for the average of their blending and stacking results, and a "PB" of 0.803.
     kind: source-reported
     evidence:
       - source_id: source-home-credit-12th
-        locator: Model Ensemble
-        support_summary: The authors report 0.8047 for their final blended/stacked local CV.
+        locator: Opening paragraph; Model Ensemble
+        support_summary: The authors report 0.8047 for their final averaged result and state "PB 0.803" without expanding the abbreviation.
     supports_claim_refs: []
     reproduction_ids: []
     conditions: This is the reported local-CV result for the described final ensemble.
-    limitations: Fold construction and seeds are not specified in the inspected account; the result was not reproduced.
-  - id: public-result-01
-    statement: The authors report a public leaderboard score of 0.803.
+    limitations: Fold construction and seeds are not specified; "PB" is not defined, so the 0.803 value is not assigned to a public or private split here; the result was not reproduced.
+  - id: feature-progression-01
+    statement: The authors report local CV of about 0.798-0.799 from grouped statistical features, 0.800-0.801 after adding RNN/CNN and LightGBM history-model features, and 0.8021 for the best single model on all teammates' features.
     kind: source-reported
     evidence:
       - source_id: source-home-credit-12th
-        locator: Model Ensemble
-        support_summary: The write-up reports a public score of 0.803.
+        locator: Feature Engineer (Statistical Features; Model Features); opening of Feature Engineer
+        support_summary: The write-up gives the local-CV range after each feature stage and the best single-model CV.
     supports_claim_refs: []
     reproduction_ids: []
-    conditions: This is the author-reported public leaderboard result.
-    limitations: It is not a private leaderboard result and was not independently matched to the team's final submission.
+    conditions: These are stage-level team reports, not a controlled ablation.
+    limitations: The split is unspecified and each stage bundles several feature changes.
+  - id: history-model-01
+    statement: The authors' LightGBM history features label every history-table loan from a defaulting applicant as positive, train per table, and aggregate the predicted probabilities by SK_ID_CURR; their RNN/CNN features predict next-loan default probability from each applicant's loan sequence.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-12th
+        locator: Feature Engineer; Model Features
+        support_summary: The write-up describes target-labeled history-row models whose predictions are grouped by applicant, plus sequence neural networks.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These target-derived features were part of the reported final feature set.
+    limitations: The write-up does not state how these features were made out-of-fold for training applicants.
+  - id: ensemble-progression-01
+    statement: "The authors report that dozens of LightGBM models on random half-subsets of about 2k+ features (best single subsample model CV about 0.8014) averaged to CV 0.8037 and blended with the best single model to 0.8040; multi-family stacking reached 0.8034 and 0.8046 after adding the blending OOFs."
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-12th
+        locator: Model Ensemble; Blending; Stacking
+        support_summary: The write-up lists the CV after each blending and stacking step.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These are author-reported local-CV values for this team's ensembles.
+    limitations: Blending used random k-fold seeds and the fold design is unspecified, so increments of a few ten-thousandths are not shown to exceed split noise.
+  - id: feature-selection-01
+    statement: The topic author reports paying little attention to feature selection, dropping only null-importance features to speed training and relying on low feature fraction or bagging for redundant features.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-12th
+        locator: Comment thread; topic-author reply on feature selection
+        support_summary: zr describes dropping null-importance features and relying on low feature_fraction or bagging.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This is a comment-reply description of the team's practice.
+    limitations: No comparison with a feature-selected alternative is reported.
 unsuccessful_attempts: []
 transfer_limits:
   - The inspected account is one participant report; its features and ensemble do not establish a reliable validation or modeling recipe for another dataset.
+  - Target-derived history-row models need applicant-level out-of-fold construction that the write-up does not document, so the technique cannot be copied safely from this account alone.

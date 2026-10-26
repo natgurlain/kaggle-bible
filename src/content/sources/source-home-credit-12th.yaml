@@ -11,10 +11,10 @@ authors:
   - Zhiqiang Zhong
   - YL
 published_at: '2018-08-30'
-accessed_at: '2026-09-23'
+accessed_at: '2026-10-26'
 revision: null
-locator_notes: Feature Engineer; Model Ensemble; write-up rank label.
+locator_notes: Opening paragraph; Feature Engineer (Statistical Features, Model Features); Model Ensemble (Blending, Stacking); topic-author (zr) replies on feature selection and NN structure; write-up rank label.
 access_status: accessible
 content_reviewed: true
 license: null
-notes: Participant report. Its displayed 12th-place label was not independently matched to a final private-leaderboard row in the source audit.
+notes: Participant report, re-inspected in rendered form on 2026-10-26. On that date the official final leaderboard row 12 linked to this write-up as its solution, so the placement is matched there; CV, public-score, and component descriptions remain author-reported. No code, hardware, or runtime is given.

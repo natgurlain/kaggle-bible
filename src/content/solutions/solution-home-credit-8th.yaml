@@ -2,7 +2,7 @@ schema_version: 1
 id: solution-home-credit-8th
 status: published
 title: Eighth-place Home Credit solution
-summary: A team approach combining relational aggregation, diverse LightGBM models, and rank-based blending.
+summary: A team approach combining relational aggregation, single-table out-of-fold meta-features, diverse LightGBM models, and rank-normalized stacking/blending.
 reviewed_by: GPT-6 Luna Max
 reviewed_at: '2026-09-24'
 competition_id: competition-home-credit-default-risk
@@ -29,16 +29,30 @@ scores:
     configuration: Final official leaderboard entry for team 七上八下
     fold_summary: null
     claim_id: final-result-01
+  - metric_id: auc
+    value: 0.8045
+    split: local-cv
+    configuration: Stacking submission, one of the team's two final selections (topic-author comment reply)
+    fold_summary: null
+    claim_id: final-submissions-01
+  - metric_id: auc
+    value: 0.808
+    split: public-lb
+    configuration: Stacking submission, one of the team's two final selections (topic-author comment reply)
+    fold_summary: null
+    claim_id: final-submissions-01
 validation:
   strategy: stratified-kfold
-  details: The authors report stratified 10-fold CV; exact fold assignments and seeds are not specified in the write-up.
+  details: The authors report stratified 10-fold CV with one shared split seed; teammates' models were re-run on that seed after joining. Exact fold assignments and the seed value are not published. The author reports a "CV - PB" gap between -0.0005 and 0.0003; the write-up does not expand "PB".
   source_ids:
     - source-home-credit-8th
 techniques:
   - groupby-aggregation
   - gradient-boosting
   - out-of-fold
+  - stacking
   - blending
+  - rank-averaging
   - stratified-cross-validation
 resources:
   - id: final-pipeline
@@ -57,7 +71,7 @@ reproducibility:
   code_revision: null
   status: not-assessed
   reproduction_ids: []
-  notes: No code reproduction has been attempted for this record.
+  notes: No code repository, hardware, or runtime is given in the write-up or the author's replies; no reproduction has been attempted for this record.
 claims:
   - id: validation-01
     statement: The team reports stratified 10-fold cross-validation and describes the local-CV/public-leaderboard gap as small for its selected approach.
@@ -65,22 +79,92 @@ claims:
     evidence:
       - source_id: source-home-credit-8th
         locator: Summary; My solo approach
-        support_summary: The author names stratified 10-fold CV and reports a small CV-to-public-LB gap for the described approach.
+        support_summary: The author names stratified 10-fold CV and reports a small CV-to-leaderboard gap for the described approach.
     supports_claim_refs: []
     reproduction_ids: []
     conditions: This is a participant report for this competition and team's selected approach.
     limitations: Exact folds, seeds, and a full final-ensemble local score are not independently reproduced here.
+  - id: shared-folds-01
+    statement: The topic author reports that each joining teammate's model was re-run with the team's k-fold split seed, so out-of-fold predictions entering the ensemble shared one split.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-8th
+        locator: Comment thread; topic-author reply to the question about recalculating solo models for stacking
+        support_summary: Xuan Cao replies that the first thing for a new teammate was to re-run that model with the team's k-fold split seed.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This describes the team's stacking workflow for this competition.
+    limitations: The seed value and fold assignments are not published.
+  - id: cv-lb-gap-01
+    statement: The author describes the local CV as surprisingly stable, with a "CV - PB" gap from -0.0005 to 0.0003, after noting that the public leaderboard used only 20% of the test data and that the team submitted one best-CV and one best-LB model.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-8th
+        locator: Summary
+        support_summary: The summary reports the 20% public split, the decision to submit one best-CV and one best-LB model, and the stated CV - PB gap range under "trust your local CV".
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These are the author's statements about their own models after the competition closed.
+    limitations: The write-up does not define "PB" (the closing context suggests the final private board, but that is an interpretation); the range is not tied to listed submissions or fold results and was not reproduced.
+  - id: progression-01
+    statement: "The author reports a stepwise single-model progression: a public-kernel baseline at CV 0.794x / LB 0.802, time-and-applicant aggregates with DPD buckets and zero-filled merge gaps at CV 0.797x / LB 0.804, and combined team features plus single-table OOF meta-features at CV 0.800x / LB 0.808-0.809."
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-8th
+        locator: My solo approach; After teaming up
+        support_summary: The write-up lists each feature-engineering round with its local CV and leaderboard score.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These are one teammate's LightGBM single-model checkpoints; the LB values are public leaderboard scores.
+    limitations: Several changes were bundled in each step, CV values are truncated (0.794x), and no step is an isolated ablation.
+  - id: oof-meta-01
+    statement: The team reports that training a model on features from a single table, then feeding its out-of-fold and test predictions back into LightGBM as meta-features, improved both CV and LB significantly.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-8th
+        locator: After teaming up; topic-author reply explaining single-table OOF features
+        support_summary: The author describes single-table OOF meta-features and clarifies the procedure in a comment reply.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These meta-features were added together with teammates' combined features.
+    limitations: The write-up does not separate the gain from the OOF meta-features from the gain from combined features.
+  - id: rank-norm-01
+    statement: The author reports that stacking and blending only worked after converting every model's predictions to rank percentages; before that, ensemble CV and LB were always worse than the best single input model.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-8th
+        locator: Stacking/blending; topic-author replies on rank percentage
+        support_summary: The write-up states the failure before rank normalization, and the author's reply says low-correlation component predictions became 0.9+ correlated after rank percentage, after which stacking behaved normally.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: The team's stackers included LightGBM and random forest over out-of-fold predictions from LightGBM models with different feature sets.
+    limitations: The magnitude of the failure and the post-fix gain are not reported; the explanation is the author's interpretation.
+  - id: final-submissions-01
+    statement: "The topic author reports the two selected final submissions as stacking (CV 0.8045, public 0.808, private 0.803) and blending (CV about 0.8036, public 0.810, private 0.802)."
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-8th
+        locator: Comment thread; topic-author reply to the question about the final blended/stacked CV
+        support_summary: Xuan Cao lists CV, public, and private values for the stacking and blending submissions.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These are rounded values from a comment reply for the team's two final selections.
+    limitations: The rounded private values are not reconciled here with the official 0.80376 row, and neither value was reproduced.
   - id: final-result-01
-    statement: The official final leaderboard lists team 七上八下 at rank 8 with private AUC 0.80376.
+    statement: The official final leaderboard lists team 七上八下 at rank 8 with private AUC 0.80376 after 476 entries.
     kind: source-reported
     evidence:
       - source_id: source-home-credit-leaderboard
         locator: Final standings; team 七上八下
-        support_summary: Kaggle's completed leaderboard identifies the named team at rank 8 and displays score 0.80376.
+        support_summary: Kaggle's completed leaderboard identifies the named team at rank 8, displays score 0.80376 and 476 entries, and links the 8th Solution Overview.
     supports_claim_refs: []
     reproduction_ids: []
     conditions: This score is the team's final private leaderboard entry for the official AUC metric.
-    limitations: This does not reproduce the team pipeline or validate any component's causal contribution.
-unsuccessful_attempts: []
+    limitations: This does not reproduce the team pipeline or validate any component's causal contribution; entry count is not a compute measurement.
+unsuccessful_attempts:
+  - description: Before rank-percentage normalization, the author's stacking and blending results were always worse in CV and LB than the best single model fed into the ensemble.
+    claim_id: rank-norm-01
+    conditions: Component predictions came from LightGBM models with different feature sets and low raw-score correlation; the size of the shortfall is not reported.
 transfer_limits:
   - A single competition report does not establish that the same folds or aggregation features transfer to a different task.
+  - The rank-percentage fix is tied to a rank-only metric (AUC); it does not by itself carry over to metrics that score calibrated probabilities or absolute values.
