@@ -3,7 +3,7 @@ schema_version: 1
 id: competition-lmsys-chatbot-arena
 meta_kaggle_id: '66631'
 slug: lmsys-chatbot-arena
-status: draft
+status: published
 title: LMSYS Chatbot Arena Human Preference Predictions
 summary: An evidence map of how the top two teams fine-tuned open LLMs as three-way preference classifiers under a 9-hour T4 inference limit, with response-order symmetry, validation grouping and a mid-competition test-set replacement kept explicit.
 learning_card:
@@ -17,14 +17,14 @@ learning_goals:
   - Treat the A/B response order as a symmetry to exploit in training and inference.
   - Decide whether rows sharing a prompt must share a validation fold.
   - Separate teacher, training and inference compute when judging an LLM solution's cost.
-reviewed_by: null
-reviewed_at: null
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 kaggle_bible_completeness_level: 2
 kaggle_bible_completeness_label: evidence-map
-editorial_status: in-review
+editorial_status: published
 kaggle_slug: lmsys-chatbot-arena
 competition_url: https://www.kaggle.com/competitions/lmsys-chatbot-arena
-end_date: '2024-08-12'
+end_date: '2024-08-05'
 coverage: reviewed
 modalities:
   - text
@@ -231,13 +231,13 @@ This Level 2 evidence map covers a 2024 LLM-era Kaggle competition: predict whic
 
 Each row holds a prompt, two LLM responses and a three-way label: A wins, B wins, or tie. Kaggle scored log loss, where lower is better. [claim:task-01] [claim:metric-01] Both winning teams fine-tuned open LLMs as classifiers and added external preference data. They differ in how they spent compute: the winner distilled 70B-class teachers into a 9B student, while second place fully fine-tuned 8B–27B models and pseudo-labelled about 240k extra conversations. [claim:approach-01]
 
-**Coverage:** Level 2 / Evidence map, awaiting independent review. Registered sources: the official overview, data page, rules, final leaderboard and the host's leak post; the first- and second-place write-ups; and each team's pinned training repository. Both ranks match official final-leaderboard rows, which link to the write-ups and list the authors as team members. Neither pipeline was run.
+**Coverage:** Level 2 / Evidence map. Registered sources: the official overview, data page, rules, final leaderboard and the host's leak post; the first- and second-place write-ups; and each team's pinned training repository. Both ranks match official final-leaderboard rows, which link to the write-ups and list the authors as team members. Neither pipeline was run.
 
 ## Problem, data, and evaluation
 
 The data page lists about 55K training rows and about 25,000 test rows. Model identities are in train.csv but not in test.csv. [claim:data-01] Submissions were notebooks limited to 9 hours, with internet off. Public external data and pre-trained models were allowed. [claim:code-requirements-01] The rules allowed teams of up to five, five submissions per day and two final selections. The data was licensed for non-commercial use (CC BY-NC 4.0). [claim:rules-01]
 
-During the competition the host reported that test labels had leaked through LMSYS's public leaderboard-analysis data. The host replaced the private test set with unpublished data and reran submissions. [claim:leak-01] Several team names on the final leaderboard, including both teams covered here, carry a "(no leak)" suffix. The Kaggle header gives a close date of 12 August 2024, and the timeline gives a final submission deadline of 5 August 2024.
+During the competition the host reported that test labels had leaked through LMSYS's public leaderboard-analysis data. The host replaced the private test set with unpublished data and reran submissions. [claim:leak-01] Several team names on the final leaderboard, including both teams covered here, carry a "(no leak)" suffix. The official timeline gives a final submission deadline of 5 August 2024, which this guide records as the competition close date. The Kaggle header shows a later "Close" date of 12 August 2024. The inspected sources do not explain the later date. It falls after the host announced that submissions would be rerun on the replacement test set, but that link is not confirmed.
 
 ## Approaches
 

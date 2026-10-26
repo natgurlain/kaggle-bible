@@ -1,10 +1,10 @@
 schema_version: 1
 id: solution-lmsys-1st
-status: in-review
+status: published
 title: First-place LMSYS solution - distilling 70B teachers into Gemma2-9B
 summary: sayoulala fine-tuned Llama3-70B and Qwen2-72B teachers on five folds, distilled their class probabilities into a LoRA-tuned Gemma2-9B, averaged the five fold adapters and submitted an 8-bit model with swapped-input averaging.
-reviewed_by: null
-reviewed_at: null
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 competition_id: competition-lmsys-chatbot-arena
 team: BlackPearl (no leak)
 authors:

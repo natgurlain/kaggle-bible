@@ -1,10 +1,10 @@
 schema_version: 1
 id: solution-lmsys-2nd
-status: in-review
+status: published
 title: Second-place LMSYS solution - full-parameter fine-tuning, paired swaps and pseudo-labels
 summary: The [Rist] pref team fully fine-tuned Gemma2 and Llama3-based reward models with paired response-swap augmentation, pseudo-labelled about 240k external conversations, and submitted a two-model Gemma2-9B plus ArmoRM-Llama3-8B ensemble.
-reviewed_by: null
-reviewed_at: null
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 competition_id: competition-lmsys-chatbot-arena
 team: "[Rist] pref(no leak)"
 authors:
