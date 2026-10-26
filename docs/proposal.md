@@ -143,7 +143,7 @@ Release gates also include:
 - Internal links, schema rules, relation checks, and draft exclusion pass. External access failures are reviewed rather than mistaken for factual invalidity.
 - Run repeatable local checks on the built catalog and every published pilot route: catalog search/filter/share links, catalog-to-guide identity, claim-to-evidence and source links, keyboard operation, and desktop/narrow layout. Record the exact commit and outcomes; do not require recruited participants or report simulated user outcomes.
 - Mobile layout and keyboard access work for navigation, search, filters, and comparison content; evidence labels do not depend on color.
-- A template-generated draft passes validation, and the exact-head GPT-6 Luna Max review can trace a sampled numerical claim to its evidence and locator.
+- A template-generated draft passes validation, and the exact-head Claude Sonnet high-effort review can trace a sampled numerical claim to its evidence and locator.
 
 Start with the two candidates with the strongest accessible sources in [research notes](research.md), not necessarily the most famous competitions. Measure editorial hours in the pilot before promising a calendar deadline or throughput. With one maintainer, prioritize one complete guide at a time and keep the research queue short.
 
