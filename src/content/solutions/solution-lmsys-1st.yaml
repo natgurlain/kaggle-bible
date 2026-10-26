@@ -21,13 +21,13 @@ scores:
   - metric_id: log-loss
     value: 0.96898
     split: private-lb
-    configuration: Final official private leaderboard entry for team "BlackPearl (no leak)", scored on the replacement private test data described by the host.
+    configuration: Final official private leaderboard entry for team "BlackPearl (no leak)", after the host announced replacing the private test data and rerunning submissions; the inspected sources do not directly confirm completion.
     fold_summary: null
     claim_id: final-result-01
   - metric_id: log-loss
     value: 0.876
     split: public-lb
-    configuration: Author-reported public leaderboard for the merged five-fold Gemma2-9B LoRA, 8-bit GPTQ, with test-time augmentation; reported before the host replaced the private test data.
+    configuration: Author-reported public leaderboard for the merged five-fold Gemma2-9B LoRA, 8-bit GPTQ, with test-time augmentation. The write-up does not say whether this was before the announced private-test replacement; that timing is presumed.
     fold_summary: null
     claim_id: cv-lb-01
 validation:
@@ -106,7 +106,7 @@ claims:
         support_summary: The author averages LoRA layers of the five folds, averages the five classification-head matrices, quantizes with GPTQ, and explains that a longer length timed out while the TTA benefit outweighed extra length.
       - source_id: source-lmsys-1st-code
         locator: src/predict_test.py lines 23-26, 112, 156, 419-444
-        support_summary: Inference builds original and response-swapped copies of each test row on two GPUs, swaps the swapped predictions back, and averages per id.
+        support_summary: Inference builds original and response-swapped copies of each test row on two GPUs, swaps the swapped predictions back, and averages per id. The tta = False config flag on line 26 is not what controls this; the swapped copies are built and averaged unconditionally (lines 112, 156, 419-444).
     supports_claim_refs: []
     reproduction_ids: []
     conditions: Inference-time configuration for the final submission under the 9-hour notebook limit.
@@ -134,8 +134,8 @@ claims:
         support_summary: The write-up lists per-fold CV values for the two teachers and the distilled student, and LB 0.882 (0.876 with TTA) for the merged and quantized model.
     supports_claim_refs: []
     reproduction_ids: []
-    conditions: Log loss, lower is better. CV is on the author's label-stratified folds; LB is the public leaderboard before the host replaced the private test data.
-    limitations: Fold-level student and teacher values come from different models per fold and are not a controlled distillation ablation; public LB values are not comparable to final private scores on the replacement test data.
+    conditions: Log loss, lower is better. CV is on the author's label-stratified folds; LB is the public leaderboard, with its timing relative to the announced private-test replacement unlabelled and presumed earlier.
+    limitations: Fold-level student and teacher values come from different models per fold and are not a controlled distillation ablation; public LB values should not be compared with final private scores, which were presumably computed on the announced replacement test data.
   - id: final-result-01
     statement: Kaggle's final leaderboard lists team "BlackPearl (no leak)", with member sayoulala, at rank 1 with log loss 0.96898 and links the row to this write-up.
     kind: source-reported

@@ -5,7 +5,7 @@ meta_kaggle_id: '66631'
 slug: lmsys-chatbot-arena
 status: published
 title: LMSYS Chatbot Arena Human Preference Predictions
-summary: An evidence map of how the top two teams fine-tuned open LLMs as three-way preference classifiers under a 9-hour T4 inference limit, with response-order symmetry, validation grouping and a mid-competition test-set replacement kept explicit.
+summary: An evidence map of how the top two teams fine-tuned open LLMs as three-way preference classifiers under a 9-hour T4 inference limit, with response-order symmetry, validation grouping and an announced mid-competition test-set replacement kept explicit.
 learning_card:
   outcome: "Explain how two top LLM preference classifiers handled response order, external data and inference limits, and compare their log-loss claims only within the same split."
   prerequisites:
@@ -14,7 +14,7 @@ learning_card:
     instructions: "For actual-data work, obtain authorized train.csv from the official data page. Sign-in and rule acceptance are required, and the data page lists CC BY-NC 4.0. Competition data is not bundled. No executed project is published here."
     url: https://www.kaggle.com/competitions/lmsys-chatbot-arena/data
 learning_goals:
-  - Treat the A/B response order as a symmetry to exploit in training and inference.
+  - Treat the A/B response order as a symmetry to exploit in training, and test whether swapped-input averaging helps at inference.
   - Decide whether rows sharing a prompt must share a validation fold.
   - Separate teacher, training and inference compute when judging an LLM solution's cost.
 reviewed_by: Claude Sonnet high-effort
@@ -24,7 +24,7 @@ kaggle_bible_completeness_label: evidence-map
 editorial_status: published
 kaggle_slug: lmsys-chatbot-arena
 competition_url: https://www.kaggle.com/competitions/lmsys-chatbot-arena
-end_date: '2024-08-05'
+end_date: '2024-08-12'
 coverage: reviewed
 modalities:
   - text
@@ -87,7 +87,7 @@ claims:
         support_summary: The page gives the row counts and lists model_[a/b] as present in train.csv but not test.csv.
     supports_claim_refs: []
     reproduction_ids: []
-    conditions: Historical competition files as described by Kaggle; the private test set was later replaced.
+    conditions: Historical competition files as described by Kaggle; the host later announced that the private test set would be replaced.
     limitations: Row counts were not checked against the files, which were not downloaded; the replacement test-set size is not stated in the inspected host post.
   - id: code-requirements-01
     statement: This was a code competition with CPU or GPU notebooks limited to 9 hours of run time, internet disabled, and freely and publicly available external data and pre-trained models allowed.
@@ -141,15 +141,16 @@ claims:
     conditions: Comparison of the two inspected final recipes.
     limitations: Neither team isolates the gain from its main idea against the other team's approach on a shared split.
   - id: symmetry-01
-    statement: Both teams exploit the fact that swapping responses A and B should swap the corresponding class probabilities; the second-place authors report a 0.003 validation log-loss improvement for gemma2-9b from paired over random swapping.
+    statement: Both teams train on response-swapped copies, using the fact that swapping responses A and B should swap the corresponding class probabilities; only the first-place solution also averages over swapped inputs at inference. The second-place authors report a 0.003 validation log-loss improvement for gemma2-9b from paired over random swapping.
     kind: editorial-inference
     evidence: []
     supports_claim_refs:
       - solution-lmsys-1st#validation-01
       - solution-lmsys-1st#ensemble-quant-01
       - solution-lmsys-2nd#swap-01
+      - solution-lmsys-2nd#resources-inference-01
     reproduction_ids: []
-    conditions: The 0.003 figure is the second-place team's report on their 20% prompt-grouped holdout, compared against random swapping.
+    conditions: The 0.003 figure is the second-place team's reported validation log loss, presumably on their 20% prompt-grouped holdout, compared against random swapping. The second-place final submission used no TTA; it only swapped the input order for the Llama3-8B model.
     limitations: The first-place team does not report an isolated swap or TTA gain; the paired-swap result is one model and one holdout.
   - id: validation-compare-01
     statement: The first-place code stratifies folds by label without grouping repeated prompts, whereas the second-place code groups folds by exact prompt text, so their CV log-loss values are not directly comparable.
@@ -162,7 +163,7 @@ claims:
     conditions: Based on the pinned fold-preparation code of each repository.
     limitations: How often prompts repeat in train.csv, and whether that changes CV, was not measured here.
   - id: score-context-01
-    statement: The authors' public leaderboard values (about 0.87 to 0.88) and the final private scores (0.96898 and 0.97425) were computed on different test data, so the gap between them is not evidence of overfitting by either team.
+    statement: The host announced that the private test set would be replaced and submissions rerun, and the final leaderboard is labelled complete. The authors' public leaderboard values (about 0.87 to 0.88) therefore probably come from different test data than the final private scores (0.96898 and 0.97425), so the gap cannot be read as overfitting; its cause is unknown.
     kind: editorial-inference
     evidence: []
     supports_claim_refs:
@@ -172,10 +173,10 @@ claims:
       - solution-lmsys-2nd#results-01
       - solution-lmsys-2nd#final-result-01
     reproduction_ids: []
-    conditions: Follows from the host's statement that the private test set was replaced after these public scores were reported.
-    limitations: Without the replacement data's composition, the cause of the higher private log loss is unknown.
+    conditions: The second-place write-up labels its values "old LB"; the first-place write-up does not say when its public score was measured, so pre-replacement timing is presumed for it.
+    limitations: The inspected sources do not directly confirm that the replacement was completed as announced or describe the replacement data's composition.
   - id: compute-01
-    statement: Both solutions submitted 8B to 9B-class models on two T4 GPUs, but training used A100 80GB machines (eight for the first-place teachers and student, four for the second-place team's final experiments), so inference fit is not a training budget.
+    statement: Both solutions submitted 8B to 9B-class models on two T4 GPUs, but training used A100 80GB machines, so inference fit is not a training budget. The first-place author states eight A100s for fine-tuning the 70B-class models, and the README lists the same machine for its pipeline time estimates. The second-place team used four for its final experiments.
     kind: editorial-inference
     evidence: []
     supports_claim_refs:
@@ -185,7 +186,7 @@ claims:
       - solution-lmsys-2nd#resources-inference-01
     reproduction_ids: []
     conditions: Author-stated hardware only.
-    limitations: Total GPU hours, cost and the number of exploratory runs are unknown for both teams.
+    limitations: Total GPU hours and cost are unknown for both teams. The first-place author does not report the number of runs. The second-place author says they tried 4 or 5 learning rates but gives no total run count.
   - id: lesson-01
     statement: A bounded, testable lesson is that a pairwise-preference classifier should be trained and evaluated with response-order symmetry built in; the evidence supports testing paired swaps, not claiming a fixed gain.
     kind: editorial-inference
@@ -208,7 +209,7 @@ claims:
     conditions: Requires authorized competition data, a fixed seed and an unchanged training budget apart from the doubled step cost.
     limitations: This is a proposal, not a measured result; model size, runtime and expected gain are unknown.
   - id: gaps-01
-    statement: Neither source isolates its headline technique (distillation for first place, pseudo-labelling for second), reports total training GPU hours, or describes the replacement test data, and both write-ups report validation on different fold schemes.
+    statement: Neither source isolates its headline technique (distillation for first place, pseudo-labelling for second), reports total training GPU hours, or describes the announced replacement test data, and both write-ups report validation on different fold schemes.
     kind: editorial-inference
     evidence: []
     supports_claim_refs:
@@ -237,7 +238,7 @@ Each row holds a prompt, two LLM responses and a three-way label: A wins, B wins
 
 The data page lists about 55K training rows and about 25,000 test rows. Model identities are in train.csv but not in test.csv. [claim:data-01] Submissions were notebooks limited to 9 hours, with internet off. Public external data and pre-trained models were allowed. [claim:code-requirements-01] The rules allowed teams of up to five, five submissions per day and two final selections. The data was licensed for non-commercial use (CC BY-NC 4.0). [claim:rules-01]
 
-During the competition the host reported that test labels had leaked through LMSYS's public leaderboard-analysis data. The host replaced the private test set with unpublished data and reran submissions. [claim:leak-01] Several team names on the final leaderboard, including both teams covered here, carry a "(no leak)" suffix. The official timeline gives a final submission deadline of 5 August 2024, which this guide records as the competition close date. The Kaggle header shows a later "Close" date of 12 August 2024. The inspected sources do not explain the later date. It falls after the host announced that submissions would be rerun on the replacement test set, but that link is not confirmed.
+During the competition the host reported that test labels had leaked through LMSYS's public leaderboard-analysis data. The host announced that it would replace the hidden private test set with unpublished data and then rerun submissions. [claim:leak-01] The inspected sources do not directly confirm that this was completed, although the final leaderboard is labelled complete. Several team names on the final leaderboard, including both teams covered here, carry a "(no leak)" suffix. This guide records the close date as 12 August 2024, as shown in the Kaggle header and the inventory deadline. The official timeline gives 5 August 2024 as the final submission deadline. The reason for the later close date is not stated in the inspected sources.
 
 ## Approaches
 
@@ -249,15 +250,15 @@ During the competition the host reported that test labels had leaked through LMS
 
 The first-place code stratifies five folds by label. It does not group rows that share a prompt. Swapped copies stay in their source row's fold. The second-place code groups folds by exact prompt text and reports a single 20% holdout. Their CV numbers therefore come from different protocols and should not be ranked against each other. [claim:validation-compare-01]
 
-Public leaderboard values in the write-ups were scored before the private test set was replaced. The final private scores come from different data. The jump from about 0.87 to about 0.97 is therefore not evidence that either team overfit. [claim:score-context-01]
+The second-place write-up labels its public scores "old LB". The first-place write-up does not say when its public score was measured, so pre-replacement timing is presumed. If the announced replacement happened, the final private scores come from different data. The jump from about 0.87 to about 0.97 therefore cannot be read as overfitting, and its cause is unknown. [claim:score-context-01]
 
 ## Top-solution comparison
 
-The structured records below give each team's rank (verified against the final leaderboard), private log loss, author-reported CV and public scores with their splits, hardware and code status. Both teams used open LLM backbones, external labelled data and response-order symmetry. They differ in student-teacher distillation versus full fine-tuning plus pseudo-labelling, and in fold grouping. [claim:approach-01] [claim:validation-compare-01]
+The structured records below give each team's rank (verified against the final leaderboard), private log loss, author-reported CV and public scores with their splits, hardware and code status. Both teams used open LLM backbones, external labelled data and response-swapped training copies. Only the first-place solution averages over swapped inputs at inference. The second-place team reports no TTA and only swapped the input order for its Llama3-8B model. [claim:symmetry-01] They differ in student-teacher distillation versus full fine-tuning plus pseudo-labelling, and in fold grouping. [claim:approach-01] [claim:validation-compare-01]
 
 ## Decisive techniques and evidence
 
-Only one comparison in these sources is close to isolated. The second-place authors report that training on each sample together with its swapped copy improved gemma2-9b validation log loss by 0.003 compared with random swapping. [claim:symmetry-01] The other headline ingredients are parts of combined final systems, not measured ablations: distillation, adapter averaging, 8-bit quantization and swap-averaged inference for first place, and pseudo-labelling and the 2:1 ensemble for second place. [claim:gaps-01]
+Only one comparison in these sources is close to isolated. The second-place authors report that training on each sample together with its swapped copy improved gemma2-9b validation log loss (presumably on the 20% holdout) by 0.003 compared with random swapping. [claim:symmetry-01] The other headline ingredients are parts of combined final systems, not measured ablations: distillation, adapter averaging, 8-bit quantization and swap-averaged inference for first place, and pseudo-labelling and the 2:1 ensemble for second place. [claim:gaps-01]
 
 ## Bounded lesson
 
@@ -273,7 +274,7 @@ The second-place author reports that early Gemma2-27B training gave poor results
 
 ## Compute and reproducibility
 
-Both teams submitted 8B–9B-class models on two T4 GPUs. They trained on A100 80GB machines, though: eight GPUs for the first-place teachers and student, and four for the second-place team's final experiments. [claim:compute-01] Neither source gives total GPU hours, cost or the number of runs. Both repositories are available at pinned commits, and neither was executed here.
+Both teams submitted 8B–9B-class models on two T4 GPUs. They trained on A100 80GB machines, though. The first-place author states eight GPUs for fine-tuning the 70B-class models, and the second-place team used four for its final experiments. [claim:compute-01] Neither source gives total GPU hours or cost. The second-place author mentions trying 4 or 5 learning rates, but no total run count is given. Both repositories are available at pinned commits, and neither was executed here.
 
 ## Source limitations
 
@@ -281,7 +282,7 @@ Kaggle pages were read as rendered text in a browser because a plain HTTP fetch 
 
 ## Unresolved questions
 
-- How large was the replacement private test set, and how was it sampled relative to the original test data?
+- Was the announced private test replacement completed as described? How large was the replacement set, and how was it sampled relative to the original test data?
 - Were first-place teacher probabilities for training rows always produced by teachers that did not train on those rows?
 - How often do prompts repeat in train.csv, and does prompt-grouped CV change model rankings?
 - What isolated log-loss change does distillation or pseudo-labelling give on a shared, prompt-grouped split?

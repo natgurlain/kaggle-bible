@@ -23,7 +23,7 @@ scores:
   - metric_id: log-loss
     value: 0.97425
     split: private-lb
-    configuration: Final official private leaderboard entry for team "[Rist] pref(no leak)", scored on the replacement private test data described by the host.
+    configuration: Final official private leaderboard entry for team "[Rist] pref(no leak)", after the host announced replacing the private test data and rerunning submissions; the inspected sources do not directly confirm completion.
     fold_summary: null
     claim_id: final-result-01
   - metric_id: log-loss
@@ -35,7 +35,7 @@ scores:
   - metric_id: log-loss
     value: 0.868
     split: public-lb
-    configuration: Author-reported "old LB" for the final two-model ensemble with 2:1 weighting after training ArmoRM-Llama3-8B on all data, before the host replaced the private test data.
+    configuration: Author-reported "old LB" for the final two-model ensemble with 2:1 weighting after training ArmoRM-Llama3-8B on all data, which the authors label "old LB", i.e. before the announced private-test replacement.
     fold_summary: null
     claim_id: results-01
 validation:
@@ -99,7 +99,7 @@ claims:
         support_summary: The write-up compares random swap augmentation with full (paired) swap and reports a stable 0.003 improvement for gemma2-9b, plus a 0.001 improvement from paired input-format augmentation.
     supports_claim_refs: []
     reproduction_ids: []
-    conditions: Validation log loss on the team's 20% prompt-grouped holdout for gemma2-9b; the baseline is random swapping, not no augmentation. Training time doubles.
+    conditions: Reported validation log loss for gemma2-9b, presumably on the team's 20% prompt-grouped holdout; the baseline is random swapping, not no augmentation. Training time doubles.
     limitations: Number of runs, seeds and variance behind "stable" are not reported; the comparison is author-reported and not reproduced.
   - id: pseudo-01
     statement: The stage-1 ensemble generated pseudo labels for about 240k external conversations (110k from lmsys-1m and 130k from other datasets); gemma-2-9b and ArmoRM-Llama3-8B were trained on them in stage 2 and then fine-tuned on the 55k Kaggle plus 21k external labelled rows in stage 3.
@@ -135,8 +135,8 @@ claims:
         support_summary: The write-up lists these validation and old-leaderboard log-loss values for the named models and ensembles.
     supports_claim_refs: []
     reproduction_ids: []
-    conditions: Log loss, lower is better. Validation values use the 20% holdout without TTA; "old LB" is the public leaderboard before the host replaced the private test data.
-    limitations: Values are not reproduced and are not comparable to final private scores on the replacement test data.
+    conditions: Log loss, lower is better. Validation values use the 20% holdout without TTA; "old LB" is the authors' label for the public leaderboard before the announced private-test replacement.
+    limitations: Values are not reproduced and should not be compared with final private scores, which were presumably computed on the announced replacement test data.
   - id: final-result-01
     statement: Kaggle's final leaderboard lists team "[Rist] pref(no leak)", with members tascj0, liushuzhi and kapenon, at rank 2 with log loss 0.97425 and links the row to this write-up.
     kind: source-reported
@@ -154,14 +154,14 @@ claims:
     evidence:
       - source_id: source-lmsys-2nd
         locator: Baseline (full-parameter training and hardware paragraph)
-        support_summary: The authors state the per-model GPU needs with BF16 and a Kahan-summation optimizer, and the four-A100 setup for the final 10 days.
+        support_summary: The authors state the per-model GPU needs with BF16 and a Kahan-summation optimizer, and the four-A100 setup for the final 10 days. In a topic-author reply, tascj says they tried 4 or 5 learning rates.
       - source_id: source-lmsys-2nd-code
         locator: README.md, Requirements - Hardware
         support_summary: The README lists A100 SXM 80G x4.
     supports_claim_refs: []
     reproduction_ids: []
     conditions: Author-stated hardware for experiments and training.
-    limitations: Hardware before the last 10 days, total wall time, accelerator hours, number of runs and cost are not reported.
+    limitations: Hardware before the last 10 days, total wall time, accelerator hours and cost are not reported. Apart from the 4 or 5 learning rates tried, the total number of runs is not given.
   - id: resources-inference-01
     statement: The write-up says two T4 GPUs are sufficient to run the 7B-9B models in fp16 by splitting each model across the two GPUs with custom Triton kernels and padding-free sequence packing; the final submission ran one Gemma2-9B and one Llama3-8B model with about 4340 tokens maximum input for Gemma2-9B.
     kind: source-reported
