@@ -10,7 +10,7 @@ test('current path orders the core lessons, keeps vision and forecasting separat
  assert.deepEqual(steps.filter(x=>x.group==='core').map(x=>x.slug),['titanic','house-prices-advanced-regression-techniques','nlp-getting-started']);
  assert.deepEqual(steps.filter(x=>x.group!=='core').map(x=>x.group),['vision','forecast']);
  const verifiedSlugs=new Set(exercises.filter(x=>x.entry.data.status==='published' && x.entry.data.project?.readiness==='actual-data-verified').map(x=>guides.find(g=>g.id===x.entry.data.competition_id).data.slug));
- assert.deepEqual([...verifiedSlugs].sort(),['house-prices-advanced-regression-techniques','titanic']);
+ assert.deepEqual([...verifiedSlugs].sort(),['house-prices-advanced-regression-techniques','m5-forecasting-accuracy','titanic']);
  for(const step of steps){
   assert.ok(step.project.prerequisites.length);assert.ok(step.project.baseline);assert.ok(step.project.change);assert.ok(step.explain);assert.match(step.project.href,/^\/competitions\/[^/]+\/#exercise-/);
   if(verifiedSlugs.has(step.slug)){assert.equal(step.project.readiness,'actual-data-verified');assert.equal(step.project.scope,'competition data');assert.equal(step.actual_data_verified,true);assert.match(step.actual_status,/Actual-data verified for its recorded input/);assert.equal(step.actual_blocker,null);}

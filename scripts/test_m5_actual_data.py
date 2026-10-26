@@ -34,9 +34,13 @@ class M5ActualDataTests(unittest.TestCase):
     def loaded(self):
         pairs,availability=lab.load_scope(self.scope.read_bytes());return lab.load_sales(self.sales.read_bytes(),pairs),pairs,lab.load_calendar(self.calendar.read_bytes()),lab.load_prices(self.prices.read_bytes()),availability
 
-    def test_blocked_metadata_and_four_package_pins(self):
-        d=json.loads((ROOT/'src/content/exercises/exercise-m5-actual-data.json').read_text());p=d['project']['package'];self.assertEqual(d['status'],'draft');self.assertEqual(d['project']['readiness'],'blocked');self.assertNotIn('receipt_path',d);self.assertNotIn('data_path',d)
-        for kind,path in [('script',d['script_path']),('notebook',p['notebook_path']),('environment',p['environment_path']),('helper',p['helper_path'])]:self.assertEqual(p[kind+'_sha256'],lab.sha(ROOT/'public'/path.lstrip('/')))
+    def test_verified_metadata_and_four_package_pins_match_receipt(self):
+        d=json.loads((ROOT/'src/content/exercises/exercise-m5-actual-data.json').read_text());p=d['project']['package'];self.assertEqual(d['status'],'published');self.assertEqual(d['project']['readiness'],'actual-data-verified');self.assertNotIn('blocker',d['project'])
+        r=json.loads((ROOT/'public'/d['receipt_path'].lstrip('/')).read_text())
+        self.assertEqual(r['execution_status'],'succeeded');self.assertEqual(r['evidence_type'],'actual-data');self.assertEqual(r['python'],d['python_version'])
+        self.assertEqual(r['data_sha256'],lab.sha(ROOT/'public'/d['data_path'].lstrip('/')))
+        for kind,path in [('script',d['script_path']),('notebook',p['notebook_path']),('environment',p['environment_path']),('helper',p['helper_path'])]:
+            self.assertEqual(p[kind+'_sha256'],lab.sha(ROOT/'public'/path.lstrip('/')));self.assertEqual(r['code_fingerprints'][kind+'_sha256'],p[kind+'_sha256'])
         self.assertEqual(d['project']['diagnostics'],lab.QUESTIONS)
 
     def test_helper_forecast_oracles_and_fixed_unchanged_methods(self):

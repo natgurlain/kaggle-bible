@@ -12,7 +12,7 @@ test('homepage offers the verified Titanic project with its recorded limits whil
  const first=recommendedFirstProject(library);assert.equal(first.id,verifiedTitanic.entry.id);assert.equal(first.actual,true);assert.match(first.label,/Actual-data verified · competition data/);
  assert.match(first.limit,/one run on one machine/);assert.match(first.limit,/scored lower than the sex-only baseline/);assert.match(first.limit,/not a competition score|rather than a competition score/);assert.match(first.requirements,/Python 3\.12\.13/);
  const counts=libraryEvidenceCounts(library);assert.equal(counts.fixtures,5);
- assert.equal(counts.actual,exercises.filter(x=>x.entry.data.status==='published' && x.entry.data.project?.readiness==='actual-data-verified').length);assert.equal(counts.actual,2);
+ assert.equal(counts.actual,exercises.filter(x=>x.entry.data.status==='published' && x.entry.data.project?.readiness==='actual-data-verified').length);assert.equal(counts.actual,3);
  const drafts=exercises.filter(x=>x.entry.data.status==='draft');assert.ok(drafts.length);assert.deepEqual(recommendedFirstProject({...library,exercises:[...drafts,...exercises.filter(x=>x.entry.data.status==='published')]}),first);
 });
 test('without the verified project the homepage falls back to the fixture warmup',()=>{

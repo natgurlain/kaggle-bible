@@ -13,9 +13,9 @@ const exercises=await Promise.all((await readdir('src/content/exercises')).filte
 test('all authored guide cards (seven published plus any drafts) have distinct outcomes, preserve access instructions and mark only verified projects',()=>{
  const cards=guides.map(guide=>guideCardMetadata(guide,exercises));
  assert.equal(guides.filter(guide=>guide.data.status==='published').length,7);assert.ok(cards.length>=7);assert.equal(new Set(cards.map(card=>card.outcome)).size,cards.length);
- for(const card of cards){assert.ok(card.prerequisites.length);assert.match(card.actual_data_access.url,/^https:\/\/www.kaggle.com\/competitions\/[^/]+\/data$/);assert.match(card.actual_data_access.instructions,/authorized/);assert.equal(card.actual_data_verified,['titanic','house-prices-advanced-regression-techniques'].includes(card.kaggle_slug));}
+ for(const card of cards){assert.ok(card.prerequisites.length);assert.match(card.actual_data_access.url,/^https:\/\/www.kaggle.com\/competitions\/[^/]+\/data$/);assert.match(card.actual_data_access.instructions,/authorized/);assert.equal(card.actual_data_verified,['titanic','house-prices-advanced-regression-techniques','m5-forecasting-accuracy'].includes(card.kaggle_slug));}
  const credit=cards.find(card=>card.kaggle_slug==='home-credit-default-risk');assert.equal(credit.projects.length,0);assert.match(credit.readiness,/Guide only/);assert.match(renderGuideCardDetails(credit),/Unknown; no executed learner project/);
- assert.equal(cards.reduce((sum,card)=>sum+card.projects.length,0),7);
+ assert.equal(cards.reduce((sum,card)=>sum+card.projects.length,0),8);
 });
 test('card resources come exclusively from the matching receipt and retain fixture and memory measurement scope',()=>{
  const guide=guides.find(guide=>guide.data.slug==='titanic');const card=guideCardMetadata(guide,exercises);

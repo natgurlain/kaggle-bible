@@ -1,4 +1,6 @@
-Python: 3.12.14
+Python==3.12.13
 Dependencies: Python standard library only
-Declared target: Darwin arm64; CPU only
+Recorded platform: Darwin arm64
+CPU only
+Imported helper: m5-rolling-origin.py
 Imported helper SHA-256: eb6c90b7a6f629e172107f7e74f41d777cd50bb29508c9b585c0941a9353543f

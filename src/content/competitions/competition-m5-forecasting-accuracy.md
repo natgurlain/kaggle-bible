@@ -16,8 +16,8 @@ learning_goals:
   - Distinguish fixed competition windows from rolling forecast origins.
   - Compare hierarchy streams and store/week partitions as hypotheses.
   - Measure a seasonal baseline before adding model or hierarchy complexity.
-reviewed_by: GPT-6 Luna Max
-reviewed_at: '2026-09-24'
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 kaggle_bible_completeness_level: 2
 kaggle_bible_completeness_label: evidence-map
 editorial_status: published
@@ -324,4 +324,4 @@ The task, data files, metric, horizons, and rules are linked to Kaggle's overvie
 
 ### Actual-data package status
 
-A separate [bounded private-input setup](https://github.com/natgurlain/kaggle-bible/blob/main/docs/m5-actual-data-setup.md) is a draft blocked candidate for [#72](https://github.com/natgurlain/kaggle-bible/issues/72). It compares the same seasonal forecasts on at most twelve frozen bottom series and three historical 28-day horizons. No authorized M5 input has been supplied or run. Its unweighted MAE and optional bottom-slice diagnostics do not establish full-hierarchy official WRMSSE, measured learner compute requirements or a winning reproduction. Generated checks do not satisfy actual-data acceptance.
+The [bounded actual-data project](#exercise-m5-actual-data) for [#72](https://github.com/natgurlain/kaggle-bible/issues/72) is **actual-data verified** for one recorded run. It compares the same seasonal forecasts on ten bottom series, the first item in file order for each store, frozen before running. It uses three historical 28-day horizons of the official, unmodified validation-period files. On 2026-10-26, with Python 3.12.13 on Darwin arm64, the four-week mean lowered unweighted MAE from 0.6774 to 0.6375 overall. It was worse at the first origin (0.6232 versus 0.6000), and across the 30 series-by-origin cells it was better in 12, worse in 15 and tied in 3. A notebook run of the same package matched the script run exactly. This is one machine and one run on a small slice of roughly 30,000 bottom series. Unweighted MAE and optional bottom-slice diagnostics do not establish full-hierarchy official WRMSSE, a leaderboard score, learner compute requirements or a winning reproduction; no submission was made. See the [private-input setup and run record](https://github.com/natgurlain/kaggle-bible/blob/main/docs/m5-actual-data-setup.md).

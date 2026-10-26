@@ -5,7 +5,7 @@
   "slug": "nlp-actual-data",
   "title": "Disaster Tweets private-data comparison (blocked candidate)",
   "competition_id": "competition-nlp-getting-started",
-  "summary": "Candidate private-input package comparing unigram Naive Bayes with adjacent word pairs on identical train-only folds; no actual competition inputs supplied.",
+  "summary": "Blocked candidate comparing unigram Naive Bayes with adjacent word pairs on identical train-only folds. Authorized competition files were obtained on 2026-10-26, but the package's own duplicate policy rejected the official train.csv; no actual-data result exists.",
   "data_scope": "competition-data",
   "script_path": "/exercises/nlp-actual-data.py",
   "platform": "Darwin arm64",
@@ -16,7 +16,7 @@
     "stratified fold 4",
     "stratified fold 5"
   ],
-  "python_version": "3.12.14",
+  "python_version": "3.12.13",
   "dependencies": "Python standard library only",
   "seed": 17,
   "split_definition": "Five target-stratified folds with seed 17; exact normalized duplicate texts rejected; vocabulary and class counts fit training rows only.",
@@ -24,7 +24,7 @@
   "direction": "maximize",
   "memory_scope": "traced-python-allocations",
   "command": "python3 nlp-actual-data.py --acknowledge-authorized-data",
-  "environment": "Declared target: Python 3.12.14 standard library on Darwin arm64; no actual Disaster Tweets run recorded. Set private input/output environment variables as documented before execution.",
+  "environment": "Declared target: Python 3.12.13 standard library on Darwin arm64; the 2026-10-26 attempt stopped at input validation, so no actual Disaster Tweets run is recorded. Set private input/output environment variables as documented before execution.",
   "steps": [
     "Obtain authorized private training and optional test files outside Git/public; inspect current access/rules.",
     "Use the pinned package and declare duplicate policy before scoring; do not silently deduplicate to pass.",
@@ -32,7 +32,7 @@
     "Compare notebook/script metrics exactly; locally validate a private submission without uploading."
   ],
   "limitations": [
-    "No actual Disaster Tweets competition data has been supplied or executed; generated tests cannot satisfy actual-data acceptance.",
+    "No actual-data result exists: the 2026-10-26 attempt on the official train.csv stopped at the runner's duplicate check, before any fold was scored; generated tests cannot satisfy actual-data acceptance.",
     "Exact token-normalized duplicates are rejected without silent deletion; near-duplicates and grouped-template leakage remain limitations.",
     "Random stratification does not group events, users or time.",
     "Mean fold F1 is distinct from pooled OOF and hidden competition test F1.",
@@ -53,7 +53,7 @@
     "access": {
       "instructions": "Inspect https://www.kaggle.com/competitions/nlp-getting-started/data and current rules yourself; obtain authorized train.csv and optional test.csv privately. Follow docs/nlp-actual-data-setup.md; no automatic acquisition or submission.",
       "provenance_url": "https://www.kaggle.com/competitions/nlp-getting-started/data",
-      "authorization": "Missing: no authorized learner-supplied competition inputs or access evidence received.",
+      "authorization": "Competition rules were accepted and the official train.csv and test.csv were downloaded on 2026-10-26 through the Kaggle API by the repository owner's Kaggle account. No accepted execution exists: the package rejected the training file. Readers must obtain their own copy.",
       "redistribution": "private-input"
     },
     "package": {
@@ -63,7 +63,7 @@
       "helper_sha256": "75ccbf247a955f3f06d08444c87fc79cf5eb3f46abae106204314bd5a278d599",
       "script_sha256": "3f7a9662e10557a651867f78b2707289157848bec88a19678ac6d6acc37c292f",
       "notebook_sha256": "aff94655b8e82210afd18ef3d575fbe4f0fcc7eea45b4ce1b46fe29e21a9bd15",
-      "environment_sha256": "2d7e4f14e7ad927716402427c4ac18f214a4bee22fefa7b46fec4386c5bb6dcf"
+      "environment_sha256": "8fcb1d83d73ba051cffda28d526b2b393325d754fa4e97dc6314d04bd5215d8d"
     },
     "baseline": "Fit unigram Naive Bayes vocabulary and counts inside each fixed stratified training fold.",
     "controlled_change": "Add adjacent word pairs with unchanged smoothing, threshold and folds; retain worse outcomes.",
@@ -87,9 +87,9 @@
       "experiment": "Freeze a duplicate-aware grouped split as a separate sensitivity analysis; preserve the primary comparison and require separate authorized evidence."
     },
     "blocker": {
-      "reason": "Authorized Disaster Tweets paths, reviewed duplicate/access policy and a successful privacy-reviewed actual-data receipt have not been supplied.",
-      "owner": "Unassigned: authorized data owner needed.",
-      "next_action": "Supply authorized private Disaster Tweets file paths and access provenance; run the pinned package, inspect safe candidates, and obtain exact-head review before readiness promotion."
+      "reason": "The official train.csv contains texts that collide after token normalization. The pinned runner refused it on 2026-10-26 with: \"Non-empty unique token-normalized texts required; no silent deduplication. Review a separate duplicate-aware input policy.\" No receipt or result was produced, and the runner is intentionally unchanged.",
+      "owner": "Unassigned: maintainer needed to design the duplicate-aware input policy.",
+      "next_action": "Design and review a documented duplicate-aware input policy (input identity, grouping or selection, and how colliding texts with conflicting labels are handled), implement it as a new pinned package version, then rerun script and notebook on the authorized files before any readiness promotion."
     }
   }
 }

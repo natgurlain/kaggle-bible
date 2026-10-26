@@ -1,6 +1,33 @@
-# Bounded M5 private-input package (blocked candidate)
+# Bounded M5 private-input package: actual-data verified (one recorded run)
 
-No actual M5 data has been supplied or executed. Generated-fixture table tests establish the self-contained software package acceptance for [#72](https://github.com/natgurlain/kaggle-bible/issues/72), without establishing actual-data execution or actual-data verified readiness. Authorized private inputs are required only if a reader chooses an optional actual-data run; they are not a software acceptance prerequisite. The existing two-series teaching fixture stays unchanged. This package evaluates historical windows inside a declared 1913-day input, not the official d_1914-and-later holdout, full-hierarchy official WRMSSE, or a winning system.
+This package for [#72](https://github.com/natgurlain/kaggle-bible/issues/72) is **published / actual-data verified** for one recorded run on authorized competition data (see [Recorded run](#recorded-actual-data-run-2026-10-26)). Generated-fixture table tests establish the self-contained software package acceptance and are separate from that run. Authorized private inputs are required only if a reader chooses an optional actual-data run; they are not a software acceptance prerequisite. The existing two-series teaching fixture stays unchanged. This package evaluates historical windows inside a declared 1913-day input, not the official d_1914-and-later holdout, full-hierarchy official WRMSSE, or a winning system.
+
+## Recorded actual-data run (2026-10-26)
+
+The repository owner's Kaggle account accepted the competition rules on 2026-10-26 and downloaded the official, unmodified `sales_train_validation.csv`, `calendar.csv` and `sell_prices.csv` through the Kaggle API.
+
+**Scope rule, frozen before any run.** For each of the 10 `store_id` values, take the first `item_id` in `sales_train_validation.csv` file order. That gives 10 series, with aliases S01–S10 in that order. `price_availability` is `"unverified"`. The resulting `scope.json` stays private and was not changed between attempts. Anyone with authorized data can rebuild it from this rule, and its fingerprint is in the input manifest.
+
+**What ran.** Byte-identical copies of the pinned package ran as a script (`python3.12 -I m5-actual-data.py --acknowledge-authorized-data --data-kind competition-data`) and as an nbconvert-executed notebook copy, each into a fresh private folder. The environment was Python 3.12.13, standard library only, Darwin arm64.
+
+A first pair of runs succeeded but could not be published, for two reasons. The notebook ended with `_ = runpy.run_path(...)` instead of the bare wrapper line the readiness contract requires. Its text also still said no actual data had been executed. The notebook was corrected and its pin updated, without changing the runner, helper or environment file. Script and notebook were then rerun on the same inputs and frozen scope. Only that rerun is published. Its metrics, manifest and diagnostics are identical to the first pair; only the notebook fingerprint, wall time and memory differ.
+
+**Public artifacts.** These were copied unchanged from the script run's `safe-review/` folder after a privacy inspection: [receipt](../public/exercises/m5-actual-data-receipt.json), [fingerprint-only input manifest](../public/exercises/m5-actual-data-data.json), and diagnostics [1](../public/exercises/m5-actual-data-diagnostic-1.json) and [2](../public/exercises/m5-actual-data-diagnostic-2.json). They contain only aliases, day indices, aggregate scores, counts, file hashes and byte counts. No item or store identifiers, paths or usernames appear. The private series map, `scope.json` and `private-forecasts.csv` were not published.
+
+**Result.** Unweighted bottom-slice MAE, averaged over the three origins:
+
+| Origin | Seasonal-naive (baseline) | Four-week mean (change) |
+| --- | --- | --- |
+| d_1829 | 0.6000 | 0.6232 |
+| d_1857 | 0.6929 | 0.6679 |
+| d_1885 | 0.7393 | 0.6214 |
+| Mean | 0.6774 | 0.6375 |
+
+The change lowered the mean but was worse at the first origin. Across the 30 series-by-origin cells it was better in 12, worse in 15 and tied in 3. The aggregate gain comes mostly from the last origin. No revenue-weighted diagnostic was computed, because price availability is unverified.
+
+**Parity.** Fold results, aggregates, input manifest, code fingerprints and both diagnostic files matched the notebook run exactly (tolerance zero). Only wall time (about 71 s for the script) and traced memory (about 1.34 GB) differed.
+
+**Limits.** This is one run on one machine, covering 10 of roughly 30,000 bottom series chosen by a fixed rule. MAE here is not the official twelve-level WRMSSE or a leaderboard score, and no submission was made. Fingerprints show consistency with the recorded files, not their origin. Access is the operator's recorded declaration. Other Python versions and platforms are untested.
 
 ## Source and access receipt
 
@@ -14,7 +41,7 @@ On 2026-10-02, a direct web open of the official data route returned a title wit
 
 ## Pinned package and frozen scope
 
-Copy `m5-actual-data.py`, `m5-actual-data.ipynb`, `m5-actual-data-environment.txt` and unchanged `m5-rolling-origin.py` together into a private folder outside Git, `public` and `dist`. Use Python 3.12.14, standard library only. Metadata pins all four files, and the wrapper verifies/compiles the helper's exact bytes. The notebook delegates to the same runner with no saved results. Do not invoke the helper's legacy main: it exports normalized source data and evaluates different fixture origins.
+Copy `m5-actual-data.py`, `m5-actual-data.ipynb`, `m5-actual-data-environment.txt` and unchanged `m5-rolling-origin.py` together into a private folder outside Git, `public` and `dist`. Use Python 3.12.13, standard library only. Metadata pins all four files, and the wrapper verifies/compiles the helper's exact bytes. The notebook delegates to the same runner with no saved results. Do not invoke the helper's legacy main: it exports normalized source data and evaluates different fixture origins.
 
 Before interpreting any holdout, freeze a private `scope.json` with exactly `series` and `price_availability`. The series array contains one to twelve unique `item_id`/`store_id` pairs from authorized inputs; preserve its order, which defines aliases S01–S12. Do not change selection after viewing results. Example placeholders are not actual M5 identifiers:
 
@@ -32,7 +59,7 @@ Supply all four private inputs:
 - Prices: selected item/store/week keys in relevant past weeks must be unique with finite positive prices. Preparation retains only those selected/past keys; it does not certify unselected price records. Only keys joined to past days may enter optional revenue weights. Missing prices for positive past demand leave weighting undefined.
 - Scope JSON: frozen selection and declared price mode. Its bytes are fingerprinted alongside every source input; the raw map is private.
 
-Each source file is capped at 256 MiB and scope at 1 MiB. These are implementation input caps, not measured learner memory requirements or assurances that a supplied dataset fits. Inputs are captured and parsed from those same bytes; detected changes after evaluation reject. Safe manifests retain captured digests/byte counts even if a file changes immediately after the last check. Snapshot memory and full CSV parsing are included in the run's resource scope; no actual budget has been measured.
+Each source file is capped at 256 MiB and scope at 1 MiB. These are implementation input caps, not measured learner memory requirements or assurances that a supplied dataset fits. Inputs are captured and parsed from those same bytes; detected changes after evaluation reject. Safe manifests retain captured digests/byte counts even if a file changes immediately after the last check. Snapshot memory and full CSV parsing are included in the run's resource scope. The recorded 10-series run measured about 1.34 GB of traced Python allocations and about 71 s wall time on one machine; that is not a learner compute budget or process RSS.
 
 Set paths in a private environment, replacing every example:
 

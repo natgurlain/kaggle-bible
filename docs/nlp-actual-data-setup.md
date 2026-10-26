@@ -1,12 +1,22 @@
 # Disaster Tweets private-input package (blocked candidate)
 
-No authorized competition input has been supplied or executed. Generated-fixture tests establish the self-contained software package acceptance for [#71](https://github.com/natgurlain/kaggle-bible/issues/71), without establishing actual-data execution or actual-data verified readiness. Authorized private inputs are required only if a reader chooses an optional actual-data run; they are not a software acceptance prerequisite. The published word-pair fixture remains separate and unchanged. Keep the candidate draft and blocked until access, duplicate policy and successful safe execution evidence have been reviewed.
+Authorized competition files have been obtained, but no actual-data result exists: the package rejected them (see [Recorded attempt](#recorded-attempt-2026-10-26-blocked-by-duplicate-policy)). Generated-fixture tests establish the self-contained software package acceptance for [#71](https://github.com/natgurlain/kaggle-bible/issues/71), without establishing actual-data execution or actual-data verified readiness. Authorized private inputs are required only if a reader chooses an optional actual-data run; they are not a software acceptance prerequisite. The published word-pair fixture remains separate and unchanged. Keep the candidate draft and blocked until a duplicate-aware input policy, access and successful safe execution evidence have been reviewed.
+
+## Recorded attempt (2026-10-26): blocked by duplicate policy
+
+The repository owner's Kaggle account accepted the competition rules on 2026-10-26 and downloaded the official, unmodified `train.csv` and `test.csv` through the Kaggle API. The pinned package (Python 3.12.13, standard library only, Darwin arm64) refused the official training file before scoring any fold:
+
+> Non-empty unique token-normalized texts required; no silent deduplication. Review a separate duplicate-aware input policy.
+
+The cause is that Kaggle's `train.csv` contains texts that become identical after the tokenizer's normalization (lowercase ASCII letters/digits only). This is the designed behaviour described in [Declare duplicate handling before scoring](#declare-duplicate-handling-before-scoring), not a defect, and the runner is intentionally unchanged. No receipt, diagnostic or safe-review candidate was produced, and nothing from the attempt is published.
+
+**Next step:** design and review a documented duplicate-aware input policy before any rerun. It must define input identity, whether colliding texts are grouped into one fold or selected, and how collisions with conflicting labels are handled, without silently deleting examples. Implement it as a new pinned package version, then run script and notebook on the authorized files and compare them exactly before readiness can change.
 
 ## Authorized private setup
 
 For an optional actual-data run, the reader must inspect the current official [data page](https://www.kaggle.com/competitions/nlp-getting-started/data) and [rules](https://www.kaggle.com/competitions/nlp-getting-started/rules), obtain authorized files and use private paths. This package does not acquire files, accept terms, contact a service or upload a submission. A fingerprint proves consistency, not origin or permission.
 
-Copy four pinned files together outside Git, `public` and `dist`: `nlp-actual-data.py`, `nlp-actual-data.ipynb`, `nlp-actual-data-environment.txt`, and unchanged `nlp-word-pairs.py`. Use Python 3.12.14 and its standard library. Metadata pins all four hashes; the runner verifies and compiles the helper's exact bytes without cached bytecode. Do not use the legacy helper's `--csv` main for public evidence: it writes normalized raw input. The notebook delegates to the same runner, with no saved text outputs.
+Copy four pinned files together outside Git, `public` and `dist`: `nlp-actual-data.py`, `nlp-actual-data.ipynb`, `nlp-actual-data-environment.txt`, and unchanged `nlp-word-pairs.py`. Use Python 3.12.13 and its standard library. Metadata pins all four hashes; the runner verifies and compiles the helper's exact bytes without cached bytecode. Do not use the legacy helper's `--csv` main for public evidence: it writes normalized raw input. The notebook delegates to the same runner, with no saved text outputs.
 
 Training CSV needs canonical unique non-negative-integer `id`, non-empty tokenizable `text`, and binary `target` 0/1. Optional test CSV needs unique `id` and `text`, excludes `target`, and has no training IDs or exact token-normalized texts. Extra input columns such as keyword/location are ignored. The original tokenizer keeps lowercase ASCII letters/digits; punctuation, non-ASCII tokens and context may be lost. Encoding is UTF-8 with optional BOM. Inputs and all outputs, including paths resolved through symlinks, must remain outside Git and web roots. Use a fresh attempt directory and retain previous failures or unfavorable results.
 
