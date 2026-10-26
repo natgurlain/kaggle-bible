@@ -1,0 +1,19 @@
+{
+  "limitations": [
+    "Five random folds do not establish temporal or spatial transfer.",
+    "Public diagnostic bins below ten rows are suppressed; row residuals and submission identifiers remain private.",
+    "Exponentiated log means are not arithmetic mean prices; actual-price bins are retrospective diagnostics, never fitting features."
+  ],
+  "observations": [
+    "price below 100000: 114 OOF rows; global-log-mean mean signed natural-log residual 0.741542; original-dollar MAE 85628.1.",
+    "price below 100000: 114 OOF rows; shrunk-neighborhood-log-mean mean signed natural-log residual 0.456719; original-dollar MAE 45491.",
+    "price 100000 to below 200000: 911 OOF rows; global-log-mean mean signed natural-log residual 0.131014; original-dollar MAE 26804.1.",
+    "price 100000 to below 200000: 911 OOF rows; shrunk-neighborhood-log-mean mean signed natural-log residual 0.0480967; original-dollar MAE 21151.9.",
+    "price at least 200000: 435 OOF rows; global-log-mean mean signed natural-log residual -0.468712; original-dollar MAE 108136.",
+    "price at least 200000: 435 OOF rows; shrunk-neighborhood-log-mean mean signed natural-log residual -0.225128; original-dollar MAE 65604.2.",
+    "neighborhood seen: 1460 OOF rows; global-log-mean mean signed natural-log residual 5.11007e-17; original-dollar MAE 55629.6.",
+    "neighborhood seen: 1460 OOF rows; shrunk-neighborhood-log-mean mean signed natural-log residual -0.0014031; original-dollar MAE 36296.7.",
+    "neighborhood unseen: small slice suppressed."
+  ],
+  "summary": "Fixed price and seen/unseen bins; residual sign is prediction minus target. Dollar MAE is diagnostic, not the evaluation metric."
+}

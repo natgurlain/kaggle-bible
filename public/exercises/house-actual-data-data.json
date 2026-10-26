@@ -1,0 +1,15 @@
+{
+  "files": [
+    {
+      "bytes": 460676,
+      "name": "train.csv",
+      "sha256": "1e18addf81e5e4d347cc17ee6075bbe4a42b7fa26b9e5b063e8f692a5f929d41"
+    },
+    {
+      "bytes": 451405,
+      "name": "test.csv",
+      "sha256": "8fdd3d829d4d986b58f845c9553b225e67dd8383624d90fb6ca1d4bed5798c1e"
+    }
+  ],
+  "kind": "fingerprint-only"
+}

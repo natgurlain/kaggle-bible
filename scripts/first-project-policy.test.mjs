@@ -7,10 +7,16 @@ const exercises=await Promise.all((await readdir('src/content/exercises')).filte
 const guides=[{id:'competition-titanic',data:{status:'published',slug:'titanic'}}];
 const library={guides,exercises,solutions:[],practices:[]};
 const fixture=exercises.find(x=>x.entry.id==='exercise-titanic-group-rules');
-test('homepage offers the recorded fixture warmup while actual-data drafts do not affect counts or recommendation',()=>{
- const first=recommendedFirstProject(library);assert.equal(first.id,fixture.entry.id);assert.equal(first.actual,false);assert.match(first.label,/generated teaching fixture/);assert.match(first.limit,/Actual Titanic execution remains unverified/);assert.match(first.requirements,/Python/);
- const counts=libraryEvidenceCounts(library);assert.equal(counts.fixtures,5);assert.equal(counts.actual,0);
+const verifiedTitanic=exercises.find(x=>x.entry.id==='exercise-titanic-actual-data');
+test('homepage offers the verified Titanic project with its recorded limits while actual-data drafts do not affect counts or recommendation',()=>{
+ const first=recommendedFirstProject(library);assert.equal(first.id,verifiedTitanic.entry.id);assert.equal(first.actual,true);assert.match(first.label,/Actual-data verified · competition data/);
+ assert.match(first.limit,/one run on one machine/);assert.match(first.limit,/scored lower than the sex-only baseline/);assert.match(first.limit,/not a competition score|rather than a competition score/);assert.match(first.requirements,/Python 3\.12\.13/);
+ const counts=libraryEvidenceCounts(library);assert.equal(counts.fixtures,5);
+ assert.equal(counts.actual,exercises.filter(x=>x.entry.data.status==='published' && x.entry.data.project?.readiness==='actual-data-verified').length);assert.equal(counts.actual,2);
  const drafts=exercises.filter(x=>x.entry.data.status==='draft');assert.ok(drafts.length);assert.deepEqual(recommendedFirstProject({...library,exercises:[...drafts,...exercises.filter(x=>x.entry.data.status==='published')]}),first);
+});
+test('without the verified project the homepage falls back to the fixture warmup',()=>{
+ const first=recommendedFirstProject({...library,exercises:exercises.filter(x=>x!==verifiedTitanic)});assert.equal(first.id,fixture.entry.id);assert.equal(first.actual,false);assert.match(first.label,/generated teaching fixture/);assert.match(first.limit,/Actual Titanic execution remains unverified/);assert.match(first.requirements,/Python/);
 });
 test('missing receipts, unpublished guides and blocked projects cannot supply a first-project action',()=>{
  assert.equal(recommendedFirstProject({...library,exercises:exercises.map(x=>({...x,receipt:null}))}),null);

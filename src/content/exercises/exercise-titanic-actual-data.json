@@ -1,13 +1,15 @@
 {
   "schema_version": 1,
   "id": "exercise-titanic-actual-data",
-  "status": "draft",
+  "status": "published",
   "slug": "titanic-actual-data",
-  "title": "Compare Titanic group rules on authorized private data",
+  "title": "Compare Titanic group rules on authorized competition data",
   "competition_id": "competition-titanic",
-  "summary": "Blocked actual-data candidate: compare the same two group rules on five unchanged stratified folds. Authorized Titanic inputs and a successful reviewed actual-data receipt are still missing.",
+  "summary": "Actual-data verified for one recorded run: the same two group rules on five unchanged stratified folds of the official Titanic training file. The class-split change scored lower than the sex-only baseline (mean fold accuracy 0.7732 versus 0.7867).",
   "data_scope": "competition-data",
   "script_path": "/exercises/titanic-actual-data.py",
+  "receipt_path": "/exercises/titanic-actual-data-receipt.json",
+  "data_path": "/exercises/titanic-actual-data-data.json",
   "platform": "Darwin arm64",
   "expected_splits": [
     "stratified fold 1",
@@ -16,7 +18,7 @@
     "stratified fold 4",
     "stratified fold 5"
   ],
-  "python_version": "3.12.14",
+  "python_version": "3.12.13",
   "dependencies": "Python standard library only",
   "seed": 17,
   "split_definition": "Five target-stratified folds with seed 17; each row validates once; group rules fit training rows only.",
@@ -24,25 +26,28 @@
   "direction": "maximize",
   "memory_scope": "traced-python-allocations",
   "command": "python3 titanic-actual-data.py --acknowledge-authorized-data",
-  "environment": "Declared target: Python 3.12.14 standard library on Darwin arm64; no actual Titanic run recorded. Set private input/output environment variables as documented before execution.",
+  "environment": "Recorded with Python 3.12.13 and its standard library only on Darwin arm64, in one local CPU run on 2026-10-26. Other Python versions and platforms are not covered by this receipt. Set private input/output environment variables as documented before execution.",
   "steps": [
-    "Inspect current official data access and rules, obtain authorized private training data yourself, and keep it outside Git/public/dist.",
+    "Inspect the official data page and current rules, obtain authorized train.csv (and optional test.csv) yourself, and keep the files outside Git/public/dist.",
     "Use the pinned four-file package and private environment variables; run both configurations on the same five seed-17 stratified folds.",
-    "Inspect per-fold differences, safe aggregated error slices and limitations; retain worse results.",
-    "Compare notebook and runner metrics exactly, inspect safe-review candidates, and validate optional submission locally without publishing or uploading it."
+    "Inspect per-fold differences, safe aggregated error slices and limitations; retain worse results, as the recorded run does.",
+    "Optionally run the notebook into a separate folder and compare fold results, aggregates, manifest and diagnostics exactly; validate any submission locally without publishing or uploading it."
   ],
   "limitations": [
-    "No actual Titanic data has been supplied or run; software tests use generated rows only.",
+    "One recorded run on one machine (Python 3.12.13, Darwin arm64, 2026-10-26); a notebook run of the same package matched it exactly but other environments are untested.",
+    "The class-split change underperformed: mean fold accuracy 0.7732 versus 0.7867 for the sex-only baseline, lower on three folds and tied on two.",
+    "Accuracy is the unweighted mean of five validation folds of train.csv, not a Kaggle leaderboard or hidden-test score, and no submission was made.",
     "Random stratification does not isolate passenger families or tickets.",
-    "Accuracy is the unweighted mean of folds, not the hidden competition test score.",
     "Traced Python allocations are not process RSS; no learner compute budget has been measured.",
-    "Fingerprint consistency does not authenticate dataset origin or authorization."
+    "Input fingerprints show consistency with the recorded files, not dataset origin; access is the operator's recorded declaration."
   ],
   "project": {
-    "readiness": "blocked",
+    "readiness": "actual-data-verified",
     "readiness_history": [
       "planned",
-      "blocked"
+      "blocked",
+      "runnable",
+      "actual-data-verified"
     ],
     "outcome": "Explain a controlled group-rule comparison using fixed train-only validation and aggregated diagnostics.",
     "prerequisites": [
@@ -52,7 +57,7 @@
     "access": {
       "instructions": "Inspect https://www.kaggle.com/competitions/titanic/data and current rules yourself; obtain authorized train.csv and optional test.csv privately. Follow docs/titanic-actual-data-setup.md; no automatic acquisition or submission.",
       "provenance_url": "https://www.kaggle.com/competitions/titanic/data",
-      "authorization": "Missing: no authorized learner-supplied competition inputs or access evidence received.",
+      "authorization": "Recorded run used the official, unmodified train.csv and test.csv downloaded on 2026-10-26 through the Kaggle API by the repository owner's Kaggle account after accepting the competition rules. Readers must obtain their own copy: sign in, inspect and accept the current competition rules yourself, and download the official files; this site does not distribute them.",
       "redistribution": "private-input"
     },
     "package": {
@@ -62,7 +67,7 @@
       "helper_sha256": "f6c9251a09490dd775edab867fa326b09633fee5afc1846d2b590d46d78cf0dd",
       "script_sha256": "c86501306f0d69062e8bdef9db781792b0a3311b5b35e4116c4a59d446cbd31b",
       "notebook_sha256": "c936eff831c3bf7c393eb391cfca3f68be2755801e5f778f50f94aec174108f5",
-      "environment_sha256": "531f68fda515bb3b7ba6d8f9a0ee3f3364b58a0e4c2601534f9bf641143c2986"
+      "environment_sha256": "20b7d252234c8256b0aee0d9ddbc9b29e4afa5431aafba2a385d3034a2b70b19"
     },
     "baseline": "Fit sex-majority using training rows only on the fixed five stratified folds.",
     "controlled_change": "Compare sex-class-majority on exactly the same folds; retain worse outcomes.",
@@ -73,7 +78,7 @@
     "troubleshooting": [
       {
         "symptom": "Missing authorized data or access failure",
-        "recovery": "Retain blocked status; the owner must supply private authorized paths and inspect access conditions before running."
+        "recovery": "Stop before running: inspect the official data page and rules, accept them yourself if eligible, and obtain your own copy. The recorded receipt does not grant access."
       },
       {
         "symptom": "Input/path/package validation failure",
@@ -84,11 +89,6 @@
       "title": "Validation checks",
       "url": "/practices/validation-checks/",
       "experiment": "Freeze one family-aware split before fitting and compare the same rules; its outcomes require a separate authorized run."
-    },
-    "blocker": {
-      "reason": "Authorized actual Titanic training/test paths and a successful privacy-reviewed actual-data receipt have not been supplied.",
-      "owner": "Unassigned: authorized data owner needed.",
-      "next_action": "Supply authorized private Titanic file paths and access provenance; run the pinned package, inspect safe candidates, and obtain exact-head review before readiness promotion."
     }
   }
 }

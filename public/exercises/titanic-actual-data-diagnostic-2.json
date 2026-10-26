@@ -1,0 +1,15 @@
+{
+  "limitations": [
+    "Five random stratified folds do not isolate passenger families or shared tickets.",
+    "Small diagnostic slices below ten rows are suppressed; no row predictions or identifiers are public."
+  ],
+  "observations": [
+    "Sex=female, Pclass=1: 94 out-of-fold rows; baseline errors 3; change errors 3.",
+    "Sex=female, Pclass=2: 76 out-of-fold rows; baseline errors 6; change errors 6.",
+    "Sex=female, Pclass=3: 144 out-of-fold rows; baseline errors 72; change errors 84.",
+    "Sex=male, Pclass=1: 122 out-of-fold rows; baseline errors 45; change errors 45.",
+    "Sex=male, Pclass=2: 108 out-of-fold rows; baseline errors 17; change errors 17.",
+    "Sex=male, Pclass=3: 347 out-of-fold rows; baseline errors 47; change errors 47."
+  ],
+  "summary": "Aggregated out-of-fold error slices; no personal records or predictions exported."
+}

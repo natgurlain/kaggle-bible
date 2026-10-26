@@ -1,0 +1,118 @@
+{
+  "aggregate": {
+    "sex-class-majority": 0.7732188282306429,
+    "sex-majority": 0.7867148830745018
+  },
+  "authorization": "Operator affirms authorized access to private inputs; origin and permission require review before publication.",
+  "code_fingerprints": {
+    "environment_sha256": "20b7d252234c8256b0aee0d9ddbc9b29e4afa5431aafba2a385d3034a2b70b19",
+    "helper_sha256": "f6c9251a09490dd775edab867fa326b09633fee5afc1846d2b590d46d78cf0dd",
+    "notebook_sha256": "c936eff831c3bf7c393eb391cfca3f68be2755801e5f778f50f94aec174108f5",
+    "script_sha256": "c86501306f0d69062e8bdef9db781792b0a3311b5b35e4116c4a59d446cbd31b"
+  },
+  "configuration": {
+    "baseline": "Fit sex-majority using training rows only on the fixed five stratified folds.",
+    "controlled_change": "Compare sex-class-majority on exactly the same folds; retain worse outcomes."
+  },
+  "data_scope": "competition-data",
+  "data_sha256": "162ac7c74a9b986b67949233ec3fb652d33515cd12a17785b43fc531120b2d24",
+  "dependencies": "Python standard library only",
+  "diagnostics": [
+    {
+      "path": "/exercises/titanic-actual-data-diagnostic-1.json",
+      "question": "Do the two methods agree in direction across all five unchanged folds?",
+      "sha256": "fd9046c1e6cd6f49ee2fc983dde1cde92bb5811bed832f7f89a191f4a6020bb3"
+    },
+    {
+      "path": "/exercises/titanic-actual-data-diagnostic-2.json",
+      "question": "Which sufficiently large sex/class slices have more errors, and what does the split omit?",
+      "sha256": "1cbe891836f6dc1cac49bf586260ebbd2235432cb5c1e0d00cf7842a59070126"
+    }
+  ],
+  "direction": "maximize",
+  "evidence_type": "actual-data",
+  "executed_at": "2026-10-26",
+  "execution_status": "succeeded",
+  "exercise": "titanic-actual-data",
+  "fold_results": [
+    {
+      "metrics": {
+        "sex-class-majority": 0.7932960893854749,
+        "sex-majority": 0.8100558659217877
+      },
+      "split": "stratified fold 1",
+      "train_size": 712,
+      "validation_size": 179
+    },
+    {
+      "metrics": {
+        "sex-class-majority": 0.7877094972067039,
+        "sex-majority": 0.7877094972067039
+      },
+      "split": "stratified fold 2",
+      "train_size": 712,
+      "validation_size": 179
+    },
+    {
+      "metrics": {
+        "sex-class-majority": 0.7640449438202247,
+        "sex-majority": 0.7865168539325843
+      },
+      "split": "stratified fold 3",
+      "train_size": 713,
+      "validation_size": 178
+    },
+    {
+      "metrics": {
+        "sex-class-majority": 0.7752808988764045,
+        "sex-majority": 0.7752808988764045
+      },
+      "split": "stratified fold 4",
+      "train_size": 713,
+      "validation_size": 178
+    },
+    {
+      "metrics": {
+        "sex-class-majority": 0.7457627118644068,
+        "sex-majority": 0.7740112994350282
+      },
+      "split": "stratified fold 5",
+      "train_size": 714,
+      "validation_size": 177
+    }
+  ],
+  "input_manifest": {
+    "files": [
+      {
+        "bytes": 61194,
+        "name": "train.csv",
+        "sha256": "7d118fef8b6ccf7f81111877bc388536f7b1e498a655e3d649d19aaa010e9f6f"
+      },
+      {
+        "bytes": 28629,
+        "name": "test.csv",
+        "sha256": "56023b9948236f3c7a1c9448fcf418b283e109ef177fa8c7e069158dd7dd52b2"
+      }
+    ],
+    "kind": "fingerprint-only"
+  },
+  "limitations": [
+    "This is an original learner experiment, not a historical solution reproduction or leaderboard score.",
+    "Five random stratified folds do not isolate passenger families or shared tickets.",
+    "Aggregate accuracy is the unweighted mean of fold accuracies, not Kaggle test accuracy.",
+    "Small diagnostic slices below ten rows are suppressed; no row predictions or identifiers are public.",
+    "Memory measures traced Python allocations, not process RSS; runtime covers this local run only.",
+    "Input origin and authorization are operator declarations requiring independent review before publication."
+  ],
+  "memory_scope": "traced-python-allocations",
+  "metric": "accuracy",
+  "peak_memory_bytes": 1905279,
+  "platform": "Darwin arm64",
+  "provenance_url": "https://www.kaggle.com/competitions/titanic/data",
+  "python": "3.12.13",
+  "schema_version": 1,
+  "script_sha256": "c86501306f0d69062e8bdef9db781792b0a3311b5b35e4116c4a59d446cbd31b",
+  "seed": 17,
+  "split_definition": "Five target-stratified folds with seed 17; each row validates once; group rules fit training rows only.",
+  "wall_seconds": 0.06103779003024101
+}
