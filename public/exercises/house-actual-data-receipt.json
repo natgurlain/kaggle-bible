@@ -7,7 +7,7 @@
   "code_fingerprints": {
     "environment_sha256": "cfa956247465ea561556d417e1492d8a4e7f14d79e85c803038ec7588727b6c4",
     "helper_sha256": "b50f952c3d40e842ef9ba1f96836c0b2f74743701f07df99ec7d6e30171c6ef7",
-    "notebook_sha256": "f52ef21381eef2f0677b428ce8fb0c6e2bf6c09f1390fd16f1dac4c53d46c814",
+    "notebook_sha256": "24b55d9f3eb87a15ec5cae93726727ce9cf0bc8eaac48a3c6c66a279f50fe95d",
     "script_sha256": "c5f1661303a15d734197beae37e3161b4b53f3e7c4dc623d06d1aa7c58d5ff9e"
   },
   "configuration": {
@@ -114,5 +114,5 @@
   "script_sha256": "c5f1661303a15d734197beae37e3161b4b53f3e7c4dc623d06d1aa7c58d5ff9e",
   "seed": 17,
   "split_definition": "Five shuffled random folds with seed 17; each row validates once; all log-price category means fit training rows only.",
-  "wall_seconds": 0.23831795901060104
+  "wall_seconds": 0.23669141717255116
 }

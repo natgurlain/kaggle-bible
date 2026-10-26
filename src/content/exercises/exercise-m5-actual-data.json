@@ -1,13 +1,15 @@
 {
   "schema_version": 1,
   "id": "exercise-m5-actual-data",
-  "status": "draft",
+  "status": "published",
   "slug": "m5-actual-data",
-  "title": "Bounded M5 bottom-series comparison (blocked candidate)",
+  "title": "Compare M5 bottom-series forecasts on authorized competition data",
   "competition_id": "competition-m5-forecasting-accuracy",
-  "summary": "Blocked candidate for at most twelve frozen bottom series and three fixed 28-day horizons. A run on authorized competition files succeeded on 2026-10-26, but the pinned notebook wrapper fails the readiness check, so no result is published.",
+  "summary": "Actual-data verified for one recorded run on ten frozen bottom series (the first item per store) and three fixed 28-day origins of the official M5 validation-period sales. The four-week mean lowered unweighted MAE from 0.6774 to 0.6375 overall but was worse at the first origin; this is not WRMSSE or a leaderboard score.",
   "data_scope": "competition-data",
   "script_path": "/exercises/m5-actual-data.py",
+  "receipt_path": "/exercises/m5-actual-data-receipt.json",
+  "data_path": "/exercises/m5-actual-data-data.json",
   "platform": "Darwin arm64",
   "expected_splits": [
     "origin d_1829",
@@ -22,26 +24,30 @@
   "direction": "minimize",
   "memory_scope": "traced-python-allocations",
   "command": "python3 m5-actual-data.py --acknowledge-authorized-data",
-  "environment": "Declared target: Python 3.12.13 standard library on Darwin arm64. A 2026-10-26 run in this environment succeeded but is not published, because the pinned notebook fails the wrapper check. Set private input/output environment variables as documented before execution.",
+  "environment": "Recorded with Python 3.12.13 and its standard library only on Darwin arm64, in one local CPU run on 2026-10-26 (about 71 s wall time; about 1.34 GB of traced Python allocations, which include input snapshots and full CSV parsing). Other Python versions and platforms are not covered by this receipt. Set private input/output environment variables as documented before execution.",
   "steps": [
-    "Supply authorized private sales, calendar, price and frozen scope files; inspect current access/rules and price-availability limitations.",
-    "Preserve at most twelve selected series, origins 1829/1857/1885 and horizon 28; compare unchanged seasonal-naive and four-week averaging forecasts.",
-    "Inspect every alias/origin diagnostic and retain zero-demand, undefined-scale/revenue and worse-method cases.",
-    "Compare notebook/script metrics exactly; keep the private series map and forecast/error rows outside safe-review. No full-hierarchy score or submission."
+    "Inspect current M5 data access and rules, obtain authorized sales_train_validation.csv, calendar.csv and sell_prices.csv yourself, and keep them outside Git/public.",
+    "Freeze a private scope.json before running (the recorded run took the first item_id in file order for each store_id, with price availability unverified); never change it after seeing results.",
+    "Preserve origins 1829/1857/1885 and horizon 28; compare unchanged seasonal-naive and four-week averaging forecasts, then inspect every alias/origin diagnostic and retain worse and undefined cases.",
+    "Optionally compare a notebook run with the script run exactly; keep the private series map and forecast/error rows outside safe-review. No full-hierarchy score or submission."
   ],
   "limitations": [
-    "No published actual-data result: the 2026-10-26 run cannot be verified while the pinned notebook fails the wrapper check; generated software tables are not actual-data acceptance.",
-    "Unweighted MAE and optional bottom-slice RMSSE exclude full twelve-level official WRMSSE.",
-    "Historical price publication timing is unknown; weighting requires an explicit availability assumption.",
+    "One recorded run on one machine (Python 3.12.13, Darwin arm64, 2026-10-26); a notebook run of the same package matched it exactly but other environments are untested.",
+    "Only ten of the roughly 30,000 bottom series, chosen by a fixed first-item-per-store rule; results do not represent the full hierarchy.",
+    "The four-week mean lowered mean MAE (0.6375 versus 0.6774) and won at origins d_1857 and d_1885, but was worse at d_1829 (0.6232 versus 0.6000).",
+    "Unweighted MAE and optional bottom-slice RMSSE exclude full twelve-level official WRMSSE; this is not a leaderboard score and no submission was made.",
+    "Historical price publication timing is unverified, so no revenue-weighted diagnostic was computed.",
     "Undefined scales, missing prices and zero revenue stay explicit without epsilon or silent exclusion.",
     "Private series identifiers and sales/forecast rows are not public diagnostics.",
-    "Traced allocations are not RSS; no actual learner compute budget measured."
+    "Traced allocations are not RSS; the measured run covers only this bounded slice, not a learner compute budget."
   ],
   "project": {
-    "readiness": "blocked",
+    "readiness": "actual-data-verified",
     "readiness_history": [
       "planned",
-      "blocked"
+      "blocked",
+      "runnable",
+      "actual-data-verified"
     ],
     "outcome": "Explain the same-method forecast comparison across frozen horizons and the limits of slice scoring.",
     "prerequisites": [
@@ -51,7 +57,7 @@
     "access": {
       "instructions": "Inspect current M5 data/rules, supply authorized sales_train_validation.csv, calendar.csv, sell_prices.csv and private scope.json outside Git/public. Follow docs/m5-actual-data-setup.md. No automatic acquisition or submission.",
       "provenance_url": "https://www.kaggle.com/competitions/m5-forecasting-accuracy/data",
-      "authorization": "Competition rules were accepted and the official sales_train_validation.csv, calendar.csv and sell_prices.csv were downloaded on 2026-10-26 through the Kaggle API by the repository owner's Kaggle account; a private scope was frozen before running. No verified execution is published yet. Readers must obtain their own copy.",
+      "authorization": "Recorded run used the official, unmodified sales_train_validation.csv, calendar.csv and sell_prices.csv downloaded on 2026-10-26 through the Kaggle API by the repository owner's Kaggle account after accepting the competition rules, plus a private scope file frozen before any run. Readers must obtain their own copy: sign in, inspect and accept the current competition rules yourself, and download the official files; this site does not distribute them.",
       "redistribution": "private-input"
     },
     "package": {
@@ -72,7 +78,7 @@
     "troubleshooting": [
       {
         "symptom": "Missing authorized data or access failure",
-        "recovery": "Retain blocked status; the owner must supply private authorized paths and inspect access conditions before running."
+        "recovery": "Stop before running: inspect the official data page and rules, accept them yourself if eligible, and obtain your own copy. The recorded receipt does not grant access."
       },
       {
         "symptom": "Input/path/package validation failure",
@@ -83,11 +89,6 @@
       "title": "Validation checks",
       "url": "/practices/validation-checks/",
       "experiment": "Propose a separately reviewed full-hierarchy scoring experiment; all series/levels and official scoring-code parity remain unexecuted."
-    },
-    "blocker": {
-      "reason": "The 2026-10-26 script and notebook runs succeeded and matched exactly. The pinned notebook ends with \"_ = runpy.run_path(...)\", which the readiness check does not accept as a pure wrapper, and its text still says no actual data was executed. The receipt pins the notebook hash, so the run cannot be published.",
-      "owner": "Repository maintainer.",
-      "next_action": "Correct the notebook to the bare runpy wrapper and accurate text, update its pin, then rerun script and notebook on the same frozen scope and inputs before readiness promotion."
     }
   }
 }

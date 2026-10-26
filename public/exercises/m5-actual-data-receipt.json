@@ -1,0 +1,111 @@
+{
+  "aggregate": {
+    "four-week-mean": 0.6375000000000001,
+    "seasonal-naive": 0.6773809523809524
+  },
+  "authorization": "Operator affirms authorized private input access; origin, scope and price availability require review before publication.",
+  "code_fingerprints": {
+    "environment_sha256": "1247b35615aaa66b5a391c1430006f48794f1d2c66c44f767b9eb582bf026d01",
+    "helper_sha256": "eb6c90b7a6f629e172107f7e74f41d777cd50bb29508c9b585c0941a9353543f",
+    "notebook_sha256": "732aa063fe0c4bf6bba39ed6504c2c321fd5a2acac5e07f1fa986ea24a9a29ad",
+    "script_sha256": "af5f2abb11513b76fe16656e2e09dbd231dbb714438196985127b45deff2d1e7"
+  },
+  "configuration": {
+    "baseline": "Repeat the last training week separately at each of the three fixed origins.",
+    "controlled_change": "Compare the fixed average of four prior weeks on identical series, origins and 28-day horizons."
+  },
+  "data_scope": "competition-data",
+  "data_sha256": "7f05811fc6871319e30f94baae69e1d9ad447259694a88492b2ead03388b41d3",
+  "dependencies": "Python standard library only",
+  "diagnostics": [
+    {
+      "path": "/exercises/m5-actual-data-diagnostic-1.json",
+      "question": "Do both methods differ consistently across all three frozen origins and selected bottom series?",
+      "sha256": "a7d5e0d7ff5f08de580597d3b6500fd21f8342a286706cecc4829535211855bd"
+    },
+    {
+      "path": "/exercises/m5-actual-data-diagnostic-2.json",
+      "question": "Which slice RMSSE or revenue-weighted diagnostics are undefined, and what hierarchy/availability assumptions remain?",
+      "sha256": "daa8db997ee928cc2c49ab389131c3b4691e7244af1ac0a5bc35c927717c1196"
+    }
+  ],
+  "direction": "minimize",
+  "evidence_type": "actual-data",
+  "executed_at": "2026-10-26",
+  "execution_status": "succeeded",
+  "exercise": "m5-actual-data",
+  "fold_results": [
+    {
+      "metrics": {
+        "four-week-mean": 0.6232142857142857,
+        "seasonal-naive": 0.6
+      },
+      "split": "origin d_1829",
+      "train_size": 18290,
+      "validation_size": 280
+    },
+    {
+      "metrics": {
+        "four-week-mean": 0.6678571428571429,
+        "seasonal-naive": 0.6928571428571428
+      },
+      "split": "origin d_1857",
+      "train_size": 18570,
+      "validation_size": 280
+    },
+    {
+      "metrics": {
+        "four-week-mean": 0.6214285714285714,
+        "seasonal-naive": 0.7392857142857143
+      },
+      "split": "origin d_1885",
+      "train_size": 18850,
+      "validation_size": 280
+    }
+  ],
+  "input_manifest": {
+    "files": [
+      {
+        "bytes": 120007726,
+        "name": "sales.csv",
+        "sha256": "f368e66ed1dbecb48b2cc8fc589bf68b3deddbbb36bf5c88b4d6d0a09b9b6724"
+      },
+      {
+        "bytes": 103469,
+        "name": "calendar.csv",
+        "sha256": "d12b5914ef03e66649adf5dd9e996e6602251c22b7a6af8f1f7e3aa12f8860f5"
+      },
+      {
+        "bytes": 203395785,
+        "name": "prices.csv",
+        "sha256": "9da3ad1f8b8ccacdbdc70612191dd375ec24a4ac6625c24b75b3bc60b0bed2ef"
+      },
+      {
+        "bytes": 778,
+        "name": "scope.json",
+        "sha256": "9ae61fb19f1ab4ccaf215cf5e175894946b1a8e7640f6396157201a349856a4e"
+      }
+    ],
+    "kind": "fingerprint-only"
+  },
+  "limitations": [
+    "No full-hierarchy official WRMSSE, leaderboard submission or winning-system reproduction.",
+    "Primary metric is unweighted bottom-slice MAE; optional RMSSE and revenue-weighted RMSSE are slice diagnostics only.",
+    "Zero or insufficient active-history scales and missing/zero revenue retain explicit undefined diagnostics; no epsilon or silent exclusion.",
+    "Weekly prices require an explicit start-of-week availability assumption; historical publication timestamps are unverified.",
+    "Raw series identifiers, sales histories and forecast/error rows remain private.",
+    "Memory measures traced Python allocations, not RSS; runtime covers this local bounded experiment only.",
+    "Dataset origin and authorization require independent evidence review before publication."
+  ],
+  "memory_scope": "traced-python-allocations",
+  "metric": "mean absolute error (unweighted; not M5 WRMSSE)",
+  "peak_memory_bytes": 1341537039,
+  "platform": "Darwin arm64",
+  "provenance_url": "https://www.kaggle.com/competitions/m5-forecasting-accuracy/data",
+  "python": "3.12.13",
+  "schema_version": 1,
+  "script_sha256": "af5f2abb11513b76fe16656e2e09dbd231dbb714438196985127b45deff2d1e7",
+  "seed": 17,
+  "split_definition": "Frozen at most twelve bottom series; origins d_1829, d_1857 and d_1885; next 28 days validate; all forecasts/scales/weights use history through the origin.",
+  "wall_seconds": 70.71712041646242
+}

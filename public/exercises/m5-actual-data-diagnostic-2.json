@@ -1,0 +1,20 @@
+{
+  "limitations": [
+    "No full-hierarchy official WRMSSE, leaderboard submission or winning-system reproduction.",
+    "Primary metric is unweighted bottom-slice MAE; optional RMSSE and revenue-weighted RMSSE are slice diagnostics only.",
+    "Zero or insufficient active-history scales and missing/zero revenue retain explicit undefined diagnostics; no epsilon or silent exclusion.",
+    "Weekly prices require an explicit start-of-week availability assumption; historical publication timestamps are unverified."
+  ],
+  "observations": [
+    "Origin d_1829: frozen scope 10 bottom series; targets d_1830 through d_1857; availability mode unverified.",
+    "Origin d_1829 seasonal-naive: weighted bottom-slice RMSSE undefined (weekly price availability unverified; no weighted diagnostic computed).",
+    "Origin d_1829 four-week-mean: weighted bottom-slice RMSSE undefined (weekly price availability unverified; no weighted diagnostic computed).",
+    "Origin d_1857: frozen scope 10 bottom series; targets d_1858 through d_1885; availability mode unverified.",
+    "Origin d_1857 seasonal-naive: weighted bottom-slice RMSSE undefined (weekly price availability unverified; no weighted diagnostic computed).",
+    "Origin d_1857 four-week-mean: weighted bottom-slice RMSSE undefined (weekly price availability unverified; no weighted diagnostic computed).",
+    "Origin d_1885: frozen scope 10 bottom series; targets d_1886 through d_1913; availability mode unverified.",
+    "Origin d_1885 seasonal-naive: weighted bottom-slice RMSSE undefined (weekly price availability unverified; no weighted diagnostic computed).",
+    "Origin d_1885 four-week-mean: weighted bottom-slice RMSSE undefined (weekly price availability unverified; no weighted diagnostic computed)."
+  ],
+  "summary": "Training-only scales and past revenue diagnostics; undefined cases retained. All hierarchy levels and official scoring-code parity remain unexecuted."
+}
