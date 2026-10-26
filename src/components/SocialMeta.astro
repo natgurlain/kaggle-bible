@@ -1,0 +1,25 @@
+---
+// Open Graph and X card tags for pages that render their own <head> outside Starlight.
+interface Props { title: string; description: string; type?: 'website' | 'article' }
+const { title, description, type = 'article' } = Astro.props;
+const site = Astro.site ?? new URL('https://kaggle-bible.vercel.app');
+const url = new URL(Astro.url.pathname, site).href;
+const image = new URL('/og-image.png', site).href;
+const imageAlt = 'Kaggle Bible: learn from what Kaggle competitors actually tried.';
+---
+<link rel="canonical" href={url} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={url} />
+<meta property="og:site_name" content="Kaggle Bible" />
+<meta property="og:locale" content="en" />
+<meta property="og:image" content={image} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={imageAlt} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+<meta name="twitter:image:alt" content={imageAlt} />
