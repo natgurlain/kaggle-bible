@@ -94,7 +94,7 @@ Titanic, House Prices, NLP Getting Started and Digit Recognizer are selected as 
 
 ## Current delivery queue and IEEE-CIS qualification (2026-10-02)
 
-This is planning evidence for [#76](https://github.com/natgurlain/kaggle-bible/issues/76), not a new guide, execution receipt, or publication-status change. The six-guide library and existing teaching fixtures do not establish actual-data project completion. Integrate this planning work after the [project contract #64](https://github.com/natgurlain/kaggle-bible/issues/64); implementation and publication retain the exact-head GPT-6 Luna Max gate in the current delivery/editorial workflows.
+This is planning evidence for [#76](https://github.com/natgurlain/kaggle-bible/issues/76), not a new guide, execution receipt, or publication-status change. The six-guide library and existing teaching fixtures do not establish actual-data project completion. Integrate this planning work after the [project contract #64](https://github.com/natgurlain/kaggle-bible/issues/64); implementation and publication retain the exact-head Claude Sonnet high-effort gate in the current delivery/editorial workflows.
 
 ### Ordered queue
 
