@@ -3,8 +3,8 @@ id: solution-home-credit-8th
 status: published
 title: Eighth-place Home Credit solution
 summary: A team approach combining relational aggregation, single-table out-of-fold meta-features, diverse LightGBM models, and rank-normalized stacking/blending.
-reviewed_by: GPT-6 Luna Max
-reviewed_at: '2026-09-24'
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 competition_id: competition-home-credit-default-risk
 team: 七上八下
 authors:

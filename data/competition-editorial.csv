@@ -4,7 +4,7 @@ id,completeness_level,editorial_status,priority,work_order,learning_path_stage,g
 3004,2,published,path,3,beginner,digit-recognizer,GPT-6 Luna Max,2026-09-30,Reviewed two pinned image approaches with source limitations and an original bounded centroid exercise.
 17777,2,published,path,4,beginner,nlp-getting-started,GPT-6 Luna Max,2026-09-30,Reviewed Level 2 educational text guide; generated exercise is separate.
 7082,1,queued,path,5,intermediate,,,,Suggested imbalanced tabular practice: AUC and anonymized features.
-9120,3,published,path,6,intermediate,home-credit-default-risk,GPT-6 Luna Max,2026-09-24,Level 3 full guide.
+9120,3,published,path,6,intermediate,home-credit-default-risk,Claude Sonnet high-effort,2026-10-26,Level 3 full guide.
 18599,2,published,path,7,intermediate,m5-forecasting-accuracy,GPT-6 Luna Max,2026-09-24,Reviewed Level 2 evidence map.
 14242,1,queued,path,8,advanced,,,,Advanced tabular case: temporal behavior, sparse identifiers, and distribution shift.
 12500,1,queued,path,9,advanced,,,,Advanced text case: composite metric and subgroup diagnostics.

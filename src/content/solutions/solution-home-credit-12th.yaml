@@ -3,8 +3,8 @@ id: solution-home-credit-12th
 status: published
 title: Twelfth-place Home Credit solution
 summary: A reported ensemble of relational aggregates, model-derived history features, feature-subsampled LightGBM blending, and multi-family stacking.
-reviewed_by: GPT-6 Luna Max
-reviewed_at: '2026-09-24'
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 competition_id: competition-home-credit-default-risk
 team: '楼上神仙打架 ¯\_(ツ) _/¯'
 authors:

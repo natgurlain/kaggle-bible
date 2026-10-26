@@ -17,8 +17,8 @@ learning_goals:
   - Build applicant-level aggregates without crossing the prediction boundary.
   - Compare validation protocols before interpreting reported AUC.
   - Test one feature family on frozen folds before adding ensemble complexity.
-reviewed_by: GPT-6 Luna Max
-reviewed_at: '2026-09-24'
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 kaggle_bible_completeness_level: 3
 kaggle_bible_completeness_label: full-guide
 editorial_status: published

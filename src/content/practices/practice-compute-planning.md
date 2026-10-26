@@ -75,7 +75,7 @@ The run should produce the intended output under the recorded metric and split. 
 
 ## Competition evidence and disagreements
 
-All four pilot solution records leave final-pipeline resources unknown. Home Credit's evidence map records no complete resource profile. [Home Credit resource gap](/competitions/home-credit-default-risk/#evidence-gaps-01)
+All four pilot solution records leave final-pipeline resources unknown. Home Credit's guide records no complete resource profile. [Home Credit resource gap](/competitions/home-credit-default-risk/#evidence-gaps-01)
 
 For M5, one author reports an unsuccessful MinT/OLS/WLS reconciliation attempt that ran overnight on a rented 128 GB AWS instance; the report does not give exact hours or final-system requirements. The fourth-place author describes compute qualitatively as “not too much,” without hardware or runtime. Neither statement is a reusable capacity estimate. [M5 resource gap](/competitions/m5-forecasting-accuracy/#evidence-gaps-01) [M5 failed experiment](/competitions/m5-forecasting-accuracy/#evidence-solution-m5-2nd-failed-reconciliation-01) [M5 qualitative report](/competitions/m5-forecasting-accuracy/#evidence-solution-m5-4th-validation-01)
 
