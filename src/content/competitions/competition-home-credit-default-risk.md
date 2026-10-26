@@ -97,6 +97,82 @@ claims:
     reproduction_ids: []
     conditions: Applies to rank-only metrics such as ROC AUC; the eighth-place author describes rank percentage as a normalization for this reason.
     limitations: This is a property of the metric, not a measured gain; rank transforms discard calibration and would change probability-scored metrics.
+  - id: cv-gap-8th-01
+    statement: The eighth-place author calls local CV "surprisingly stable" and reports a "CV - PB" gap from -0.0005 to 0.0003, without defining "PB".
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-8th
+        locator: Summary
+        support_summary: The summary says the team used stratified 10-fold CV, that local CV was surprisingly stable, and that the CV - PB gap ranged from -0.0005 to 0.0003.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: This is the author's post-competition statement about the team's models.
+    limitations: The gap is not tied to listed submissions or fold results, and "PB" is not defined.
+  - id: final-submissions-8th-01
+    statement: The eighth-place author's comment reply gives the two final selections as stacking (CV 0.8045, public 0.808, private 0.803) and blending (CV about 0.8036, public 0.810, private 0.802).
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-8th
+        locator: Comment thread; topic-author reply to the question about the final blended/stacked CV
+        support_summary: Xuan Cao lists CV, public, and private values for the stacking and blending submissions.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These are rounded values from a comment reply.
+    limitations: Neither rounded private value matches the official 0.80376, which rounds to 0.804; this guide does not reconcile the difference.
+  - id: progression-8th-01
+    statement: One eighth-place teammate reports single-model local CV of 0.794x (public LB 0.802) for a public-kernel baseline, 0.797x (0.804) after time-and-applicant history aggregates, and 0.800x (0.808-0.809) after adding teammates' features and single-table OOF meta-features.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-8th
+        locator: My solo approach; After teaming up
+        support_summary: The write-up gives the CV and LB score after each feature-engineering round.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These are one teammate's LightGBM checkpoints.
+    limitations: CV values are truncated, each step bundles several changes, and no step is an isolated ablation.
+  - id: progression-12th-01
+    statement: The twelfth-place authors report local CV of about 0.798-0.799 from grouped statistical features, 0.800-0.801 after adding model-derived history features, and 0.8021 for their best single model on all teammates' features.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-12th
+        locator: Feature Engineer; Statistical Features; Model Features
+        support_summary: The write-up gives the local-CV range after each feature stage and the best single-model CV.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: These are stage-level team reports.
+    limitations: The split is unspecified and each stage bundles several feature changes.
+  - id: rank-norm-8th-01
+    statement: The eighth-place author reports that stacking and blending CV and LB were always worse than the best single input model until each model's predictions were converted to rank percentages, and in a comment reply says the component predictions' correlation rose to 0.9+ after that transform.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-8th
+        locator: Stacking/blending; topic-author reply on rank percentage
+        support_summary: The write-up states the pre-normalization failure, and the author's reply describes low raw correlations rising to 0.9+ after rank percentage, after which stacking behaved normally.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Applies to this team's LightGBM and random-forest stackers over out-of-fold predictions.
+    limitations: The size of the shortfall and the post-fix gain are not reported.
+  - id: scope-12th-01
+    statement: The twelfth-place authors report combining about 2k+ features from all teammates and training dozens of LightGBM models on random half-subsets of them for blending.
+    kind: source-reported
+    evidence:
+      - source_id: source-home-credit-12th
+        locator: Model Ensemble; Blending
+        support_summary: The write-up states the 2k+ combined features, the 0.5 feature fraction, and dozens of LightGBM models.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Describes the blending stage of the twelfth-place pipeline.
+    limitations: Feature and model counts are not hardware, memory, or runtime measurements.
+  - id: public-noise-01
+    statement: Because the public leaderboard scored only about 20% of the test data, public scores were a noisy model-selection signal during the competition.
+    kind: editorial-inference
+    evidence: []
+    supports_claim_refs:
+      - competition-home-credit-default-risk#lb-split-01
+      - solution-home-credit-8th#cv-lb-gap-01
+    reproduction_ids: []
+    conditions: Inference from the public subset size and the eighth-place author's description of LB scores as unreliable.
+    limitations: No measured public-versus-private variance is available.
   - id: data-structure-01
     statement: The official Data tab describes one static application row per sampled loan and separate prior-credit, balance, previous-application, and installment-payment files.
     kind: source-reported
@@ -186,16 +262,15 @@ claims:
     conditions: This matches the write-up to the official final row as displayed on 2026-10-26.
     limitations: Two members appear only as a count; the match rests on the row's solution link and the four named avatars.
   - id: comparison-01
-    statement: The two teams' private AUCs differ by 0.00047, which is smaller than the 0.0008 width of the eighth-place author's own reported CV-to-"PB" gap range, so the rank difference does not establish that one approach is better.
+    statement: The two teams' private AUCs differ by 0.00047, and no noise estimate for the private leaderboard exists in these sources, so ranks 8 and 12 are not a quality ordering of the two approaches.
     kind: editorial-inference
     evidence: []
     supports_claim_refs:
       - solution-home-credit-8th#final-result-01
       - solution-home-credit-12th#final-result-01
-      - solution-home-credit-8th#cv-lb-gap-01
     reproduction_ids: []
-    conditions: Compares official private scores with one team's reported gap range as a rough scale for evaluation noise.
-    limitations: The gap range is author-reported and not a confidence interval; no shared split or resampling of the private set exists.
+    conditions: Compares official private scores only.
+    limitations: Without resampling or a shared evaluation split, the size of private-leaderboard noise is unknown in either direction.
   - id: decisive-01
     statement: Applicant-level history aggregation, combined teammate feature sets, and out-of-fold model-derived history features are the most strongly supported contributors, because both teams report single-model CV rising at those stages before ensembling.
     kind: editorial-inference
@@ -316,7 +391,7 @@ This guide compares two officially ranked top-12 solutions for participants deci
 
 ## At a glance
 
-**Decision summary.** Start with applicant-level aggregates of one history table on frozen stratified folds. Both teams report their largest single-model gains from history aggregation, combined feature sets, and out-of-fold model-derived features, not from the choice of stacker. [claim:decisive-01] Ensembling added a few thousandths of CV AUC, and the eighth-place team reports that it only helped after converting predictions to rank percentages. [claim:ensemble-gain-01] The two teams finished 0.00047 AUC apart on the private leaderboard, so their ranks do not show that either approach is better. [claim:comparison-01]
+**Decision summary.** Start with applicant-level aggregates of one history table on frozen stratified folds. Both teams report single-model CV rising as they added history aggregation, combined feature sets, and out-of-fold model-derived features; neither isolates a gain from the choice of stacker. [claim:decisive-01] Ensembling added a few thousandths of CV AUC, and the eighth-place team reports that it only helped after converting predictions to rank percentages. [claim:ensemble-gain-01] The two teams finished 0.00047 AUC apart on the private leaderboard and no noise estimate exists, so ranks 8 and 12 are not a quality ordering. [claim:comparison-01]
 
 **Coverage:** Level 3 / Full guide. Kaggle's final leaderboard matches both write-ups to official private rows: rank 8 at 0.80376 and rank 12 at 0.80329. [claim:final-result-8th] [claim:rank-12th-01] All CV, public, and component results below are author-reported. Neither pipeline has been reproduced, and no hardware or runtime is known.
 
@@ -326,7 +401,7 @@ This guide compares two officially ranked top-12 solutions for participants deci
 
 The official task is to predict each applicant's repayment ability. Kaggle evaluates with area under the ROC curve, and higher is better. [claim:task-01] [claim:metric-01] The official Data tab lists one static application row per sampled loan and separate prior-credit, balance, previous-application, and repayment-history files. [claim:data-structure-01] The modeling problem is therefore turning many history rows into one feature row per application without crossing the prediction boundary.
 
-AUC only measures how well predictions are ordered. Converting a model's predictions to rank percentages leaves its AUC unchanged and puts differently scaled models on a common scale before they are combined. [claim:metric-rank-01] The private leaderboard used about 80% of the test data and the public leaderboard about 20%. [claim:lb-split-01] Public scores were therefore a noisy guide during the competition.
+AUC only measures how well predictions are ordered. Converting a model's predictions to rank percentages leaves its AUC unchanged and puts differently scaled models on a common scale before they are combined. [claim:metric-rank-01] The private leaderboard used about 80% of the test data and the public leaderboard about 20%. [claim:lb-split-01] Editorial inference: with so small a public subset, public scores were a noisy model-selection signal during the competition. [claim:public-noise-01]
 
 ## Rules and participation
 
@@ -334,7 +409,7 @@ The competition-specific rules restricted accepted competition data to competiti
 
 ## Validation strategy
 
-**Eighth place.** The team used stratified 10-fold CV. Every teammate's model was re-run on one shared split seed so that out-of-fold predictions could be stacked. The fold assignments and seed value are not published. [claim:approach-8th-01] The author calls local CV "surprisingly stable" and gives a "CV - PB" gap from -0.0005 to 0.0003, without defining "PB". [claim:comparison-01] For the team's two final selections, the CV order matched the reported private order, but the public order was reversed. [claim:cv-trust-01]
+**Eighth place.** The team used stratified 10-fold CV. Every teammate's model was re-run on one shared split seed so that out-of-fold predictions could be stacked. The fold assignments and seed value are not published. [claim:approach-8th-01] The author calls local CV "surprisingly stable" and gives a "CV - PB" gap from -0.0005 to 0.0003, without defining "PB". [claim:cv-gap-8th-01] A comment reply gives the two final selections' rounded private scores as 0.803 (stacking) and 0.802 (blending); neither matches the official 0.80376, which rounds to 0.804, and this guide does not reconcile them. [claim:final-submissions-8th-01] For those two selections, the reported CV order matched the reported private order, but the public order was reversed. [claim:cv-trust-01]
 
 **Twelfth place.** The authors report local CV at every stage, but they do not give the fold count, stratification, seeds, or whether teammates shared a split. Their blending models used random k-fold seeds. Their final "PB 0.803" is not defined as public or private. [claim:result-12th-01]
 
@@ -356,13 +431,13 @@ The competition-specific rules restricted accepted competition data to competiti
 
 Values in this table are source-reported. Ranks, private scores, and entry counts come from Kaggle's final leaderboard; the rest comes from the write-ups and the authors' comment replies. [claim:final-result-8th] [claim:rank-12th-01] [claim:approach-8th-01] [claim:approach-12th-01] Entry counts measure submissions, not compute.
 
-The two approaches share their main structure: aggregate history tables to the applicant, pool features from several teammates, add model-derived features, and stack. They differ mainly in how they produce diversity. The eighth-place team relies on different teammates' feature sets plus rank normalization. The twelfth-place team relies on random feature subsets plus several model families. The 0.00047 private-score gap is smaller than the eighth-place author's own reported CV-to-"PB" gap range. [claim:comparison-01]
+The two approaches share their main structure: aggregate history tables to the applicant, pool features from several teammates, add model-derived features, and stack. They differ mainly in how they produce diversity. The eighth-place team relies on different teammates' feature sets plus rank normalization. The twelfth-place team relies on random feature subsets plus several model families. No noise estimate for the private leaderboard exists, so the 0.00047 private-score difference does not rank the approaches by quality. [claim:comparison-01]
 
 ## Decisive techniques and evidence
 
-**Most strongly supported (decisive in both reports).** Applicant-level aggregation of history tables, pooling teammates' feature sets, and out-of-fold model-derived history features. Both teams report single-model CV rising at these stages. The eighth-place teammate went from 0.794x to 0.797x to 0.800x, and the twelfth-place team from about 0.798 to 0.801 to 0.8021. [claim:decisive-01] These are stage-wise reports with bundled changes, not ablations.
+**Most strongly supported (decisive in both reports).** Applicant-level aggregation of history tables, pooling teammates' feature sets, and out-of-fold model-derived history features. Both teams report single-model CV rising at these stages. One eighth-place teammate went from 0.794x to 0.797x to 0.800x [claim:progression-8th-01], and the twelfth-place team from about 0.798 to 0.801 to 0.8021. [claim:progression-12th-01] Treating these stages as the most supported contributors is editorial inference from stage-wise reports with bundled changes, not ablations. [claim:decisive-01]
 
-**Decisive for ensembling in one report.** Rank-percentage normalization before stacking or blending. The eighth-place author reports that ensembles were always worse than the best single model until predictions were rank-transformed. [claim:ensemble-gain-01] This follows from AUC depending only on ordering. [claim:metric-rank-01]
+**Decisive for ensembling in one report.** Rank-percentage normalization before stacking or blending. The eighth-place author reports that ensembles were always worse than the best single model until predictions were rank-transformed. [claim:rank-norm-8th-01] [claim:ensemble-gain-01] This follows from AUC depending only on ordering. [claim:metric-rank-01]
 
 **Present but unproven.** The specific stacker families (XGBoost, random forest, linear models), RNN/CNN sequence features, and the number of blended models appear in the write-ups but have no isolated evidence of contribution. [claim:present-01] The twelfth-place author also says the team did little feature selection beyond dropping null-importance features. [claim:present-01]
 
@@ -370,12 +445,12 @@ The two approaches share their main structure: aggregate history tables to the a
 
 ## Unsuccessful approaches
 
-- **Eighth place: ensembling before rank normalization.** The author reports that stacking and blending CV and LB were always worse than the best single model in the pool until each model's predictions were converted to rank percentages. The component predictions had low raw correlation, which rose above 0.9 after the transform. The size of the shortfall is not reported. [claim:ensemble-gain-01]
+- **Eighth place: ensembling before rank normalization.** The author reports that stacking and blending CV and LB were always worse than the best single model in the pool until each model's predictions were converted to rank percentages. In a comment reply, the author says the component predictions had low raw correlation, which rose to 0.9+ after the transform. The size of the shortfall is not reported. [claim:rank-norm-8th-01]
 - **Twelfth place.** The write-up reports no failed attempts and gives no outcome for the applicant-plus-category grouping it says the team tried. This is an evidence gap, not evidence that everything they tried worked. [claim:unsuccessful-gap-01]
 
 ## Compute and reproduction
 
-**Status: not reproduced.** Neither team publishes code, hardware, memory, or runtime, and neither solution record has a reproduction attempt. [claim:gaps-01] The only scope indicators are source-reported: about 2k+ combined features and dozens of LightGBM models in the twelfth-place blend, many teammates' model pipelines in both teams, and 476 versus 189 leaderboard entries. None of these is a resource measurement. Plan any port from your own measured baseline, not from these reports.
+**Status: not reproduced.** Neither team publishes code, hardware, memory, or runtime, and neither solution record has a reproduction attempt. [claim:gaps-01] The only scope indicators are source-reported: about 2k+ combined features and dozens of LightGBM models in the twelfth-place blend [claim:scope-12th-01] ([solution record](#evidence-solution-home-credit-12th-ensemble-progression-01)), many teammates' model pipelines in both teams, and 476 versus 189 leaderboard entries. [claim:final-result-8th] [claim:rank-12th-01] None of these is a resource measurement. Plan any port from your own measured baseline, not from these reports.
 
 ## Transferable lessons and limits
 
@@ -385,15 +460,11 @@ The two approaches share their main structure: aggregate history tables to the a
 
 ## Suggested first experiment
 
-On data you are authorized to use, freeze applicant-level stratified folds and an application-table baseline. Add one group of time-aware aggregates from a single history table and record per-fold AUC changes. Only then add one out-of-fold model-derived feature family. Rank-normalize predictions only when you start combining models. Stop if the fold pattern is unstable, features use information unavailable at prediction time, or the added complexity does not change your decision. These sources establish no compute budget or expected gain. [claim:experiment-01]
-
-## Bounded lesson
-
-Add one family of history aggregates at a time on frozen stratified folds, keep an out-of-fold prediction for every training applicant before creating model-derived features, and retain a feature family only if its per-fold result is stable enough to justify the added complexity. This is an editorial proposal, not an ablation measured by either team. [claim:experiment-01]
+On data you are authorized to use, freeze applicant-level stratified folds and an application-table baseline. Add one group of time-aware aggregates from a single history table and record per-fold AUC changes. Only then add one out-of-fold model-derived feature family. Keep an out-of-fold prediction for every training applicant before creating model-derived features, and rank-normalize predictions only when you start combining models. Retain a feature family only if its per-fold result is stable enough to justify the added complexity. Stop if the fold pattern is unstable, features use information unavailable at prediction time, or the added complexity does not change your decision. This is an editorial proposal, not an ablation measured by either team, and these sources establish no compute budget or expected gain. [claim:experiment-01]
 
 ## Current learner role
 
-**Outcome:** preserve customer-keyed validation while deciding whether one family of relational aggregates adds useful information to an application-only baseline. Prerequisites are many-to-one joins, customer keys, prediction-time availability, train-only preprocessing and AUC. The source-reported CV/public/private AUC values below are historical solution claims; none is a learner baseline or a result from this proposed experiment.
+**Outcome:** preserve customer-keyed validation while deciding whether one family of relational aggregates adds useful information to an application-only baseline. Prerequisites are many-to-one joins, customer keys, prediction-time availability, train-only preprocessing and AUC. The source-reported CV/public/private AUC values above are historical solution claims; none is a learner baseline or a result from this proposed experiment.
 
 **Execution state:** this is a guide-only relational lesson. No learner project, fixture execution or actual-data receipt is published for Home Credit. Runtime and process-memory needs are unknown, and historical solution hardware cannot establish them. Access is a separate blocker: an explicitly unassigned maintainer must establish permitted local use and reporting rights under the [official data page](https://www.kaggle.com/competitions/home-credit-default-risk/data) and current rules before running a port. Public source readability does not establish those rights.
 
@@ -409,13 +480,11 @@ This is an editorial plan, not an executed AUC or a reproduction. Owner: **maint
 4. **Relational diagnostics.** Record uniqueness, join cardinality, missing-history coverage, cutoff exclusions and label counts as permitted aggregates. Check that a left join retains exactly one prediction row per application customer, held-out customers never become training rows, and preprocessing fits training folds only. Compare fold AUC differences and inspect instability before proposing a second feature family. Unknown join/time semantics or an AUC undefined because a fold lacks a class is a failure to recover, not a score to invent.
 5. **Resource and receipt plan.** Pin the shared script/notebook/environment and any helper. Measure full wall time for input, joins, preprocessing, fitting, predictions and diagnostics, per-method time and peak process RSS with a documented boundary; record CPU, thread count and dependency versions. Input limits bound scope, not promised runtime or memory. Actual resources and completion time remain unknown. Publish only a successful safe receipt, input fingerprints and permitted aggregate diagnostic summaries; retain datasets, customer keys, labels and fold assignments privately. Keep historical source scores separate and preserve failures and limits.
 
-## Gaps
-
-The inspected accounts do not define a shared split, provide any hardware or runtime measurements or code, or isolate feature and ensemble gains in controlled ablations. The twelfth-place write-up omits its fold design and its out-of-fold handling for target-derived history features. Both writers use "PB" without defining it. The rules summary does not determine entrant-specific eligibility or provide legal advice. [claim:gaps-01] [claim:result-12th-01] [claim:rules-data-01]
-
 ## Sources, gaps, and corrections
 
-The official task and AUC are linked to Kaggle's overview, the data structure to its Data tab, participation terms to its Rules tab, and ranks, private scores, entry counts, and the 80/20 split to its final leaderboard. Approaches, CV values, public scores, and the unsuccessful ensembling attempt come from the two participant write-ups and their authors' comment replies, re-inspected on 2026-10-26. No conversion between public, private, and CV results is made. [claim:metric-01] [claim:data-structure-01] [claim:rules-data-01] [claim:rules-submission-01] [claim:lb-split-01] [claim:final-result-8th] [claim:rank-12th-01] [claim:result-12th-01]
+The official task and AUC come from Kaggle's overview, the data structure from its Data tab, participation terms from its Rules tab, and ranks, private scores, entry counts, and the 80/20 split from its final leaderboard. Approaches, CV values, public scores, and the unsuccessful ensembling attempt come from the two participant write-ups and their authors' comment replies, re-inspected on 2026-10-26. No conversion between public, private, and CV results is made. [claim:metric-01] [claim:data-structure-01] [claim:rules-submission-01] [claim:lb-split-01] [claim:final-result-8th] [claim:rank-12th-01]
+
+**Gaps.** Neither account defines a shared split, gives hardware, runtime, or code, or isolates feature and ensemble gains in controlled ablations. The twelfth-place write-up also omits its fold design and its out-of-fold handling for target-derived history features. The rules summary is not legal advice and does not determine entrant-specific eligibility. [claim:gaps-01] [claim:result-12th-01] [claim:rules-data-01]
 
 **Correction (2026-10-26).** The earlier evidence map treated the twelfth-place rank as author-reported only and its 0.803 as a public score. The final leaderboard's rank-12 row links the #12 write-up, so the rank is now official. The undefined "PB 0.803" is no longer assigned to a split. [claim:rank-12th-01] [claim:result-12th-01]
 
