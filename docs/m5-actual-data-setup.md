@@ -1,6 +1,22 @@
 # Bounded M5 private-input package (blocked candidate)
 
-No actual M5 data has been supplied or executed. Generated-fixture table tests establish the self-contained software package acceptance for [#72](https://github.com/natgurlain/kaggle-bible/issues/72), without establishing actual-data execution or actual-data verified readiness. Authorized private inputs are required only if a reader chooses an optional actual-data run; they are not a software acceptance prerequisite. The existing two-series teaching fixture stays unchanged. This package evaluates historical windows inside a declared 1913-day input, not the official d_1914-and-later holdout, full-hierarchy official WRMSSE, or a winning system.
+A run on authorized M5 data succeeded on 2026-10-26 but is not published: the pinned notebook fails the readiness wrapper check (see [Recorded run](#recorded-run-2026-10-26-not-yet-publishable)). Generated-fixture table tests establish the self-contained software package acceptance for [#72](https://github.com/natgurlain/kaggle-bible/issues/72), without establishing actual-data execution or actual-data verified readiness. Authorized private inputs are required only if a reader chooses an optional actual-data run; they are not a software acceptance prerequisite. The existing two-series teaching fixture stays unchanged. This package evaluates historical windows inside a declared 1913-day input, not the official d_1914-and-later holdout, full-hierarchy official WRMSSE, or a winning system.
+
+## Recorded run (2026-10-26): not yet publishable
+
+The repository owner's Kaggle account accepted the competition rules on 2026-10-26 and downloaded the official, unmodified `sales_train_validation.csv`, `calendar.csv` and `sell_prices.csv` through the Kaggle API.
+
+**Scope rule, frozen before any run.** For each of the 10 `store_id` values, take the first `item_id` in `sales_train_validation.csv` file order. That gives 10 series, with aliases S01–S10 in that order. `price_availability` is `"unverified"`. The resulting `scope.json` stays private. Anyone with authorized data can rebuild it from this rule, and its fingerprint is in the input manifest.
+
+**What ran.** Byte-identical copies of the pinned package ran as a script (`python3.12 -I m5-actual-data.py --acknowledge-authorized-data --data-kind competition-data`) and as an nbconvert-executed notebook copy, each into a fresh private folder. The environment was Python 3.12.13, standard library only, Darwin arm64. Both succeeded.
+
+**Parity.** Fold results, aggregates, input manifest, code fingerprints and both diagnostic files matched exactly (tolerance zero). Only wall time (about 102 s) and traced memory (about 1.34 GB) differed.
+
+**Privacy review.** The safe-review candidates contain only aliases, day indices, aggregate scores, counts, file hashes and byte counts. No item or store identifiers, paths or usernames appear.
+
+**Why it is not published.** The readiness contract requires the notebook to be a bare wrapper whose last line is `runpy.run_path("m5-actual-data.py", run_name="__main__")`. The pinned notebook ends with `_ = runpy.run_path(...)`, and its text still says no actual data was executed. The receipt pins the notebook hash, so correcting the notebook makes this receipt stale. The project therefore stays blocked.
+
+**Next step.** Correct the notebook, update its pin, and rerun script and notebook on the same frozen scope and inputs.
 
 ## Source and access receipt
 

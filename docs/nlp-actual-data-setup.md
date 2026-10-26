@@ -1,6 +1,16 @@
 # Disaster Tweets private-input package (blocked candidate)
 
-No authorized competition input has been supplied or executed. Generated-fixture tests establish the self-contained software package acceptance for [#71](https://github.com/natgurlain/kaggle-bible/issues/71), without establishing actual-data execution or actual-data verified readiness. Authorized private inputs are required only if a reader chooses an optional actual-data run; they are not a software acceptance prerequisite. The published word-pair fixture remains separate and unchanged. Keep the candidate draft and blocked until access, duplicate policy and successful safe execution evidence have been reviewed.
+Authorized competition files have been obtained, but no actual-data result exists: the package rejected them (see [Recorded attempt](#recorded-attempt-2026-10-26-blocked-by-duplicate-policy)). Generated-fixture tests establish the self-contained software package acceptance for [#71](https://github.com/natgurlain/kaggle-bible/issues/71), without establishing actual-data execution or actual-data verified readiness. Authorized private inputs are required only if a reader chooses an optional actual-data run; they are not a software acceptance prerequisite. The published word-pair fixture remains separate and unchanged. Keep the candidate draft and blocked until a duplicate-aware input policy, access and successful safe execution evidence have been reviewed.
+
+## Recorded attempt (2026-10-26): blocked by duplicate policy
+
+The repository owner's Kaggle account accepted the competition rules on 2026-10-26 and downloaded the official, unmodified `train.csv` and `test.csv` through the Kaggle API. The pinned package (Python 3.12.13, standard library only, Darwin arm64) refused the official training file before scoring any fold:
+
+> Non-empty unique token-normalized texts required; no silent deduplication. Review a separate duplicate-aware input policy.
+
+The cause is that Kaggle's `train.csv` contains texts that become identical after the tokenizer's normalization (lowercase ASCII letters/digits only). This is the designed behaviour described in [Declare duplicate handling before scoring](#declare-duplicate-handling-before-scoring), not a defect, and the runner is intentionally unchanged. No receipt, diagnostic or safe-review candidate was produced, and nothing from the attempt is published.
+
+**Next step:** design and review a documented duplicate-aware input policy before any rerun. It must define input identity, whether colliding texts are grouped into one fold or selected, and how collisions with conflicting labels are handled, without silently deleting examples. Implement it as a new pinned package version, then run script and notebook on the authorized files and compare them exactly before readiness can change.
 
 ## Authorized private setup
 

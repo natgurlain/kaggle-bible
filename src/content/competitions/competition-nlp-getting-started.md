@@ -5,8 +5,8 @@
   "status": "published",
   "title": "Disaster Tweets: fit text features after splitting",
   "summary": "Compare two primary text workflows, audit vocabulary fitting and F1, then run a small unigram-versus-word-pair experiment.",
-  "reviewed_by": "GPT-6 Luna Max",
-  "reviewed_at": "2026-09-30",
+  "reviewed_by": "Claude Sonnet high-effort",
+  "reviewed_at": "2026-10-26",
   "learning_goals": [
     "Fit vocabulary and text statistics only on training rows.",
     "Interpret positive-class F1 through false positives and negatives.",
@@ -126,4 +126,4 @@ Does a duplicate-group or chronological split reverse a text-model comparison? C
 
 ### Actual-data package status
 
-A separate [private-input package setup](https://github.com/natgurlain/kaggle-bible/blob/main/docs/nlp-actual-data-setup.md) is a draft blocked candidate for [#71](https://github.com/natgurlain/kaggle-bible/issues/71). It preserves the same-fold unigram versus adjacent-word-pair comparison and keeps raw text and local error inspection private. No authorized competition data has been supplied or run. Exact normalized duplicates reject without silent deletion; near-duplicate and grouped-template leakage remain limitations. Generated software checks do not satisfy actual-data acceptance.
+A separate [private-input package setup](https://github.com/natgurlain/kaggle-bible/blob/main/docs/nlp-actual-data-setup.md) is a draft blocked candidate for [#71](https://github.com/natgurlain/kaggle-bible/issues/71). It preserves the same-fold unigram versus adjacent-word-pair comparison and keeps raw text and local error inspection private. Authorized competition files were obtained on 2026-10-26, but the runner rejected the official training file: some texts collide after token normalization, and the package refuses to deduplicate silently. No result exists; the next step is a documented duplicate-aware input policy. Exact normalized duplicates reject without silent deletion; near-duplicate and grouped-template leakage remain limitations. Generated software checks do not satisfy actual-data acceptance.

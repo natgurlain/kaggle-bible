@@ -16,8 +16,8 @@ learning_goals:
   - Distinguish fixed competition windows from rolling forecast origins.
   - Compare hierarchy streams and store/week partitions as hypotheses.
   - Measure a seasonal baseline before adding model or hierarchy complexity.
-reviewed_by: GPT-6 Luna Max
-reviewed_at: '2026-09-24'
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
 kaggle_bible_completeness_level: 2
 kaggle_bible_completeness_label: evidence-map
 editorial_status: published
@@ -324,4 +324,4 @@ The task, data files, metric, horizons, and rules are linked to Kaggle's overvie
 
 ### Actual-data package status
 
-A separate [bounded private-input setup](https://github.com/natgurlain/kaggle-bible/blob/main/docs/m5-actual-data-setup.md) is a draft blocked candidate for [#72](https://github.com/natgurlain/kaggle-bible/issues/72). It compares the same seasonal forecasts on at most twelve frozen bottom series and three historical 28-day horizons. No authorized M5 input has been supplied or run. Its unweighted MAE and optional bottom-slice diagnostics do not establish full-hierarchy official WRMSSE, measured learner compute requirements or a winning reproduction. Generated checks do not satisfy actual-data acceptance.
+A separate [bounded private-input setup](https://github.com/natgurlain/kaggle-bible/blob/main/docs/m5-actual-data-setup.md) is a draft blocked candidate for [#72](https://github.com/natgurlain/kaggle-bible/issues/72). It compares the same seasonal forecasts on at most twelve frozen bottom series and three historical 28-day horizons. A 2026-10-26 run on authorized competition files succeeded, but it is not published: the pinned notebook fails the wrapper check and still says no actual data was executed, so the notebook must be corrected and the run repeated. Its unweighted MAE and optional bottom-slice diagnostics do not establish full-hierarchy official WRMSSE, measured learner compute requirements or a winning reproduction. Generated checks do not satisfy actual-data acceptance.

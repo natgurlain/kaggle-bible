@@ -5,7 +5,7 @@
   "slug": "m5-actual-data",
   "title": "Bounded M5 bottom-series comparison (blocked candidate)",
   "competition_id": "competition-m5-forecasting-accuracy",
-  "summary": "Candidate private-input package for at most twelve frozen bottom series and three fixed 28-day horizons; no actual M5 input supplied or executed.",
+  "summary": "Blocked candidate for at most twelve frozen bottom series and three fixed 28-day horizons. A run on authorized competition files succeeded on 2026-10-26, but the pinned notebook wrapper fails the readiness check, so no result is published.",
   "data_scope": "competition-data",
   "script_path": "/exercises/m5-actual-data.py",
   "platform": "Darwin arm64",
@@ -22,7 +22,7 @@
   "direction": "minimize",
   "memory_scope": "traced-python-allocations",
   "command": "python3 m5-actual-data.py --acknowledge-authorized-data",
-  "environment": "Declared target: Python 3.12.13 standard library on Darwin arm64; no actual M5 run recorded. Set private input/output environment variables as documented before execution.",
+  "environment": "Declared target: Python 3.12.13 standard library on Darwin arm64. A 2026-10-26 run in this environment succeeded but is not published, because the pinned notebook fails the wrapper check. Set private input/output environment variables as documented before execution.",
   "steps": [
     "Supply authorized private sales, calendar, price and frozen scope files; inspect current access/rules and price-availability limitations.",
     "Preserve at most twelve selected series, origins 1829/1857/1885 and horizon 28; compare unchanged seasonal-naive and four-week averaging forecasts.",
@@ -30,7 +30,7 @@
     "Compare notebook/script metrics exactly; keep the private series map and forecast/error rows outside safe-review. No full-hierarchy score or submission."
   ],
   "limitations": [
-    "No actual M5 competition input has been supplied or executed; generated software tables are not actual-data acceptance.",
+    "No published actual-data result: the 2026-10-26 run cannot be verified while the pinned notebook fails the wrapper check; generated software tables are not actual-data acceptance.",
     "Unweighted MAE and optional bottom-slice RMSSE exclude full twelve-level official WRMSSE.",
     "Historical price publication timing is unknown; weighting requires an explicit availability assumption.",
     "Undefined scales, missing prices and zero revenue stay explicit without epsilon or silent exclusion.",
@@ -51,7 +51,7 @@
     "access": {
       "instructions": "Inspect current M5 data/rules, supply authorized sales_train_validation.csv, calendar.csv, sell_prices.csv and private scope.json outside Git/public. Follow docs/m5-actual-data-setup.md. No automatic acquisition or submission.",
       "provenance_url": "https://www.kaggle.com/competitions/m5-forecasting-accuracy/data",
-      "authorization": "Missing: no authorized learner-supplied competition inputs or access evidence received.",
+      "authorization": "Competition rules were accepted and the official sales_train_validation.csv, calendar.csv and sell_prices.csv were downloaded on 2026-10-26 through the Kaggle API by the repository owner's Kaggle account; a private scope was frozen before running. No verified execution is published yet. Readers must obtain their own copy.",
       "redistribution": "private-input"
     },
     "package": {
@@ -85,9 +85,9 @@
       "experiment": "Propose a separately reviewed full-hierarchy scoring experiment; all series/levels and official scoring-code parity remain unexecuted."
     },
     "blocker": {
-      "reason": "Authorized M5 sales/calendar/prices and frozen series scope, reviewed access/availability evidence and a successful safe actual-data receipt have not been supplied.",
-      "owner": "Unassigned: authorized data owner needed.",
-      "next_action": "Authorized data owner supplies private inputs and frozen scope, reviews availability assumptions, executes the pinned bounded package and obtains privacy/evidence review; retain blocked status until then."
+      "reason": "The 2026-10-26 script and notebook runs succeeded and matched exactly. The pinned notebook ends with \"_ = runpy.run_path(...)\", which the readiness check does not accept as a pure wrapper, and its text still says no actual data was executed. The receipt pins the notebook hash, so the run cannot be published.",
+      "owner": "Repository maintainer.",
+      "next_action": "Correct the notebook to the bare runpy wrapper and accurate text, update its pin, then rerun script and notebook on the same frozen scope and inputs before readiness promotion."
     }
   }
 }
