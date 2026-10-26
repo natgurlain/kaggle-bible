@@ -1,0 +1,15 @@
+schema_version: 1
+id: source-lmsys-1st-code
+title: shyoulala/LMSYS_BlackPearl training repository
+url: https://github.com/shyoulala/LMSYS_BlackPearl/tree/05ac9b917a99aac43bfe0dbcb30e6e83a38688be
+kind: code
+authors:
+  - shyoulala
+published_at: '2024-08-19'
+accessed_at: '2026-10-26'
+revision: 05ac9b917a99aac43bfe0dbcb30e6e83a38688be
+locator_notes: README.md (Hardware Specifications; train model script; distillation loss block); src/prepare_data.py lines 51-57 (StratifiedKFold, random_state=2025), 112-164 (reversed-response copies), 317-326 (fold train/dev assembly); src/predict_test.py lines 23-26, 112, 156, 419-444 (max_length 2000, swapped-input averaging). The tta = False flag on line 26 does not disable swapping; lines 112, 156 and 419-444 always build the swapped copies and average them.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Linked as "train code" from the 1st-place write-up, which establishes the attribution. Read as text through the GitHub API at the pinned commit; not executed. No repository license detected; no code reused.

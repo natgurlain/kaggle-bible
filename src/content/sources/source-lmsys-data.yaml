@@ -1,0 +1,16 @@
+schema_version: 1
+id: source-lmsys-data
+title: LMSYS - Chatbot Arena Human Preference Predictions data description
+url: https://www.kaggle.com/competitions/lmsys-chatbot-arena/data
+kind: official-competition
+authors:
+  - Kaggle
+  - LMSYS Org
+published_at: null
+accessed_at: '2026-10-26'
+revision: null
+locator_notes: Dataset Description; Files (train.csv, test.csv, sample_submission.csv); Metadata License.
+access_status: accessible
+content_reviewed: true
+license: CC BY-NC 4.0 (competition data, as displayed on the data page)
+notes: Data description text read while signed out. File contents require rule acceptance and were not downloaded or inspected.

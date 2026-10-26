@@ -1,0 +1,15 @@
+schema_version: 1
+id: source-lmsys-2nd-code
+title: tascj/kaggle-lmsys-chatbot-arena training repository
+url: https://github.com/tascj/kaggle-lmsys-chatbot-arena/tree/83cd93d50b9283c18711e8c63e4e1c6399c7b9ce
+kind: code
+authors:
+  - tascj
+published_at: '2024-08-14'
+accessed_at: '2026-10-26'
+revision: 83cd93d50b9283c18711e8c63e4e1c6399c7b9ce
+locator_notes: README.md (Requirements - Hardware, Software; Training steps); scripts/prepare_dataset.py lines 6-13 (StratifiedGroupKFold n_splits=5, random_state=0, grouped by prompt).
+access_status: accessible
+content_reviewed: true
+license: Apache-2.0
+notes: Linked as "training code" from the 2nd-place write-up. Read as text through the GitHub API at the pinned commit. Stage config files were listed but not read in full; nothing was executed.

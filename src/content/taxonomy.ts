@@ -76,6 +76,9 @@ export const taxonomy = {
 		{ id: 'blending', label: 'Blending', aliases: [], definition: 'Combine model predictions using a fixed or fitted rule.' },
 		{ id: 'hierarchical-reconciliation', label: 'Hierarchical reconciliation', aliases: [], definition: 'Adjust forecasts to satisfy aggregation relationships.' },
 		{ id: 'stratified-cross-validation', label: 'Stratified cross-validation', aliases: [], definition: 'Estimate generalization with folds that preserve target proportions.' },
+		{ id: 'knowledge-distillation', label: 'Knowledge distillation', aliases: ['distillation'], definition: 'Train a student model to match a teacher model\'s output distribution, alone or alongside the true labels; which rows the teacher saw during training affects validation.' },
+		{ id: 'parameter-efficient-fine-tuning', label: 'Parameter-efficient fine-tuning', aliases: ['PEFT', 'LoRA', 'QLoRA'], definition: 'Fine-tune a pretrained model by training small added or low-rank parameters while most base weights stay frozen.' },
+		{ id: 'pseudo-labeling', label: 'Pseudo-labeling', aliases: ['pseudo labels'], definition: 'Train on unlabeled or external examples labeled by an earlier model\'s predictions; that model\'s errors and any overlap with validation data limit interpretation.' },
 	],
 } as const;
 

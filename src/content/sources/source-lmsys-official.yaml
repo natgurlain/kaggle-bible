@@ -1,0 +1,16 @@
+schema_version: 1
+id: source-lmsys-official
+title: LMSYS - Chatbot Arena Human Preference Predictions official overview
+url: https://www.kaggle.com/competitions/lmsys-chatbot-arena/overview
+kind: official-competition
+authors:
+  - Kaggle
+  - LMSYS Org
+published_at: null
+accessed_at: '2026-10-26'
+revision: null
+locator_notes: Description; Evaluation; Submission File; Timeline; Prizes; Code Requirements; header Start/Close dates.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Rendered page text read in a browser on 2026-10-26 (a plain HTTP fetch timed out). The header shows Start May 2, 2024 and Close Aug 12, 2024; the Timeline lists the final submission deadline as August 5, 2024. No data was downloaded and no submission was made.

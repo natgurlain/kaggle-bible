@@ -1,0 +1,181 @@
+schema_version: 1
+id: solution-lmsys-1st
+status: published
+title: First-place LMSYS solution - distilling 70B teachers into Gemma2-9B
+summary: sayoulala fine-tuned Llama3-70B and Qwen2-72B teachers on five folds, distilled their class probabilities into a LoRA-tuned Gemma2-9B, averaged the five fold adapters and submitted an 8-bit model with swapped-input averaging.
+reviewed_by: Claude Sonnet high-effort
+reviewed_at: '2026-10-26'
+competition_id: competition-lmsys-chatbot-arena
+team: BlackPearl (no leak)
+authors:
+  - sayoulala
+source_ids:
+  - source-lmsys-1st
+  - source-lmsys-1st-code
+  - source-lmsys-leaderboard
+rank:
+  value: 1
+  basis: official-final-private
+  source_id: source-lmsys-leaderboard
+scores:
+  - metric_id: log-loss
+    value: 0.96898
+    split: private-lb
+    configuration: Final official private leaderboard entry for team "BlackPearl (no leak)", after the host announced replacing the private test data and rerunning submissions; the inspected sources do not directly confirm completion.
+    fold_summary: null
+    claim_id: final-result-01
+  - metric_id: log-loss
+    value: 0.876
+    split: public-lb
+    configuration: Author-reported public leaderboard for the merged five-fold Gemma2-9B LoRA, 8-bit GPTQ, with test-time augmentation. The write-up does not say whether this was before the announced private-test replacement; that timing is presumed.
+    fold_summary: null
+    claim_id: cv-lb-01
+validation:
+  strategy: stratified-kfold
+  details: Five folds over the Kaggle training rows from StratifiedKFold on the three-way label with random_state=2025; external 33k rows are added only to the training side, and response-swapped copies keep their source row's fold and are dropped from the dev side. No grouping by prompt is applied in the pinned data-preparation code. The author reports per-fold log loss for both teachers and the distilled student. Whether teacher probabilities used for distillation were produced out-of-fold for every training row is not established in the inspected text.
+  source_ids:
+    - source-lmsys-1st
+    - source-lmsys-1st-code
+techniques:
+  - transformer
+  - parameter-efficient-fine-tuning
+  - knowledge-distillation
+  - training-augmentation
+  - test-time-augmentation
+resources:
+  - id: training
+    scope: training
+    hardware_class: multi-gpu
+    accelerator_model: NVIDIA A100 80GB
+    accelerator_count: 8
+    vram_gb_per_device: 80
+    ram_gb: 768
+    wall_hours: null
+    accelerator_hours: null
+    basis: source-reported
+    claim_id: resources-training-01
+  - id: inference
+    scope: inference
+    hardware_class: multi-gpu
+    accelerator_model: NVIDIA T4
+    accelerator_count: 2
+    vram_gb_per_device: null
+    ram_gb: null
+    wall_hours: null
+    accelerator_hours: null
+    basis: source-reported
+    claim_id: resources-inference-01
+reproducibility:
+  code_url: https://github.com/shyoulala/LMSYS_BlackPearl
+  code_revision: 05ac9b917a99aac43bfe0dbcb30e6e83a38688be
+  status: code-available
+  reproduction_ids: []
+  notes: Pinned README and data-preparation and inference scripts inspected as text; not executed. No competition data, external data or model weights were downloaded. No repository license detected.
+claims:
+  - id: approach-01
+    statement: The author post-pretrained Llama3-70B, Qwen2-72B and Gemma2-9B for one epoch on an external "ut" preference dataset, then fine-tuned the two 70B-class models per fold as sequence classifiers with QLoRA and Gemma2-9B with LoRA (rank 64, alpha 128, max length 1024, two epochs, global batch 64).
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-1st
+        locator: Dataset; Base models; Base model architecture; Post-pretrain
+        support_summary: The write-up lists the three base models, the classification head, LoRA/QLoRA settings, the external datasets and a one-epoch post-pretraining step at learning rate 1e-5.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Participant report of the final pipeline.
+    limitations: The write-up gives the final recipe only; the author says many earlier experiments are not reported, so no component is isolated.
+  - id: distill-01
+    statement: Teacher class probabilities from Llama3-70B and Qwen2-72B were distilled into Gemma2-9B with a loss that averages cross-entropy on labels with a KL-divergence and a cosine-embedding term for each teacher.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-1st
+        locator: Get the logits distribution; Distill to the 9b model with logits; Topic Author reply on KL loss and schedule
+        support_summary: The write-up describes inferring teacher probabilities on the training set and adding distillation loss while fine-tuning the 9B model; the author replies that KL loss and a cosine schedule with 100 warmup steps were used.
+      - source_id: source-lmsys-1st-code
+        locator: README.md, train model script step 3 (distillation loss block)
+        support_summary: The README shows five loss terms (cross-entropy, two KL-divergence and two cosine-embedding terms) averaged into one loss.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Distillation targets are teacher outputs on training rows; the student alone is used at submission.
+    limitations: The sources do not isolate the distillation gain against an otherwise identical non-distilled student, and the teacher temperature value was not inspected.
+  - id: ensemble-quant-01
+    statement: The five fold-specific Gemma2-9B LoRA adapters, including classification heads, were averaged into one model, quantized to 8-bit with GPTQ, and run with a 2000-token limit plus test-time augmentation.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-1st
+        locator: Model ensemble; Get 8bit Model; Topic Author replies on head averaging and on max length
+        support_summary: The author averages LoRA layers of the five folds, averages the five classification-head matrices, quantizes with GPTQ, and explains that a longer length timed out while the TTA benefit outweighed extra length.
+      - source_id: source-lmsys-1st-code
+        locator: src/predict_test.py lines 23-26, 112, 156, 419-444
+        support_summary: Inference builds original and response-swapped copies of each test row on two GPUs, swaps the swapped predictions back, and averages per id. The tta = False config flag on line 26 is not what controls this; the swapped copies are built and averaged unconditionally (lines 112, 156, 419-444).
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Inference-time configuration for the final submission under the 9-hour notebook limit.
+    limitations: No isolated measurement separates weight averaging, quantization and TTA effects.
+  - id: validation-01
+    statement: The pinned data preparation assigns five StratifiedKFold folds on the label (random_state=2025) over the Kaggle training rows, adds the external 33k rows to every training split, keeps response-swapped copies in their source row's fold, and evaluates dev folds on unswapped rows only.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-1st-code
+        locator: src/prepare_data.py lines 51-57, 112-164, 317-326
+        support_summary: The code shows label-stratified fold assignment before swapped copies are concatenated, and per-fold assembly that appends external rows to training and filters swapped rows from dev.
+      - source_id: source-lmsys-1st
+        locator: Get the logits distribution
+        support_summary: The write-up gives the example split of four fifths of Kaggle train plus 33k data for training and one fifth of Kaggle train for dev.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Observed code order at the pinned commit, not an execution.
+    limitations: No prompt grouping is applied, so repeated prompts could fall into both training and dev folds; the code alone does not show whether this affected reported CV.
+  - id: cv-lb-01
+    statement: The author reports five-fold log loss of 0.875, 0.881, 0.869, 0.880 and 0.875 for Qwen2-72B; 0.874, 0.877, 0.877, 0.873 and 0.873 for Llama3-70B; and 0.862, 0.876, 0.858, 0.872 and 0.868 for the distilled Gemma2-9B, plus public leaderboard 0.882 for the merged 8-bit model and 0.876 with TTA.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-1st
+        locator: CV/LB
+        support_summary: The write-up lists per-fold CV values for the two teachers and the distilled student, and LB 0.882 (0.876 with TTA) for the merged and quantized model.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Log loss, lower is better. CV is on the author's label-stratified folds; LB is the public leaderboard, with its timing relative to the announced private-test replacement unlabelled and presumed earlier.
+    limitations: Fold-level student and teacher values come from different models per fold and are not a controlled distillation ablation; public LB values should not be compared with final private scores, which were presumably computed on the announced replacement test data.
+  - id: final-result-01
+    statement: Kaggle's final leaderboard lists team "BlackPearl (no leak)", with member sayoulala, at rank 1 with log loss 0.96898 and links the row to this write-up.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-leaderboard
+        locator: Final standings; rank 1 row
+        support_summary: The completed leaderboard shows rank 1, score 0.96898, a member link to sayoulala and a link to the 1st-place write-up.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Final private leaderboard entry for the official log-loss metric.
+    limitations: A leaderboard row does not reproduce the pipeline or attribute the score to any component.
+  - id: resources-training-01
+    statement: The author states training on 8 NVIDIA A100 80GB GPUs (ZeRO-2 with data parallelism, QLoRA, batch size 8, max length 1024 for the 70B-class models); the README lists 128 CPU cores and 768 GB memory and estimates about 2 hours of preprocessing and 2.5 days of post-pretraining on that machine.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-1st
+        locator: Topic Author replies to questions about training software and hardware
+        support_summary: The author replies "A100 80G*8, zero2+dp", sequence classification, batch size 8, max length 1024 and QLoRA.
+      - source_id: source-lmsys-1st-code
+        locator: README.md, Hardware Specifications; train model script steps 1-2
+        support_summary: The README records the CPU, memory and GPU configuration and the 2-hour and 2.5-day stage estimates.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Author-stated configuration for the full training pipeline; stage times are the author's estimates for preprocessing and post-pretraining only.
+    limitations: Total wall time for five-fold teacher and student training, accelerator hours, cost and number of exploratory runs are not reported.
+  - id: resources-inference-01
+    statement: The author states the submission ran the 8-bit model with 2000 maximum length on two T4 GPUs.
+    kind: source-reported
+    evidence:
+      - source_id: source-lmsys-1st
+        locator: Topic Author reply on inference length and TTA
+        support_summary: The author replies that the setup is 8-bit, 2000 max length and 2*T4.
+      - source_id: source-lmsys-1st-code
+        locator: src/predict_test.py lines 311-327
+        support_summary: Inference places one model copy on cuda:0 and another on cuda:1.
+    supports_claim_refs: []
+    reproduction_ids: []
+    conditions: Kaggle notebook submission under the competition's 9-hour GPU limit.
+    limitations: Measured inference runtime and memory are not reported.
+unsuccessful_attempts: []
+transfer_limits:
+  - The teacher models and post-pretraining require multi-GPU A100 training; the student-only submission does not make the full pipeline low-compute.
+  - Distillation, adapter averaging, quantization and TTA are combined in one final system; none has an isolated gain in the inspected sources.

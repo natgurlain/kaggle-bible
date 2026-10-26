@@ -1,0 +1,15 @@
+schema_version: 1
+id: source-lmsys-1st
+title: 1st Place Solution - Distill is all you need (LMSYS Chatbot Arena)
+url: https://www.kaggle.com/competitions/lmsys-chatbot-arena/writeups/blackpearl-no-leak-1st-place-solution-distill-is-a
+kind: author-writeup
+authors:
+  - sayoulala
+published_at: '2024-08-20'
+accessed_at: '2026-10-26'
+revision: null
+locator_notes: Solution (Dataset; Base models; Base model architecture; Post-pretrain; Get the logits distribution; Distill to the 9b model with logits; Model ensemble; Get 8bit Model); CV/LB; replies marked Topic Author in the comment thread on hardware, distillation loss and inference settings.
+access_status: accessible
+content_reviewed: true
+license: null
+notes: Participant-authored Kaggle write-up labelled "Solution Writeup · 1st place · Aug 20, 2024". Topic-author replies are used only for details the author states; other commenters are not used as evidence.

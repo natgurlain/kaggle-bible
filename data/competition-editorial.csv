@@ -10,3 +10,4 @@ id,completeness_level,editorial_status,priority,work_order,learning_path_stage,g
 12500,1,queued,path,9,advanced,,,,Advanced text case: composite metric and subgroup diagnostics.
 20270,1,queued,path,10,advanced,,,,Advanced vision case: imbalance, external data, and rank averaging.
 13836,1,queued,path,11,advanced,,,,Advanced vision case: domain-specific pretraining and ensemble diversity.
+66631,2,published,path,12,advanced,lmsys-chatbot-arena,Claude Sonnet high-effort,2026-10-26,Reviewed Level 2 LLM-era evidence map; guide only with no learner project.
