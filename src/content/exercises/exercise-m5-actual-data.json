@@ -60,7 +60,7 @@
       "helper_path": "/exercises/m5-rolling-origin.py",
       "helper_sha256": "eb6c90b7a6f629e172107f7e74f41d777cd50bb29508c9b585c0941a9353543f",
       "script_sha256": "af5f2abb11513b76fe16656e2e09dbd231dbb714438196985127b45deff2d1e7",
-      "notebook_sha256": "6e95c86c33fc57e18f7626018d08ab2755e2167be2994621e7ca3b52ba6770a0",
+      "notebook_sha256": "732aa063fe0c4bf6bba39ed6504c2c321fd5a2acac5e07f1fa986ea24a9a29ad",
       "environment_sha256": "1247b35615aaa66b5a391c1430006f48794f1d2c66c44f767b9eb582bf026d01"
     },
     "baseline": "Repeat the last training week separately at each of the three fixed origins.",
