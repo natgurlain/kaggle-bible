@@ -16,7 +16,7 @@
     "stratified fold 4",
     "stratified fold 5"
   ],
-  "python_version": "3.12.14",
+  "python_version": "3.12.13",
   "dependencies": "Python standard library only",
   "seed": 17,
   "split_definition": "Five target-stratified folds with seed 17; exact normalized duplicate texts rejected; vocabulary and class counts fit training rows only.",
@@ -24,7 +24,7 @@
   "direction": "maximize",
   "memory_scope": "traced-python-allocations",
   "command": "python3 nlp-actual-data.py --acknowledge-authorized-data",
-  "environment": "Declared target: Python 3.12.14 standard library on Darwin arm64; no actual Disaster Tweets run recorded. Set private input/output environment variables as documented before execution.",
+  "environment": "Declared target: Python 3.12.13 standard library on Darwin arm64; no actual Disaster Tweets run recorded. Set private input/output environment variables as documented before execution.",
   "steps": [
     "Obtain authorized private training and optional test files outside Git/public; inspect current access/rules.",
     "Use the pinned package and declare duplicate policy before scoring; do not silently deduplicate to pass.",
@@ -63,7 +63,7 @@
       "helper_sha256": "75ccbf247a955f3f06d08444c87fc79cf5eb3f46abae106204314bd5a278d599",
       "script_sha256": "3f7a9662e10557a651867f78b2707289157848bec88a19678ac6d6acc37c292f",
       "notebook_sha256": "aff94655b8e82210afd18ef3d575fbe4f0fcc7eea45b4ce1b46fe29e21a9bd15",
-      "environment_sha256": "2d7e4f14e7ad927716402427c4ac18f214a4bee22fefa7b46fec4386c5bb6dcf"
+      "environment_sha256": "8fcb1d83d73ba051cffda28d526b2b393325d754fa4e97dc6314d04bd5215d8d"
     },
     "baseline": "Fit unigram Naive Bayes vocabulary and counts inside each fixed stratified training fold.",
     "controlled_change": "Add adjacent word pairs with unchanged smoothing, threshold and folds; retain worse outcomes.",

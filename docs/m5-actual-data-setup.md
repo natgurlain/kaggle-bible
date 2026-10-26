@@ -14,7 +14,7 @@ On 2026-10-02, a direct web open of the official data route returned a title wit
 
 ## Pinned package and frozen scope
 
-Copy `m5-actual-data.py`, `m5-actual-data.ipynb`, `m5-actual-data-environment.txt` and unchanged `m5-rolling-origin.py` together into a private folder outside Git, `public` and `dist`. Use Python 3.12.14, standard library only. Metadata pins all four files, and the wrapper verifies/compiles the helper's exact bytes. The notebook delegates to the same runner with no saved results. Do not invoke the helper's legacy main: it exports normalized source data and evaluates different fixture origins.
+Copy `m5-actual-data.py`, `m5-actual-data.ipynb`, `m5-actual-data-environment.txt` and unchanged `m5-rolling-origin.py` together into a private folder outside Git, `public` and `dist`. Use Python 3.12.13, standard library only. Metadata pins all four files, and the wrapper verifies/compiles the helper's exact bytes. The notebook delegates to the same runner with no saved results. Do not invoke the helper's legacy main: it exports normalized source data and evaluates different fixture origins.
 
 Before interpreting any holdout, freeze a private `scope.json` with exactly `series` and `price_availability`. The series array contains one to twelve unique `item_id`/`store_id` pairs from authorized inputs; preserve its order, which defines aliases S01–S12. Do not change selection after viewing results. Example placeholders are not actual M5 identifiers:
 

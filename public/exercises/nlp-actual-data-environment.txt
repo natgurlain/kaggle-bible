@@ -1,4 +1,6 @@
-Python: 3.12.14
+Python==3.12.13
 Dependencies: Python standard library only
-Declared target: Darwin arm64; CPU only
+Recorded platform: Darwin arm64
+CPU only
+Imported helper: nlp-word-pairs.py
 Imported helper SHA-256: 75ccbf247a955f3f06d08444c87fc79cf5eb3f46abae106204314bd5a278d599
