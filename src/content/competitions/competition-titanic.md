@@ -2,8 +2,8 @@
 {
   "schema_version": 1,
   "status": "published",
-  "reviewed_by": "GPT-6 Luna Max",
-  "reviewed_at": "2026-09-30",
+  "reviewed_by": "Claude Sonnet high-effort",
+  "reviewed_at": "2026-10-26",
   "id": "competition-titanic",
   "meta_kaggle_id": "3136",
   "title": "Titanic: a first validation loop",
@@ -106,7 +106,7 @@ Start with a repeatable split and a simple baseline. The official task predicts 
 
 ## Actual-data package status
 
-The [new actual-data package and private setup instructions](https://github.com/natgurlain/kaggle-bible/blob/main/docs/titanic-actual-data-setup.md) are a blocked candidate tracked in [#67](https://github.com/natgurlain/kaggle-bible/issues/67). No authorized Titanic input has been run or verified. The notebook delegates to the new privacy-safe runner and pinned original computation helper; generated software tests are separate from actual-data evidence. Keep submissions private and inspect review candidates before any publication. The existing fixture exercise remains available with its original labels.
+The [actual-data project](#exercise-titanic-actual-data) is **actual-data verified** for one recorded run, tracked in [#67](https://github.com/natgurlain/kaggle-bible/issues/67). On 2026-10-26 the pinned package ran on the official, unmodified Titanic training file with Python 3.12.13 on Darwin arm64. On the same five stratified folds, the sex-class change averaged 0.7732 accuracy versus 0.7867 for the sex-only baseline: worse on three folds and tied on two. That worse result is kept as the recorded outcome. These are validation-fold accuracies on `train.csv`, not a leaderboard score; no submission was made. A notebook run of the same package matched the script run exactly. This is one machine and one run; other environments are untested. Bring your own authorized copy of the data and follow the [private setup instructions](https://github.com/natgurlain/kaggle-bible/blob/main/docs/titanic-actual-data-setup.md); keep submissions private. The generated fixture exercise remains available with its original labels.
 
 ## Problem, data, and evaluation
 

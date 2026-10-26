@@ -5,8 +5,8 @@
   "status": "published",
   "title": "House Prices: train-only target statistics",
   "summary": "Compare two original feature and ensemble workflows, audit preprocessing outside folds, then run a controlled log-price baseline.",
-  "reviewed_by": "GPT-6 Luna Max",
-  "reviewed_at": "2026-09-30",
+  "reviewed_by": "Claude Sonnet high-effort",
+  "reviewed_at": "2026-10-26",
   "learning_goals": [
     "Distinguish log-price RMSE from log1p error.",
     "Fit target-derived category statistics inside training folds.",
@@ -126,4 +126,4 @@ How does each author pipeline perform after fold-isolating preprocessing and tar
 
 ### Actual-data package status
 
-A separate [private-input package setup](https://github.com/natgurlain/kaggle-bible/blob/main/docs/house-actual-data-setup.md) is a draft blocked candidate for [#70](https://github.com/natgurlain/kaggle-bible/issues/70). It preserves the global log-price mean versus fixed neighborhood smoothing comparison and keeps row residuals and submission IDs private. No authorized Ames data has been supplied or run, and official scoring-formula inspection remains unresolved. Generated software tests and the existing published fixture do not satisfy actual-data acceptance.
+The separate [actual-data project](#exercise-house-actual-data) for [#70](https://github.com/natgurlain/kaggle-bible/issues/70) is **actual-data verified** for one recorded run. It compares the global log-price mean with fixed neighborhood smoothing and keeps row residuals and submission IDs private. On 2026-10-26 the pinned package ran on the official, unmodified Ames training file with Python 3.12.13 on Darwin arm64. Smoothing lowered mean fold natural-log RMSE from 0.3991 to 0.2687, and it was lower on all five random folds. These are validation-fold results on `train.csv`, not a leaderboard score; no submission was made. Random folds do not test spatial or temporal transfer. A notebook run of the same package matched the script run exactly. This is one machine and one run; other environments are untested. The official logarithm base and exact scoring implementation remain uninspected. See the [private-input package setup](https://github.com/natgurlain/kaggle-bible/blob/main/docs/house-actual-data-setup.md); the generated fixture exercise keeps its own labels.

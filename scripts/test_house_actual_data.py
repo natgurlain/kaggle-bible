@@ -32,10 +32,14 @@ class HouseActualDataTests(unittest.TestCase):
     def run_generated(self, name='run', **kwargs):
         return lab.run_project(self.train,self.base/name,'generated-test-data',True,**kwargs)
 
-    def test_blocked_candidate_and_all_four_pins(self):
+    def test_verified_record_and_all_four_pins_match_receipt(self):
         metadata=json.loads((ROOT/'src/content/exercises/exercise-house-actual-data.json').read_text());package=metadata['project']['package']
-        self.assertEqual(metadata['status'],'draft');self.assertEqual(metadata['project']['readiness'],'blocked');self.assertNotIn('receipt_path',metadata);self.assertNotIn('data_path',metadata)
-        for kind,path in [('script',metadata['script_path']),('notebook',package['notebook_path']),('environment',package['environment_path']),('helper',package['helper_path'])]:self.assertEqual(package[kind+'_sha256'],lab.sha(ROOT/'public'/path.lstrip('/')))
+        self.assertEqual(metadata['status'],'published');self.assertEqual(metadata['project']['readiness'],'actual-data-verified');self.assertNotIn('blocker',metadata['project'])
+        receipt=json.loads((ROOT/'public'/metadata['receipt_path'].lstrip('/')).read_text())
+        self.assertEqual(receipt['execution_status'],'succeeded');self.assertEqual(receipt['evidence_type'],'actual-data');self.assertEqual(receipt['python'],metadata['python_version'])
+        self.assertEqual(receipt['data_sha256'],lab.sha(ROOT/'public'/metadata['data_path'].lstrip('/')))
+        for kind,path in [('script',metadata['script_path']),('notebook',package['notebook_path']),('environment',package['environment_path']),('helper',package['helper_path'])]:
+            self.assertEqual(package[kind+'_sha256'],lab.sha(ROOT/'public'/path.lstrip('/')));self.assertEqual(receipt['code_fingerprints'][kind+'_sha256'],package[kind+'_sha256'])
         self.assertEqual(metadata['project']['diagnostics'],lab.QUESTIONS)
 
     def test_original_computation_same_folds_and_once_only_residuals(self):

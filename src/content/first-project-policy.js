@@ -23,6 +23,6 @@ export function recommendedFirstProject(library) {
   outcome:data.project?.outcome ?? data.summary,
   requirements:[data.environment,...(data.project?.prerequisites ?? []),data.project?.access.authorization].filter(Boolean).join(' '),
   action:actual ? 'Start the verified project' : 'Start the fixture warmup',
-  limit:actual ? 'Verification covers this recorded input and evaluation scope; it does not establish a competition score or reader learning.' : 'This fixture teaches the workflow. Actual Titanic execution remains unverified; generated passengers are separate from competition data.',
+  limit:actual ? `${data.summary} Verification covers this recorded input and evaluation scope only: one run on one machine, validation folds rather than a competition score, and no evidence of reader learning.` : 'This fixture teaches the workflow. Actual Titanic execution remains unverified; generated passengers are separate from competition data.',
  };
 }

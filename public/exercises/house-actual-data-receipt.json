@@ -1,0 +1,118 @@
+{
+  "aggregate": {
+    "global-log-mean": 0.3990581286530049,
+    "shrunk-neighborhood-log-mean": 0.2687269217838507
+  },
+  "authorization": "Operator affirms authorized access to private inputs; origin and permission require review before publication.",
+  "code_fingerprints": {
+    "environment_sha256": "cfa956247465ea561556d417e1492d8a4e7f14d79e85c803038ec7588727b6c4",
+    "helper_sha256": "b50f952c3d40e842ef9ba1f96836c0b2f74743701f07df99ec7d6e30171c6ef7",
+    "notebook_sha256": "f52ef21381eef2f0677b428ce8fb0c6e2bf6c09f1390fd16f1dac4c53d46c814",
+    "script_sha256": "c5f1661303a15d734197beae37e3161b4b53f3e7c4dc623d06d1aa7c58d5ff9e"
+  },
+  "configuration": {
+    "baseline": "Fit the global training natural-log price mean inside each fixed random fold.",
+    "controlled_change": "Compare neighborhood means with five fixed pseudo-examples on exactly the same folds; retain worse outcomes."
+  },
+  "data_scope": "competition-data",
+  "data_sha256": "edaab7f33e22d84c3f3be5625252e9c89aa8df7d379dbff36b30e8ccda7fa1c8",
+  "dependencies": "Python standard library only",
+  "diagnostics": [
+    {
+      "path": "/exercises/house-actual-data-diagnostic-1.json",
+      "question": "Does the neighborhood change help consistently across the same five unchanged random folds?",
+      "sha256": "eaf149b48c63e3b62f9eff5f73a814d9296fe80d24121f0110074758ea01dbc5"
+    },
+    {
+      "path": "/exercises/house-actual-data-diagnostic-2.json",
+      "question": "How do log residuals and original-dollar errors differ across fixed price bins and seen/unseen neighborhoods?",
+      "sha256": "f2af77a25a402632319412cb0753638975a5d05f9b3b13d0560a223a9b2bd960"
+    }
+  ],
+  "direction": "minimize",
+  "evidence_type": "actual-data",
+  "executed_at": "2026-10-26",
+  "execution_status": "succeeded",
+  "exercise": "house-actual-data",
+  "fold_results": [
+    {
+      "metrics": {
+        "global-log-mean": 0.409009946113946,
+        "shrunk-neighborhood-log-mean": 0.2923047722794765
+      },
+      "split": "random fold 1",
+      "train_size": 1168,
+      "validation_size": 292
+    },
+    {
+      "metrics": {
+        "global-log-mean": 0.40640906019256745,
+        "shrunk-neighborhood-log-mean": 0.2614631939106425
+      },
+      "split": "random fold 2",
+      "train_size": 1168,
+      "validation_size": 292
+    },
+    {
+      "metrics": {
+        "global-log-mean": 0.4097519377065543,
+        "shrunk-neighborhood-log-mean": 0.2589148814981479
+      },
+      "split": "random fold 3",
+      "train_size": 1168,
+      "validation_size": 292
+    },
+    {
+      "metrics": {
+        "global-log-mean": 0.40644185316846143,
+        "shrunk-neighborhood-log-mean": 0.2779641387226261
+      },
+      "split": "random fold 4",
+      "train_size": 1168,
+      "validation_size": 292
+    },
+    {
+      "metrics": {
+        "global-log-mean": 0.3636778460834953,
+        "shrunk-neighborhood-log-mean": 0.2529876225083605
+      },
+      "split": "random fold 5",
+      "train_size": 1168,
+      "validation_size": 292
+    }
+  ],
+  "input_manifest": {
+    "files": [
+      {
+        "bytes": 460676,
+        "name": "train.csv",
+        "sha256": "1e18addf81e5e4d347cc17ee6075bbe4a42b7fa26b9e5b063e8f692a5f929d41"
+      },
+      {
+        "bytes": 451405,
+        "name": "test.csv",
+        "sha256": "8fdd3d829d4d986b58f845c9553b225e67dd8383624d90fb6ca1d4bed5798c1e"
+      }
+    ],
+    "kind": "fingerprint-only"
+  },
+  "limitations": [
+    "This is an original learner experiment, not historical reproduction or a leaderboard score.",
+    "Five random folds do not establish temporal or spatial transfer.",
+    "Aggregate is unweighted mean fold natural-log RMSE, not pooled OOF RMSE; official scoring-formula inspection is unresolved.",
+    "Public diagnostic bins below ten rows are suppressed; row residuals and submission identifiers remain private.",
+    "Memory measures traced Python allocations, not process RSS; runtime covers this local run only.",
+    "Origin and authorization are operator declarations requiring review before publication."
+  ],
+  "memory_scope": "traced-python-allocations",
+  "metric": "RMSE of natural log prices",
+  "peak_memory_bytes": 5125508,
+  "platform": "Darwin arm64",
+  "provenance_url": "https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/data",
+  "python": "3.12.13",
+  "schema_version": 1,
+  "script_sha256": "c5f1661303a15d734197beae37e3161b4b53f3e7c4dc623d06d1aa7c58d5ff9e",
+  "seed": 17,
+  "split_definition": "Five shuffled random folds with seed 17; each row validates once; all log-price category means fit training rows only.",
+  "wall_seconds": 0.23831795901060104
+}

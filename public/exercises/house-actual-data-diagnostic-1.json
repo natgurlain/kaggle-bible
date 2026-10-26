@@ -1,0 +1,15 @@
+{
+  "limitations": [
+    "This is an original learner experiment, not historical reproduction or a leaderboard score.",
+    "Five random folds do not establish temporal or spatial transfer.",
+    "Aggregate is unweighted mean fold natural-log RMSE, not pooled OOF RMSE; official scoring-formula inspection is unresolved."
+  ],
+  "observations": [
+    "Fold 1: change minus baseline log-RMSE -0.116705173834; membership SHA-256 23521ee851783d8ddc65a4123e96f97d7ada79fd765a66aac00ecb77896c6adc; overlap zero.",
+    "Fold 2: change minus baseline log-RMSE -0.144945866282; membership SHA-256 3cad5d20385e06fce6ed44f682b5c5b32ff23133acd904f2ab07e685138b7e9c; overlap zero.",
+    "Fold 3: change minus baseline log-RMSE -0.150837056208; membership SHA-256 77fcf1749cd0e3a6ef6078c98437e07401ca7ce1956e6c1e38fcc72a5a8d4438; overlap zero.",
+    "Fold 4: change minus baseline log-RMSE -0.128477714446; membership SHA-256 9a5e294096072cb14b6a6f18c845d868f62b837e9c989f33f4122687fbb97af4; overlap zero.",
+    "Fold 5: change minus baseline log-RMSE -0.110690223575; membership SHA-256 1ba8faf2fe7b84936e7d00029f821a0d8af27532893825a4fad1923e914c6b88; overlap zero."
+  ],
+  "summary": "Same five folds; both train-only configurations and unfavorable changes retained."
+}

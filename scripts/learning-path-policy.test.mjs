@@ -5,11 +5,17 @@ import {parse} from 'yaml';
 import {learningPathSteps} from '../src/content/learning-path-policy.js';
 const guides=await Promise.all((await readdir('src/content/competitions')).filter(x=>x.endsWith('.md')).map(async name=>{const raw=await readFile('src/content/competitions/'+name,'utf8');const data=parse(raw.match(/^---\n([\s\S]*?)\n---/)[1]);return {id:data.id,data};}));
 const exercises=await Promise.all((await readdir('src/content/exercises')).filter(x=>x.endsWith('.json')).map(async name=>{const data=JSON.parse(await readFile('src/content/exercises/'+name));return {entry:{id:data.id,data}};}));
-test('current path orders the core lessons and keeps vision and forecasting separate without actual-data claims',()=>{
+test('current path orders the core lessons, keeps vision and forecasting separate, and claims actual data only for verified published projects',()=>{
  const steps=learningPathSteps(guides,exercises);
  assert.deepEqual(steps.filter(x=>x.group==='core').map(x=>x.slug),['titanic','house-prices-advanced-regression-techniques','nlp-getting-started']);
  assert.deepEqual(steps.filter(x=>x.group!=='core').map(x=>x.group),['vision','forecast']);
- for(const step of steps){assert.equal(step.project.readiness,'runnable');assert.equal(step.project.scope,'generated teaching fixture');assert.equal(step.actual_data_verified,false);assert.ok(step.project.prerequisites.length);assert.ok(step.project.baseline);assert.ok(step.project.change);assert.ok(step.explain);assert.match(step.project.href,/^\/competitions\/[^/]+\/#exercise-/);assert.match(step.actual_status,/unavailable/);}
+ const verifiedSlugs=new Set(exercises.filter(x=>x.entry.data.status==='published' && x.entry.data.project?.readiness==='actual-data-verified').map(x=>guides.find(g=>g.id===x.entry.data.competition_id).data.slug));
+ assert.deepEqual([...verifiedSlugs].sort(),['house-prices-advanced-regression-techniques','titanic']);
+ for(const step of steps){
+  assert.ok(step.project.prerequisites.length);assert.ok(step.project.baseline);assert.ok(step.project.change);assert.ok(step.explain);assert.match(step.project.href,/^\/competitions\/[^/]+\/#exercise-/);
+  if(verifiedSlugs.has(step.slug)){assert.equal(step.project.readiness,'actual-data-verified');assert.equal(step.project.scope,'competition data');assert.equal(step.actual_data_verified,true);assert.match(step.actual_status,/Actual-data verified for its recorded input/);assert.equal(step.actual_blocker,null);}
+  else {assert.equal(step.project.readiness,'runnable');assert.equal(step.project.scope,'generated teaching fixture');assert.equal(step.actual_data_verified,false);assert.match(step.actual_status,/unavailable/);}
+ }
 });
 test('draft ordering and unpublished guides cannot offer project starts or verification',()=>{
  const drafts=exercises.filter(x=>x.entry.data.status==='draft');const published=exercises.filter(x=>x.entry.data.status==='published');assert.ok(drafts.length);

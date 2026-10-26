@@ -1,0 +1,15 @@
+{
+  "limitations": [
+    "This is an original learner experiment, not a historical solution reproduction or leaderboard score.",
+    "Five random stratified folds do not isolate passenger families or shared tickets.",
+    "Aggregate accuracy is the unweighted mean of fold accuracies, not Kaggle test accuracy."
+  ],
+  "observations": [
+    "Fold 1: change minus baseline accuracy -0.0167597765363; membership SHA-256 ded44d0629602b845e1a45a65f895bbf85d64e94c489ca72804301a932be18e9; overlap zero.",
+    "Fold 2: change minus baseline accuracy 0; membership SHA-256 5db2c9f6a14fb774d7f2e8981ddd945f0cf32af6170ee9032e655799a269a920; overlap zero.",
+    "Fold 3: change minus baseline accuracy -0.0224719101124; membership SHA-256 6431384b6b8a4a7dddf6a6bfe20db52aed143e3e053c33164f0659c78324d2ee; overlap zero.",
+    "Fold 4: change minus baseline accuracy 0; membership SHA-256 50d1d1d8f1b170c6392ba1a356f918a5fc84cf78dbc75d01f4aec99d80736d0c; overlap zero.",
+    "Fold 5: change minus baseline accuracy -0.0282485875706; membership SHA-256 e3c31f7ce6a9e3bbd2b3d2972a35a8cb8f781ff2d730fa0eee7f45de247e9171; overlap zero."
+  ],
+  "summary": "Same five folds, train-only rules and fallback, both measured configurations retained."
+}

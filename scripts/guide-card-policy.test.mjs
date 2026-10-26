@@ -10,28 +10,29 @@ const guides=await Promise.all((await readdir('src/content/competitions')).filte
 const exercises=await Promise.all((await readdir('src/content/exercises')).filter(x=>x.endsWith('.json')).map(async name=>{
  const data=JSON.parse(await readFile('src/content/exercises/'+name));const {receipt}=await loadExerciseArtifacts(data);return {entry:{id:data.id,data},receipt};
 }));
-test('all six authored guide cards have distinct outcomes and preserve actual-data access gaps',()=>{
+test('all six authored guide cards have distinct outcomes, preserve access instructions and mark only verified projects',()=>{
  const cards=guides.map(guide=>guideCardMetadata(guide,exercises));
  assert.equal(cards.length,6);assert.equal(new Set(cards.map(card=>card.outcome)).size,6);
- for(const card of cards){assert.ok(card.prerequisites.length);assert.match(card.actual_data_access.url,/^https:\/\/www.kaggle.com\/competitions\/[^/]+\/data$/);assert.match(card.actual_data_access.instructions,/authorized/);assert.equal(card.actual_data_verified,false);}
+ for(const card of cards){assert.ok(card.prerequisites.length);assert.match(card.actual_data_access.url,/^https:\/\/www.kaggle.com\/competitions\/[^/]+\/data$/);assert.match(card.actual_data_access.instructions,/authorized/);assert.equal(card.actual_data_verified,['titanic','house-prices-advanced-regression-techniques'].includes(card.kaggle_slug));}
  const credit=cards.find(card=>card.kaggle_slug==='home-credit-default-risk');assert.equal(credit.projects.length,0);assert.match(credit.readiness,/Guide only/);assert.match(renderGuideCardDetails(credit),/Unknown; no executed learner project/);
- assert.equal(cards.reduce((sum,card)=>sum+card.projects.length,0),5);
+ assert.equal(cards.reduce((sum,card)=>sum+card.projects.length,0),7);
 });
 test('card resources come exclusively from the matching receipt and retain fixture and memory measurement scope',()=>{
- const guide=guides.find(guide=>guide.data.slug==='titanic');const card=guideCardMetadata(guide,exercises);const receipt=exercises.find(x=>x.entry.id===card.projects[0].id && x.entry.data.status==='published').receipt;
- assert.equal(card.projects[0].measured.wall_seconds,receipt.wall_seconds);assert.equal(card.projects[0].measured.peak_memory_bytes,receipt.peak_memory_bytes);
- const html=renderGuideCardDetails(card);assert.match(html,/generated teaching fixture/);assert.match(html,/traced python allocations/);assert.match(html,/not a learner completion-time estimate/);assert.match(html,/Actual-data execution and its resource needs have not been verified/);
+ const guide=guides.find(guide=>guide.data.slug==='titanic');const card=guideCardMetadata(guide,exercises);
+ for(const project of card.projects){const receipt=exercises.find(x=>x.entry.id===project.id && x.entry.data.status==='published').receipt;assert.equal(project.measured.wall_seconds,receipt.wall_seconds);assert.equal(project.measured.peak_memory_bytes,receipt.peak_memory_bytes);assert.equal(project.measured.python,receipt.python);}
+ const html=renderGuideCardDetails(card);assert.match(html,/generated teaching fixture/);assert.match(html,/competition data/);assert.match(html,/traced python allocations/);assert.match(html,/not a learner completion-time estimate/);assert.match(html,/Measured actual-data resources cover their recorded scope only/);
+ const fixtureOnly=guideCardMetadata(guide,exercises.filter(x=>x.entry.data.data_scope==='generated-teaching-fixture'));assert.match(renderGuideCardDetails(fixtureOnly),/Actual-data execution and its resource needs have not been verified/);
  const noReceipt=guideCardMetadata(guide,exercises.map(x=>({...x,receipt:null})));assert.match(renderGuideCardDetails(noReceipt),/Measured run resources are unknown/);
 });
 test('draft-first input order retains the published fixture receipt and excludes actual-data draft links',()=>{
- const guide=guides.find(guide=>guide.data.slug==='titanic');
+ const guide=guides.find(guide=>guide.data.slug==='nlp-getting-started');
  const drafts=exercises.filter(x=>x.entry.data.status==='draft');
  assert.ok(drafts.some(x=>x.entry.data.competition_id===guide.id));
  const published=exercises.filter(x=>x.entry.data.status==='published');
  const expected=guideCardMetadata(guide,published);
  for(const ordered of [[...drafts,...published],[...published,...drafts]]) {
   const card=guideCardMetadata(guide,ordered);assert.deepEqual(card,expected);
-  assert.equal(card.projects.length,1);assert.equal(card.projects[0].id,'exercise-titanic-group-rules');
+  assert.equal(card.projects.length,1);assert.equal(card.projects[0].id,'exercise-nlp-word-pairs');
   const html=renderGuideCardDetails(card);
   for(const draft of drafts.filter(x=>x.entry.data.competition_id===guide.id)) assert.ok(!html.includes(`#exercise-${draft.entry.data.slug}`));
  }
@@ -40,7 +41,7 @@ test('draft projects and unrelated receipts never appear in card metadata or its
  const guide=guides.find(guide=>guide.data.slug==='titanic');const poisoned=exercises.map(x=>({...x,entry:{...x.entry,data:{...x.entry.data,status:'draft'}}}));
  assert.equal(guideCardMetadata(guide,poisoned).projects.length,0);
  const foreign=exercises.filter(x=>x.entry.data.competition_id!==guide.id);assert.equal(guideCardMetadata(guide,foreign).projects.length,0);
- const card=guideCardMetadata(guide,exercises);assert.match(card.projects[0].href,/^\/competitions\/titanic\/#exercise-titanic-group-rules$/);
+ const card=guideCardMetadata(guide,exercises);assert.deepEqual(card.projects.map(project=>project.href).sort(),['/competitions/titanic/#exercise-titanic-actual-data','/competitions/titanic/#exercise-titanic-group-rules']);
 });
 test('shared rendering escapes source text and both server and search renderers use the same card policy',async()=>{
  const card=guideCardMetadata(guides[0],[]);card.outcome='<script>bad()</script>';assert.match(renderGuideCardDetails(card),/&lt;script&gt;/);assert.doesNotMatch(renderGuideCardDetails(card),/<script>/);
